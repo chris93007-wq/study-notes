@@ -1,0 +1,27 @@
+/*
+ * Boxed content (Concept cards, Worked examples, Callouts) — "one step down from the body".
+ *
+ * Textbooks set sidebars and boxed examples smaller and tighter than running text, so the box reads as an
+ * aside and several of them fit on a page. The rule, in terms of the body size B (11pt):
+ *   text     0.9 B  (--text-sm)   one step down the scale — LaTeX's \normalsize → \small
+ *   labels   0.8 B  (--text-xs)   two steps down
+ *   title    1.2 B  (--text-lg)   a "\large" title, not a 1.5 B headline
+ *   leading  1.5    (body is 1.65) boxed text is set tighter
+ *   padding  ≈ 1em  of the box's own text (13.8px at 0.9 B), not 2em
+ *   gaps     ≈ 0.75em between sections inside the box
+ *   strokes  one ring only: 1.5px border + a 4px accent on top; inner tinted boxes get a 1px hairline
+ * Change a value here and every boxed component follows.
+ */
+:root{
+--box-text:var(--text-sm);
+--box-label:var(--text-xs);
+--box-title:var(--text-lg);
+--box-leading:1.5;
+--box-pad:var(--space-4);
+--box-gap:var(--space-3);
+--box-inner-pad:var(--space-3) var(--space-4);
+--box-border:1.5px;
+--box-accent:4px;
+--box-radius:var(--radius-md);
+--box-inner-radius:var(--radius-sm);
+}

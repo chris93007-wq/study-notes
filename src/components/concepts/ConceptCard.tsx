@@ -23,15 +23,15 @@ export interface ConceptCardProps {
 
 export function ConceptCard({ term, definition, formulas = [], breakdown, why, chapter }: ConceptCardProps) {
   const accent = ch(chapter, 500);
-  const wrap: CSSProperties = { border: `2px solid ${accent}`, borderTop: `6px solid ${accent}`, borderRadius: 'var(--radius-lg)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
-  const body: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', padding: 'var(--space-6)' };
-  const badge: CSSProperties = { display: 'inline-flex', alignSelf: 'flex-start', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '3.3px 10.3px', borderRadius: 'var(--radius-pill)', marginBottom: 'var(--space-2)' };
-  const section: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' };
-  const label: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-500)' };
-  const termStyle: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xl)', color: 'var(--ink-900)', margin: 0, lineHeight: 'var(--leading-tight)' };
-  const text: CSSProperties = { fontSize: 'var(--text-base)', lineHeight: 'var(--leading-body)', color: 'var(--ink-900)', margin: 0 };
-  const formulaBox: CSSProperties = { border: `1.5px solid ${accent}`, background: ch(chapter, 100), borderRadius: 'var(--radius-md)', padding: 'var(--space-5) var(--space-6)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-4)', flexWrap: 'wrap', fontSize: 'var(--text-lg)' };
-  const orStyle: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--ink-500)', fontStyle: 'italic' };
+  const wrap: CSSProperties = { border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
+  const body: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', padding: 'var(--box-pad)' };
+  const badge: CSSProperties = { display: 'inline-flex', alignSelf: 'flex-start', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-pill)', marginBottom: 'var(--space-1)' };
+  const section: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' };
+  const label: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-500)' };
+  const termStyle: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-title)', color: 'var(--ink-900)', margin: 0, lineHeight: 'var(--leading-tight)' };
+  const text: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', margin: 0 };
+  const formulaBox: CSSProperties = { border: `1px solid ${ch(chapter, 300)}`, background: ch(chapter, 100), borderRadius: 'var(--box-inner-radius)', padding: 'var(--box-inner-pad)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-3)', flexWrap: 'wrap', fontSize: 'var(--text-base)' };
+  const orStyle: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--box-label)', color: 'var(--ink-500)', fontStyle: 'italic' };
   return (
     <div style={wrap}>
       <div style={body}>
