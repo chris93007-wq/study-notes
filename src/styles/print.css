@@ -72,3 +72,9 @@ h1,h2,h3,h4{break-after:avoid}
   .screen-only{display:none !important}
   .page[data-page="cover"]{height:11in;overflow:hidden}
 }
+
+/* Multi-column page bodies (Page columns={2|3}) — the textbook grid. Anything wider than a column sets column-span:all. */
+.page[data-cols="2"] .page-body,.page[data-cols="3"] .page-body{display:block;column-gap:28px}
+.page[data-cols="2"] .page-body{column-count:2}
+.page[data-cols="3"] .page-body{column-count:3}
+.page[data-cols="2"] .page-body > p,.page[data-cols="3"] .page-body > p{orphans:3;widows:3}

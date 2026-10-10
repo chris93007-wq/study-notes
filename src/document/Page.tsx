@@ -13,6 +13,8 @@ export interface PageProps {
   badge?: string;
   /** List this page on the Contents page */
   toc?: TocSpec;
+  /** Text columns for the page body (default 1). 2 = the textbook grid: prose and cards flow in two columns; tables, diagrams, worked examples and headings span both. */
+  columns?: 1 | 2 | 3;
   /** Full-bleed page with no margins (Cover only) */
   cover?: boolean;
   className?: string;
@@ -24,12 +26,12 @@ export interface PageProps {
  * One page template = one or more printed sheets. Content flows onto extra sheets automatically; every
  * template starts on a fresh sheet. Use directly for custom pages, or via the ready-made templates.
  */
-export function Page({ orientation = 'portrait', footer = true, badge, cover = false, className, style, children }: PageProps) {
+export function Page({ orientation = 'portrait', footer = true, badge, columns = 1, cover = false, className, style, children }: PageProps) {
   const doc = useDocument();
   const slot = usePageSlot();
   const name = cover ? 'cover' : footer ? (orientation === 'landscape' ? 'landscape' : 'portrait') : `${orientation}-bare`;
   return (
-    <section id={slot?.tocEntry ? `toc-${slot.tocEntry.n}` : undefined} className={['page', className].filter(Boolean).join(' ')} data-page={name} data-orientation={orientation} style={style}>
+    <section id={slot?.tocEntry ? `toc-${slot.tocEntry.n}` : undefined} className={['page', className].filter(Boolean).join(' ')} data-page={name} data-orientation={orientation} data-cols={columns} style={style}>
       {slot?.tocEntry && <span className="toc-marker" aria-hidden="true">TOCMARK-{slot.tocEntry.n}-</span>}
       <div className="page-body">
         {badge && <PageBadge label={badge} />}

@@ -12,12 +12,12 @@ export interface SectionProps {
 }
 
 export function Section({ chapter, title, children }: SectionProps) {
-  const wrap: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', margin: 'var(--space-5) 0' };
-  const content: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' };
+  const wrap: CSSProperties = { margin: 'var(--space-4) 0' };
+  const content: CSSProperties = { marginTop: 'var(--space-3)' };
   return (
     <div style={wrap}>
       <SectionTitle chapter={chapter}>{title}</SectionTitle>
-      <div style={content}>{children}</div>
+      <div className="stack-3" style={content}>{children}</div>
     </div>
   );
 }

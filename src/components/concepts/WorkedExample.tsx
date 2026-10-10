@@ -28,66 +28,75 @@ export interface WorkedExampleProps {
   chapter: Chapter;
 }
 
+const GRID = 'repeat(auto-fit, minmax(250px, 1fr))';
+
 export function WorkedExample({ title, setup, context, table, steps = [], answer, soWhat, chapter }: WorkedExampleProps) {
   const accent = ch(chapter, 500);
   const ink = ch(chapter, 900);
-  const card: CSSProperties = { border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
+  const card: CSSProperties = { columnSpan: 'all', border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
   const wrap: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', fontFamily: 'var(--font-body)' };
-  const badge: CSSProperties = { display: 'inline-flex', alignSelf: 'flex-start', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-pill)', marginBottom: 'var(--space-1)' };
+  const head: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap', breakAfter: 'avoid' };
+  const badge: CSSProperties = { display: 'inline-flex', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-pill)' };
   const titleStyle: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-title)', color: 'var(--ink-900)', margin: 0, lineHeight: 'var(--leading-tight)' };
-  const setupStyle: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', margin: 0, flex: '1 1 260px', minWidth: 0 };
-  const setupRow: CSSProperties = { display: 'flex', alignItems: 'flex-start', gap: 'var(--space-4)', flexWrap: 'wrap' };
-  const contextBox: CSSProperties = { flex: '1 1 260px', minWidth: 0 };
-  const tableWrap: CSSProperties = { border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', overflow: 'hidden', breakInside: 'avoid' };
+  const row: CSSProperties = { display: 'grid', gridTemplateColumns: GRID, gap: 'var(--box-gap) var(--space-5)', alignItems: 'start' };
+  const setupStyle: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', margin: 0 };
+  const tableWrap: CSSProperties = { border: '1px solid var(--line)', borderRadius: 'var(--box-inner-radius)', overflow: 'hidden', breakInside: 'avoid' };
   const tableEl: CSSProperties = { width: '100%', borderCollapse: 'collapse' };
-  const th: CSSProperties = { padding: 'var(--space-2) var(--space-3)', background: ch(chapter, 100), color: ink, fontFamily: 'var(--font-display)', fontSize: 'var(--box-label)', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 };
-  const td: CSSProperties = { padding: 'var(--space-1) var(--space-3)', fontSize: 'var(--box-text)', color: 'var(--ink-900)', borderTop: '1px solid var(--line)' };
+  const th: CSSProperties = { padding: 'var(--space-1) var(--space-3)', background: ch(chapter, 100), color: ink, fontFamily: 'var(--font-display)', fontSize: 'var(--box-label)', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 };
+  const td: CSSProperties = { padding: 'var(--space-1) var(--space-3)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', borderTop: '1px solid var(--line)' };
   const stepsBox: CSSProperties = { border: `1px solid ${ch(chapter, 300)}`, background: ch(chapter, 100), borderRadius: 'var(--box-inner-radius)', padding: 'var(--box-inner-pad)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', breakInside: 'avoid' };
   const stepsLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', color: ink };
   const stepLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-text)', color: ink };
-  const lines: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--box-text)', color: 'var(--ink-900)', lineHeight: 'var(--box-leading)', marginTop: 1.8 };
+  const lines: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--box-label)', color: 'var(--ink-900)', lineHeight: 'var(--box-leading)', marginTop: 1.8, overflowWrap: 'anywhere' };
   const step: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 1.8 };
-  const answerBox: CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: 'var(--space-3)', borderRadius: 'var(--box-inner-radius)', background: ink, color: '#fff', breakInside: 'avoid' };
+  const answerBox: CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 2, padding: 'var(--space-3)', borderRadius: 'var(--box-inner-radius)', background: ink, color: '#fff', breakInside: 'avoid' };
   const answerValue: CSSProperties = { fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--text-xl)', lineHeight: 1.2 };
   const answerLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', opacity: 0.85 };
   const soWhatBox: CSSProperties = { borderLeft: `3px solid ${accent}`, paddingLeft: 'var(--space-3)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', breakInside: 'avoid' };
+
+  const setupBlock = (setup || context) && (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', minWidth: 0 }}>
+      {setup && <p style={setupStyle}><span style={{ fontWeight: 700 }}>Setup: </span>{setup}</p>}
+      {context}
+    </div>
+  );
+  const tableBlock = table && (
+    <div style={tableWrap}>
+      <table style={tableEl}>
+        <thead><tr>{table.columns.map((c, i) => <th key={i} style={{ ...th, textAlign: i === 0 ? 'left' : 'right' }}>{c}</th>)}</tr></thead>
+        <tbody>{table.rows.map((r, i) => <tr key={i}>{r.map((cell, j) => <td key={j} style={{ ...td, textAlign: j === 0 ? 'left' : 'right' }}>{cell}</td>)}</tr>)}</tbody>
+      </table>
+    </div>
+  );
+  const stepsBlock = steps.length > 0 && (
+    <div style={stepsBox}>
+      <span style={stepsLabel}>Show the Work</span>
+      {steps.map((s, i) => (
+        <div key={i} style={step}>
+          <span style={stepLabel}>Step {i + 1}{s.label ? ` — ${s.label}` : ''}</span>
+          <div style={lines}>{(s.lines || []).map((l, j) => <div key={j}>{l}</div>)}</div>
+        </div>
+      ))}
+    </div>
+  );
+  const answerBlock = answer && <div style={answerBox}><span style={answerValue}>{answer.value}</span><span style={answerLabel}>{answer.label}</span></div>;
+  const soWhatBlock = soWhat && <div style={soWhatBox}><span style={{ fontWeight: 700 }}>So what: </span>{soWhat}</div>;
+  const stack = (answerBlock || soWhatBlock) && (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', minWidth: 0 }}>{answerBlock}{soWhatBlock}</div>
+  );
+
   return (
     <div style={card}>
       <div style={wrap}>
-        {/* Badge, title and setup always stay together on one sheet. */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', breakInside: 'avoid' }}>
-        <div>
-          <span style={badge}>Worked Example</span>
-          <h3 style={titleStyle}>{title}</h3>
-        </div>
-        {(setup || context) && (
-          <div style={setupRow}>
-            {setup && <p style={setupStyle}><span style={{ fontWeight: 700 }}>Setup: </span>{setup}</p>}
-            {context && <div style={contextBox}>{context}</div>}
+        <div style={head}><span style={badge}>Worked Example</span><h3 style={titleStyle}>{title}</h3></div>
+        {/* setup beside the data table; the work beside the answer and the so-what */}
+        {(setupBlock || tableBlock) && <div style={row}>{setupBlock}{tableBlock}</div>}
+        {(stepsBlock || stack) && (
+          <div style={row}>
+            {stepsBlock}
+            {stack ?? null}
           </div>
         )}
-        </div>
-        {table && (
-          <div style={tableWrap}>
-            <table style={tableEl}>
-              <thead><tr>{table.columns.map((c, i) => <th key={i} style={{ ...th, textAlign: i === 0 ? 'left' : 'right' }}>{c}</th>)}</tr></thead>
-              <tbody>{table.rows.map((r, i) => <tr key={i}>{r.map((cell, j) => <td key={j} style={{ ...td, textAlign: j === 0 ? 'left' : 'right' }}>{cell}</td>)}</tr>)}</tbody>
-            </table>
-          </div>
-        )}
-        {steps.length > 0 && (
-          <div style={stepsBox}>
-            <span style={stepsLabel}>Show the Work</span>
-            {steps.map((s, i) => (
-              <div key={i} style={step}>
-                <span style={stepLabel}>Step {i + 1}{s.label ? ` — ${s.label}` : ''}</span>
-                <div style={lines}>{(s.lines || []).map((l, j) => <div key={j}>{l}</div>)}</div>
-              </div>
-            ))}
-          </div>
-        )}
-        {answer && <div style={answerBox}><span style={answerValue}>{answer.value}</span><span style={answerLabel}>{answer.label}</span></div>}
-        {soWhat && <div style={soWhatBox}><span style={{ fontWeight: 700 }}>So what: </span>{soWhat}</div>}
       </div>
     </div>
   );

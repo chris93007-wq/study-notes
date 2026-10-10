@@ -9,7 +9,7 @@ export interface StepPipelineProps {
 }
 
 export function StepPipeline({ steps, chapter }: StepPipelineProps) {
-  const wrap: CSSProperties = { display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', gap: 'var(--space-3)', breakInside: 'avoid' };
+  const wrap: CSSProperties = { columnSpan: 'all', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', gap: 'var(--space-3)', breakInside: 'avoid' };
   const stepBox: CSSProperties = { flex: '1 1 160px', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', background: 'var(--surface-card)', border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', padding: 'var(--space-4)' };
   const headRow: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' };
   const num: CSSProperties = { width: 31, height: 31, flexShrink: 0, borderRadius: '50%', background: ch(chapter, 500), color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' };

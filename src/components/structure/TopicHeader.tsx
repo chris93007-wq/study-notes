@@ -8,7 +8,7 @@ export interface TopicHeaderProps {
 }
 
 export function TopicHeader({ topicNumber, title, kicker }: TopicHeaderProps) {
-  const wrap: CSSProperties = { display: 'flex', flexDirection: 'column', gap: '3.3px', padding: 'var(--space-3) 0 var(--space-4)', borderBottom: '2px solid var(--line)', breakAfter: 'avoid', breakInside: 'avoid' };
+  const wrap: CSSProperties = { columnSpan: 'all', display: 'flex', flexDirection: 'column', gap: '3.3px', padding: 'var(--space-3) 0 var(--space-4)', borderBottom: '2px solid var(--line)', breakAfter: 'avoid', breakInside: 'avoid' };
   const h2: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-2xl)', color: 'var(--ink-900)', margin: 0, display: 'flex', alignItems: 'baseline', gap: 'var(--space-3)', lineHeight: 'var(--leading-tight)' };
   const kick: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--ink-500)' };
   return (

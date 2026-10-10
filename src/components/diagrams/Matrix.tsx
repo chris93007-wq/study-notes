@@ -12,7 +12,7 @@ export interface MatrixProps {
 }
 
 export function Matrix({ rowLabels, colLabels, cells, chapter }: MatrixProps) {
-  const wrap: CSSProperties = { display: 'inline-grid', maxWidth: '100%', gridTemplateColumns: `140px repeat(${colLabels.length}, 1fr)`, border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
+  const wrap: CSSProperties = { columnSpan: 'all', display: 'grid', width: 'fit-content', maxWidth: '100%', gridTemplateColumns: `140px repeat(${colLabels.length}, 1fr)`, border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
   const corner: CSSProperties = { background: 'var(--paper-100)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' };
   const head: CSSProperties = { background: ch(chapter, 100), color: ch(chapter, 900), fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.04em', textTransform: 'uppercase', padding: 'var(--space-3)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' };
   const cell: CSSProperties = { padding: 'var(--space-3)', fontSize: 'var(--text-sm)', color: 'var(--ink-900)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)', textAlign: 'center' };

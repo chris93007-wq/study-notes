@@ -28,7 +28,7 @@ function Side({ side }: { side: SplitSide }) {
 }
 
 export function Split({ left, right }: SplitProps) {
-  const wrap: CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 2px 1fr', gap: 'var(--space-6)', alignItems: 'start', breakInside: 'avoid' };
+  const wrap: CSSProperties = { columnSpan: 'all', display: 'grid', gridTemplateColumns: '1fr 2px 1fr', gap: 'var(--space-6)', alignItems: 'start', breakInside: 'avoid' };
   return (
     <div style={wrap}>
       <Side side={left} />

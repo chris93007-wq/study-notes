@@ -67,7 +67,7 @@ export default function Week03() {
       </TopicMapPage>
 
       {/* ───────────── Topic 2 · MaxDiff ───────────── */}
-      <NotesPage toc={{ title: 'MaxDiff (Best-Worst Scaling)', chapter: C.maxdiff }}>
+      <NotesPage columns={1} toc={{ title: 'MaxDiff (Best-Worst Scaling)', chapter: C.maxdiff }}>
         <TopicHeader topicNumber={2} title="MaxDiff (Best-Worst Scaling)" kicker="Concept, design rules, the Pecan Street Bank scoring walkthrough, key terms" />
         <div style={{ height: 16 }} />
         <p>
@@ -121,7 +121,7 @@ export default function Week03() {
       </NotesPage>
 
       {/* ───────────── Topic 3 · TURF ───────────── */}
-      <NotesPage toc={{ title: 'TURF', chapter: C.turf }}>
+      <NotesPage columns={1} toc={{ title: 'TURF', chapter: C.turf }}>
         <TopicHeader topicNumber={3} title="TURF (Total Unduplicated Reach & Frequency)" kicker="Picking the bundle under a $60/year budget" />
         <div style={{ height: 16 }} />
         <p>
@@ -148,7 +148,7 @@ export default function Week03() {
       </NotesPage>
 
       {/* ───────────── Topic 4 · Pipeline ───────────── */}
-      <NotesPage toc={{ title: 'MaxDiff → TURF Pipeline', chapter: C.pipeline }}>
+      <NotesPage columns={1} toc={{ title: 'MaxDiff → TURF Pipeline', chapter: C.pipeline }}>
         <TopicHeader topicNumber={4} title="The MaxDiff → TURF Pipeline" kicker="A single pipeline, run in sequence" />
         <div style={{ height: 20 }} />
         <StepPipeline
@@ -185,7 +185,7 @@ export default function Week03() {
       </NotesPage>
 
       {/* ───────────── Topic 5 · Conjoint ───────────── */}
-      <NotesPage toc={{ title: 'Conjoint Analysis', chapter: C.conjoint }}>
+      <NotesPage columns={1} toc={{ title: 'Conjoint Analysis', chapter: C.conjoint }}>
         <TopicHeader topicNumber={5} title="Conjoint Analysis" kicker="Part-worths, utility, and willingness to pay" />
         <div style={{ margin: '13.8px 0' }}><span className={`badge ch-${C.conjoint}`}>Ratings-based conjoint</span></div>
         <Columns count={2} style={{ marginBottom: 15.4 }}>

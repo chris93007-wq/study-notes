@@ -41,3 +41,6 @@ strong.tip{color:var(--highlighter-tip-ink);font-weight:700}
 
 /* NotesPage body copy: plain <p> children read as dense lecture-notes prose */
 .notes-flow .page-body > p{font-size:var(--text-base);line-height:var(--leading-body);margin:0 0 15px;color:var(--ink-900)}
+
+/* vertical rhythm inside a Section without making it a flex/grid container (those would stop column-span:all) */
+.stack-3 > * + *{margin-top:var(--space-3)}

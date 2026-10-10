@@ -47,6 +47,12 @@ These are the design decisions settled in the design sessions. Keep to them.
 **Type size**
 - Body text is **11 pt**. The whole scale is in `src/styles/tokens/typography.css` (xs 8.8pt · sm 9.9pt · base 11pt · lg 13.2pt · xl 16.5pt · 2xl 22pt · 3xl 28.6pt). Use these tokens rather than hard-coded sizes, so changing the scale changes everything together.
 
+**Textbook layout rules** (from the print-textbook conventions Christine supplied):
+- **Grid:** notes pages use a 2-column grid (`<NotesPage columns={2}>`, the default). A half-width column at 11 pt is about 50 characters, inside the 50–75 character measure. Headings, tables, diagrams and worked examples span both columns; callouts and concept cards flow in one. Use `columns={1}` only when a page arranges its own side-by-side blocks with `<Columns>`.
+- **Leading:** font size plus 2–3 pt (about 1.3–1.35): body 1.35, boxed text 1.3.
+- **Hierarchy:** title 28.6 pt → section/topic 22 pt → subsection 13–16.5 pt → body 11 pt → captions and notes 8.8–9.9 pt. One serif display face for titles, one sans face for text; hierarchy comes from size and weight, not more fonts.
+- **Space inside boxes:** don't stack labelled parts in one tall column. Cards put Definition beside Formula, and Setup beside the data table, with the work beside the answer and the so-what.
+
 **Boxed content (Concept cards, Worked examples, Callouts) is set "one step down" from the body**, the way textbooks set
 sidebars and boxed examples, so a box reads as an aside and several fit on a page. With body size B (11 pt): text 0.9 B,
 labels 0.8 B, box title 1.2 B, leading 1.5 (body 1.65), padding about 1 em of the box's own text, gaps about 0.75 em,
