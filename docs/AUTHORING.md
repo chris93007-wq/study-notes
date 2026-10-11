@@ -32,14 +32,14 @@ These are the design decisions settled in the design sessions. Keep to them.
   the color of the chapter it sits in.
 - **One color per topic, everywhere.** Pick one chapter number per topic and use it on that topic's Contents
   entry (`toc.chapter`), flashcard, notes page, cheat-sheet column and formula-sheet band. Two topic colors
-  never mix on one page; the week badge matches too.
+  never mix on one page; the pill at the top of the page matches too.
 - Pick contrasting hues for neighbouring topics (opposite sides of the wheel), not color-wheel order:
   1 indigo · 2 orange · 3 teal · 4 pink · 5 lime · 6 deep purple · 7 amber · 8 light blue · 9 deep orange ·
   10 purple · 11 cyan · 12 light green · 13 blue.
 - **Red, green and yellow are reserved.** Never use them as a chapter color.
 - **One hue per chapter.** Every shade of a chapter (-50 … -900) is generated from that chapter's -500 hue (same hue, different lightness), so a chapter never drifts into a neighbouring Material hue (amber -900 no longer turns orange). Don't mix hues from different palette families inside one component.
 - Text on color always uses the chapter's pastel **-100 fill with -900 ink**, never a translucent tint.
-- The `PageBadge` pill on a notes page shows the lecture or chapter title (`NotesPage lecture="…"`, default the Contents title); other pages show the week. Its color is the document `brandChapter`, not the topic color.
+- The `PageBadge` pill on a notes page shows the lecture or chapter title (`NotesPage lecture="…"`, default the Contents title); other pages show the week. Its color is the topic's color (the page's `toc.chapter`); on other pages it is the document `brandChapter`.
 - The full Material palette is also available directly: `var(--green-100)`, `var(--deep-orange-700)` and so on.
 
 **Spacing**
@@ -68,13 +68,17 @@ sidebars and boxed examples. With body size B (11 pt): text 0.9 B, labels 9 pt (
 and one ring only (1.5 px border plus a 4 px accent on top; inner tinted boxes get a 1 px hairline). All of it is in
 `src/styles/tokens/box.css` as `--box-*` tokens. Tune the values there, never inside a component.
 
-**Emphasis** (plain HTML, no components)
-- `<mark>…</mark>` is the yellow highlighter. **It's the only highlight color.**
-- `<strong>…</strong>` is plain bold.
-- `<strong className="trap">…</strong>` is bold red with no fill. Use it for traps and common mistakes.
-- `<strong className="tip">…</strong>` is bold green with no fill. Use it for tips and clues.
-- `<span className="badge ch-7">Best use case</span>` is an all-caps text badge in the chapter-500 color.
-  Text badges are the system's only "icons". No emoji, no drawn icons.
+**Emphasis** (plain HTML, no components). Each style has one job; when in doubt, use less.
+
+| Style | Markup | Use it for | Limits |
+|---|---|---|---|
+| Yellow highlight | `<mark>…</mark>` | **The one thing to remember**: the single phrase a reader must not leave the page without (the definition's key phrase, the rule, the answer to "so what?"). It's the only highlight color. | At most **one per paragraph and about three per page**. A phrase, not a sentence: 3–12 words. Never in titles, callout titles, tables or on a term that is already bold. |
+| Bold green | `<strong className="tip">…</strong>` | **What to do**: the action, shortcut or clue that points to the right answer ("always build the state table first", "clue: a riskless payoff means arbitrage"). The positive twin of a trap. | Up to 8 words. Pair it with a red trap where one exists (do / don't). |
+| Bold red | `<strong className="trap">…</strong>` | **What not to do**: the mistake, trap or wrong move, usually inside an Exam Trap or Common Mistake. | Up to 12 words, no fill. |
+| Plain bold | `<strong>…</strong>` | A key term the first time it is defined, a label inside running text, or a number the reader must find again. | Not whole sentences. |
+| Badge | `<span className="badge ch-7">Best use case</span>` | A short all-caps label in the chapter color. Text badges are the system's only "icons". No emoji, no drawn icons. | One or two words. |
+
+Never stack styles (no bold red inside a highlight, no highlighted green). Colour is never the only signal: red and green phrases always sit in a sentence that says "don't …" or "always …", so the page still reads in black and white.
 
 **Callouts**
 - There are four: `KEY INSIGHT`, `NOTES`, `MEMORY AID` and `EXAM TRAP`. All four go in the margin (`<Aside>`). A worked example or other

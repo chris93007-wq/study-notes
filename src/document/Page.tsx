@@ -35,7 +35,7 @@ export interface PageProps {
  * One page template = one or more printed sheets. Content flows onto extra sheets automatically; every
  * template starts on a fresh sheet. Use directly for custom pages, or via the ready-made templates.
  */
-export function Page({ orientation = 'portrait', footer = true, badge, pill, columns = 1, layout, join = false, cover = false, className, style, children }: PageProps) {
+export function Page({ orientation = 'portrait', footer = true, badge, pill, toc, columns = 1, layout, join = false, cover = false, className, style, children }: PageProps) {
   const doc = useDocument();
   const slot = usePageSlot();
   const mode = layout ?? (columns > 1 ? 'columns' : 'single');
@@ -45,7 +45,7 @@ export function Page({ orientation = 'portrait', footer = true, badge, pill, col
     <section id={slot?.tocEntry ? `toc-${slot.tocEntry.n}` : undefined} className={['page', className].filter(Boolean).join(' ')} data-page={name} data-orientation={orientation} data-cols={cols} data-layout={mode} data-joinable={join || undefined} style={style}>
       {slot?.tocEntry && <span className="toc-marker" aria-hidden="true">TOCMARK-{slot.tocEntry.n}-</span>}
       <div className="page-body">
-        {(badge || pill) && <PageBadge label={badge ?? ''} week={pill} />}
+        {(badge || pill) && <PageBadge label={badge ?? ''} week={pill} chapter={pill && toc ? toc.chapter : undefined} />}
         {children}
       </div>
       {footer && !cover && (
