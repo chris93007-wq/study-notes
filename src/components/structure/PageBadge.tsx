@@ -26,7 +26,7 @@ export function PageBadge({ label, week, chapter }: PageBadgeProps) {
   return (
     <div data-wide className="page-badge" style={row}>
       {wk && <span style={pill}>{wk}</span>}
-      <span style={mono}>{label}</span>
+      {label && <span style={mono}>{label}</span>}
     </div>
   );
 }

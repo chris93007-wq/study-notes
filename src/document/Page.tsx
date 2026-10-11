@@ -11,6 +11,8 @@ export interface PageProps {
   footer?: boolean;
   /** PageBadge label (e.g. "Notes Page"). Every content page except the Cover gets one. Omit for none. */
   badge?: string;
+  /** Text of the pill in the badge row (e.g. "Lecture 4" or the chapter title). Defaults to the document's week. */
+  pill?: string;
   /** List this page on the Contents page */
   toc?: TocSpec;
   /** Text columns for the page body (default 1). 2 = the textbook grid: prose and cards flow in two columns; tables, diagrams, worked examples and headings span both. */
@@ -33,7 +35,7 @@ export interface PageProps {
  * One page template = one or more printed sheets. Content flows onto extra sheets automatically; every
  * template starts on a fresh sheet. Use directly for custom pages, or via the ready-made templates.
  */
-export function Page({ orientation = 'portrait', footer = true, badge, columns = 1, layout, join = false, cover = false, className, style, children }: PageProps) {
+export function Page({ orientation = 'portrait', footer = true, badge, pill, columns = 1, layout, join = false, cover = false, className, style, children }: PageProps) {
   const doc = useDocument();
   const slot = usePageSlot();
   const mode = layout ?? (columns > 1 ? 'columns' : 'single');
@@ -43,7 +45,7 @@ export function Page({ orientation = 'portrait', footer = true, badge, columns =
     <section id={slot?.tocEntry ? `toc-${slot.tocEntry.n}` : undefined} className={['page', className].filter(Boolean).join(' ')} data-page={name} data-orientation={orientation} data-cols={cols} data-layout={mode} data-joinable={join || undefined} style={style}>
       {slot?.tocEntry && <span className="toc-marker" aria-hidden="true">TOCMARK-{slot.tocEntry.n}-</span>}
       <div className="page-body">
-        {badge && <PageBadge label={badge} />}
+        {(badge || pill) && <PageBadge label={badge ?? ''} week={pill} />}
         {children}
       </div>
       {footer && !cover && (

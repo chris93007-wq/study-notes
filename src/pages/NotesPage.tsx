@@ -4,7 +4,9 @@ import type { TocSpec } from '../document/NotesDocument';
 
 export interface NotesPageProps {
   toc?: TocSpec;
-  /** PageBadge label */
+  /** Text of the pill at the top of the page: the lecture or chapter title (default: the Contents title, else the document week). */
+  lecture?: string;
+  /** Optional mono label after the pill (none by default) */
   badge?: string;
   orientation?: 'portrait' | 'landscape';
   /**
@@ -32,9 +34,9 @@ export interface NotesPageProps {
 }
 
 /** A real per-topic notes page — flows onto as many sheets as the content needs. */
-export function NotesPage({ toc, badge = 'Notes Page', orientation = 'portrait', columns, layout, join = true, children }: NotesPageProps) {
+export function NotesPage({ toc, badge, lecture, orientation = 'portrait', columns, layout, join = true, children }: NotesPageProps) {
   return (
-    <Page join={join} toc={toc} badge={badge} orientation={orientation} layout={layout ?? (columns == null ? 'margin' : columns > 1 ? 'columns' : 'single')} columns={columns ?? 2} className="notes-flow">
+    <Page join={join} toc={toc} badge={badge} pill={lecture ?? toc?.title} orientation={orientation} layout={layout ?? (columns == null ? 'margin' : columns > 1 ? 'columns' : 'single')} columns={columns ?? 2} className="notes-flow">
       {children}
     </Page>
   );

@@ -39,7 +39,7 @@ These are the design decisions settled in the design sessions. Keep to them.
 - **Red, green and yellow are reserved.** Never use them as a chapter color.
 - **One hue per chapter.** Every shade of a chapter (-50 … -900) is generated from that chapter's -500 hue (same hue, different lightness), so a chapter never drifts into a neighbouring Material hue (amber -900 no longer turns orange). Don't mix hues from different palette families inside one component.
 - Text on color always uses the chapter's pastel **-100 fill with -900 ink**, never a translucent tint.
-- The `PageBadge` on every page uses the document's `brandChapter`, not the topic color.
+- The `PageBadge` pill on a notes page shows the lecture or chapter title (`NotesPage lecture="…"`, default the Contents title); other pages show the week. Its color is the document `brandChapter`, not the topic color.
 - The full Material palette is also available directly: `var(--green-100)`, `var(--deep-orange-700)` and so on.
 
 **Spacing**
