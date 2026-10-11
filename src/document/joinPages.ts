@@ -6,6 +6,7 @@
  */
 const GAP = 32;     // 24pt
 const SAFETY = 28;
+const SAFETY_DEFAULT = 0; // simulation vs print: a topic counts as one sheet only if it fits with this much to spare (the PDF script raises it per topic if the print disagrees)
 
 /** Height of the laid-out content (including floated margin notes), ignoring the min-height of a screen sheet. */
 export function contentHeight(page: Element): number {
@@ -17,23 +18,8 @@ export function contentHeight(page: Element): number {
   return bottom - top;
 }
 
-export function joinShortPages(): void {
-  const pages = [...document.querySelectorAll<HTMLElement>('section.page')];
-  pages.forEach((p) => p.removeAttribute('data-join'));
-  let used = 0;
-  let prev: HTMLElement | null = null;
-  for (const el of pages) {
-    const h = contentHeight(el);
-    const sheet = (el.dataset.orientation === 'landscape' ? 8.5 : 11) * 96 - 96;
-    if (prev && el.dataset.joinable && prev.dataset.page === el.dataset.page && used + GAP + h + SAFETY <= sheet) {
-      el.setAttribute('data-join', '1');
-      used += GAP + h;
-    } else {
-      used = h;
-    }
-    prev = el;
-  }
-}
+const sheetOf = (page: HTMLElement) => (page.dataset.orientation === 'landscape' ? 8.5 : 11) * 96 - 96;
+const biasOf = (page: HTMLElement) => SAFETY_DEFAULT + (window.__FIT_BIAS__?.[[...document.querySelectorAll('section.page')].indexOf(page)] ?? 0);
 
 /**
  * Whitespace fitter. A margin note taller than the text beside it leaves a blank hole in the main column (the next
@@ -43,6 +29,7 @@ export function joinShortPages(): void {
  * in for the printer.
  */
 const MIN_SAVING = 40;
+const WASTE_LIMIT = 0.3;
 
 function simulate(page: HTMLElement): { height: number; sheets: number } {
   const body = page.querySelector<HTMLElement>('.page-body');
@@ -64,7 +51,33 @@ function simulate(page: HTMLElement): { height: number; sheets: number } {
     end = Math.max(end, b);
   }
   body.querySelectorAll<HTMLElement>(':scope > .aside').forEach((a) => { end = Math.max(end, a.getBoundingClientRect().bottom - top + offset); });
-  return { height: end, sheets: Math.max(1, Math.ceil(end / sheet)) };
+  return { height: end, sheets: end <= sheet - biasOf(page) ? 1 : Math.max(2, Math.ceil(end / sheet)) };
+}
+
+/** Fraction of a one-sheet topic's printable area (24px grid) that no block covers — empty margin and empty foot of the sheet. */
+function wasteOf(page: HTMLElement): number {
+  const body = page.querySelector<HTMLElement>('.page-body');
+  if (!body) return 0;
+  const b = body.getBoundingClientRect();
+  const H = sheetOf(page);
+  const W = b.width;
+  const cell = 24;
+  const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell);
+  const grid = new Uint8Array(cols * rows);
+  const mark = (el: Element) => {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return;
+    const x0 = Math.max(0, Math.floor((r.left - b.left) / cell)), x1 = Math.min(cols - 1, Math.floor((r.right - b.left - 1) / cell));
+    const y0 = Math.max(0, Math.floor((r.top - b.top) / cell)), y1 = Math.min(rows - 1, Math.floor((r.bottom - b.top - 1) / cell));
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) grid[y * cols + x] = 1;
+  };
+  Array.from(body.children).forEach((c) => {
+    if ((c as HTMLElement).hidden) return;
+    if (c.classList.contains('aside')) Array.from(c.children).forEach(mark); else mark(c);
+  });
+  let empty = 0;
+  for (let i = 0; i < grid.length; i++) if (!grid[i]) empty++;
+  return empty / grid.length;
 }
 
 /** Two boxes (concept card, worked example) with nothing between them: returns the second one. */
@@ -88,93 +101,155 @@ const LADDER: Array<{ bs: number; compact: '' | '1' | '2'; label: string }> = [
 
 type Place = 'margin' | 'main' | 'between' | 'end' | 'endwide';
 
+interface Item { el: HTMLElement; home: 'margin' | 'main'; ph: Comment }
+interface FitState { items: Item[]; synthetic: HTMLElement; between: HTMLElement | null; combos: Place[][]; level: number; name: string }
+const states = new WeakMap<HTMLElement, FitState>();
+
+function stateFor(page: HTMLElement): FitState | null {
+  if (states.has(page)) return states.get(page)!;
+  const body = page.querySelector<HTMLElement>('.page-body');
+  if (!body || page.dataset.layout !== 'margin' || !page.dataset.joinable) return null;
+  const items: Item[] = [];
+  const track = (el: HTMLElement, home: 'margin' | 'main') => {
+    const ph = document.createComment('slot');
+    el.parentNode!.insertBefore(ph, el);
+    items.push({ el, home, ph });
+  };
+  const between = adjacentBoxes(body);
+  body.querySelectorAll<HTMLElement>(':scope > .aside > *').forEach((el) => track(el, 'margin'));
+  body.querySelectorAll<HTMLElement>(':scope > [data-movable]').forEach((el) => track(el, 'main'));
+  const header = Array.from(body.children).find((c) => c.querySelector('h2') || c.tagName === 'H2') as HTMLElement | undefined;
+  const synthetic = document.createElement('aside');
+  synthetic.className = 'aside';
+  if (header?.nextSibling) body.insertBefore(synthetic, header.nextSibling); else body.appendChild(synthetic);
+  const options = (it: Item): Place[] => {
+    if (it.home === 'main') return ['main', 'margin'];
+    const o: Place[] = ['margin'];
+    if (between) o.push('between');
+    o.push('end', 'endwide');
+    return o;
+  };
+  let combos: Place[][] = [[]];
+  for (const it of items) { const prev = combos; combos = []; for (const c of prev) for (const o of options(it)) combos.push([...c, o]); }
+  const st = { items, synthetic, between, combos, level: 0, name: page.querySelector('h2')?.textContent ?? 'page' };
+  states.set(page, st);
+  return st;
+}
+
+function applyConfig(page: HTMLElement, st: FitState, combo: Place[], level: number) {
+  const body = page.querySelector<HTMLElement>('.page-body')!;
+  const { bs, compact } = LADDER[level];
+  if (bs === 1) page.style.removeProperty('--bs-page'); else page.style.setProperty('--bs-page', String(bs));
+  if (compact) page.setAttribute('data-compact', compact); else page.removeAttribute('data-compact');
+  st.items.forEach((it) => { it.ph.parentNode!.insertBefore(it.el, it.ph); it.el.removeAttribute('data-wide'); });
+  combo.forEach((pl, i) => {
+    const { el, home } = st.items[i];
+    if (pl === 'margin' && home === 'main') st.synthetic.appendChild(el);
+    else if (pl === 'between' && st.between) body.insertBefore(el, st.between);
+    else if (pl === 'end') body.appendChild(el);
+    else if (pl === 'endwide') { el.setAttribute('data-wide', ''); body.appendChild(el); }
+  });
+  st.level = level;
+}
+
 /**
- * Per notes page, search the layout space for the fewest printed sheets. Every movable element (margin notes, and
- * concept cards that aren't full-width) can sit in the margin, in the main column, between two adjacent boxes, at
- * the end of the topic, or across the full width at the end — and how far the boxes shrink is searched too (100% →
- * 80% → tighter gaps). Among layouts with the same number of sheets it prefers, in order: the least shrinking,
- * a note separating two adjacent boxes, the fewest elements moved from where they were authored, the shortest.
- * Page breaks are simulated (blocks that must not split jump to the next sheet).
+ * Search placements (margin / main / between two boxes / end / full-width at the end, for every movable element) ×
+ * box scale (levels fromLevel..toLevel of the shrink ladder) for the fewest printed sheets, then apply the winner.
+ * Ties break on: least shrinking, a note separating two adjacent boxes, fewest elements moved from where they were
+ * authored, shortest. Returns the applied layout's simulated height and sheets.
  */
+function fitPage(page: HTMLElement, fromLevel = 0, toLevel = LADDER.length - 1): { sheets: number; height: number; level: number; moved: Place[] } | null {
+  const st = stateFor(page);
+  if (!st) return null;
+  let best: { key: number[]; level: number; combo: Place[]; sheets: number; height: number } | null = null;
+  for (let level = fromLevel; level <= toLevel; level++) {
+    for (const combo of st.combos) {
+      applyConfig(page, st, combo, level);
+      const r = simulate(page);
+      const separated = st.between && combo.includes('between') ? 0 : 1;
+      const moved = combo.filter((c, i) => c !== st.items[i].home && !(c === 'main' && st.items[i].home === 'main')).length;
+      const waste = r.sheets === 1 ? wasteOf(page) : 0;
+      const key = [r.sheets, waste > WASTE_LIMIT ? 1 : 0, level, st.between ? separated : 0, moved, Math.round(waste * 100), Math.round(r.height)];
+      let better = !best;
+      if (best) for (let i = 0; i < key.length; i++) { if (key[i] !== best.key[i]) { better = key[i] < best.key[i]; break; } }
+      if (better) best = { key, level, combo, sheets: r.sheets, height: r.height };
+    }
+    if (best && best.sheets === 1 && best.key[1] === 0) break;
+  }
+  if (!best) return null;
+  applyConfig(page, st, best.combo, best.level);
+  const moved = best.combo.map((c, i) => (c === st.items[i].home ? '' : c)).filter(Boolean) as Place[];
+  return { sheets: best.sheets, height: best.height, level: best.level, moved };
+}
+
+const describe = (moved: Place[]) => moved.map((m) => (m === 'endwide' ? 'full-width at the end' : m === 'between' ? 'between boxes' : m === 'end' ? 'to the end' : 'to the margin')).join(', ');
+
+/** Solo fit of every notes page. */
 export function fitNotePages(): string[] {
   const log: string[] = [];
-  document.querySelectorAll<HTMLElement>('section.page[data-joinable][data-layout="margin"]').forEach((page) => {
+  document.querySelectorAll<HTMLElement>('section.page').forEach((page) => {
+    const r = fitPage(page);
+    if (r && (window as unknown as { __FIT_DEBUG__?: boolean }).__FIT_DEBUG__) log.push(`[debug] ${states.get(page)!.name}: sheets=${r.sheets} height=${Math.round(r.height)} level=${r.level}`);
+    if (r && (r.level > 0 || r.moved.length)) {
+      const parts: string[] = [];
+      if (r.moved.length) parts.push(`moved ${describe(r.moved)}`);
+      if (r.level > 0) parts.push(LADDER[r.level].label);
+      log.push(`${states.get(page)!.name}: ${parts.join('; ')} → ${r.sheets} sheet${r.sheets > 1 ? 's' : ''}`);
+    }
+  });
+  return log;
+}
+
+/**
+ * Whitespace rule: a sheet may waste about 30% (counting empty margins). A short topic that leaves its sheet under 70%
+ * full shares it with the next topic when the two fit together — shrinking the boxes of both (down to 80%) if that is
+ * what it takes. Footers and badges adapt (a joined topic has no sheet of its own).
+ */
+export function packPages(): string[] {
+  const log: string[] = [];
+  const pages = [...document.querySelectorAll<HTMLElement>('section.page')];
+  pages.forEach((p) => p.removeAttribute('data-join'));
+  const height = (p: HTMLElement) => (states.has(p) ? simulate(p).height : contentHeight(p));
+  const single = (p: HTMLElement) => (states.has(p) ? simulate(p).sheets === 1 : contentHeight(p) <= sheetOf(p) - biasOf(p));
+  let group: HTMLElement[] = [];
+  const used = () => group.reduce((n, p, i) => n + height(p) + (i ? GAP : 0), 0);
+
+  for (const el of pages) {
+    const sheet = sheetOf(el);
+    if ((window as unknown as { __FIT_DEBUG__?: boolean }).__FIT_DEBUG__) log.push(`[debug] pack ${states.get(el)?.name ?? el.querySelector('h1,h2')?.textContent ?? el.dataset.page}: group=${group.length} used=${Math.round(used())} h=${Math.round(height(el))} single=${single(el)} joinable=${!!el.dataset.joinable}`);
+    if (group.length && el.dataset.joinable && el.dataset.page === group[0].dataset.page && single(el) && used() < 0.7 * sheet) {
+      const members = [...group, el];
+      const before = members.map((m) => (states.has(m) ? states.get(m)!.level : 0));
+      el.setAttribute('data-join', '1');
+      let ok = false;
+      for (let level = Math.max(...before); level < LADDER.length && !ok; level++) {
+        for (const m of members) if (states.has(m)) fitPage(m, level, level);
+        const total = members.reduce((n, m, i) => n + height(m) + (i ? GAP : 0), 0);
+        ok = members.every((m) => (states.has(m) ? simulate(m).sheets === 1 : true)) && total + SAFETY + biasOf(el) - SAFETY_DEFAULT <= sheet;
+      }
+      if (ok) {
+        const lv = states.get(el)?.level ?? 0;
+        log.push(`${states.get(el)?.name ?? 'page'}: shares the sheet with the topic before it${lv > 0 ? ` (boxes at ${Math.round(LADDER[lv].bs * 100)}%)` : ''}`);
+        group = members;
+        continue;
+      }
+      el.removeAttribute('data-join');
+      members.forEach((m, i) => { if (states.has(m)) fitPage(m, before[i], before[i]); });
+    }
+    group = single(el) ? [el] : [];
+  }
+  return log;
+}
+
+/** Clean up after fitting, and put a hairline divider between boxes that still touch (it takes over the gap: no added height). */
+export function finalizeFits(): string[] {
+  const log: string[] = [];
+  document.querySelectorAll<HTMLElement>('section.page').forEach((page) => {
+    const st = states.get(page);
     const body = page.querySelector<HTMLElement>('.page-body');
     if (!body) return;
-    const name = page.querySelector('h2')?.textContent ?? 'page';
-    const between = adjacentBoxes(body);
-
-    type Item = { el: HTMLElement; home: 'margin' | 'main'; ph: Comment };
-    const items: Item[] = [];
-    const track = (el: HTMLElement, home: 'margin' | 'main') => {
-      const ph = document.createComment('slot');
-      el.parentNode!.insertBefore(ph, el);
-      items.push({ el, home, ph });
-    };
-    body.querySelectorAll<HTMLElement>(':scope > .aside > *').forEach((el) => track(el, 'margin'));
-    body.querySelectorAll<HTMLElement>(':scope > [data-movable]').forEach((el) => track(el, 'main'));
-    if (items.length === 0) return;
-
-    const header = Array.from(body.children).find((c) => c.querySelector('h2') || c.tagName === 'H2') as HTMLElement | undefined;
-    const synthetic = document.createElement('aside');
-    synthetic.className = 'aside';
-    synthetic.dataset.synthetic = '1';
-    if (header?.nextSibling) body.insertBefore(synthetic, header.nextSibling); else body.appendChild(synthetic);
-
-    const place = (placements: Place[]) => {
-      items.forEach((it) => { it.ph.parentNode!.insertBefore(it.el, it.ph); it.el.removeAttribute('data-wide'); });
-      placements.forEach((pl, i) => {
-        const { el } = items[i];
-        if (pl === 'margin' && items[i].home === 'main') synthetic.appendChild(el);
-        else if (pl === 'between' && between) body.insertBefore(el, between);
-        else if (pl === 'end') body.appendChild(el);
-        else if (pl === 'endwide') { el.setAttribute('data-wide', ''); body.appendChild(el); }
-      });
-    };
-    const setLevel = (i: number) => {
-      const { bs, compact } = LADDER[i];
-      if (bs === 1) page.style.removeProperty('--bs-page'); else page.style.setProperty('--bs-page', String(bs));
-      if (compact) page.setAttribute('data-compact', compact); else page.removeAttribute('data-compact');
-    };
-    const options = (it: Item): Place[] => {
-      const o: Place[] = it.home === 'margin' ? ['margin'] : ['main', 'margin'];
-      if (it.home === 'margin') { if (between) o.push('between'); o.push('end', 'endwide'); }
-      else if (it.el.querySelector('[data-wide]') === null) { /* cards stay put or go to the margin */ }
-      return o;
-    };
-    let combos: Place[][] = [[]];
-    for (const it of items) { const prev = combos; combos = []; for (const c of prev) for (const o of options(it)) combos.push([...c, o]); }
-
-    let best: { key: number[]; level: number; combo: Place[]; sheets: number } | null = null;
-    for (let level = 0; level < LADDER.length; level++) {
-      setLevel(level);
-      for (const combo of combos) {
-        place(combo);
-        const r = simulate(page);
-        const separated = combo.some((c, i) => c === 'between') ? 0 : 1;
-        const moved = combo.filter((c, i) => c !== items[i].home && !(c === 'main' && items[i].home === 'main')).length;
-        const key = [r.sheets, level, between ? separated : 0, moved, Math.round(r.height)];
-        let better = !best;
-        if (best) for (let i = 0; i < key.length; i++) { if (key[i] !== best.key[i]) { better = key[i] < best.key[i]; break; } }
-        if (better) best = { key, level, combo, sheets: r.sheets };
-      }
-      if (best && best.sheets === 1) break; // fewest sheets reached at the least shrinking
-    }
-    if (best) {
-      setLevel(best.level);
-      place(best.combo);
-      const moved = best.combo.map((c, i) => (c === items[i].home || (c === 'main' && items[i].home === 'main') ? '' : c)).filter(Boolean);
-      if (best.level > 0 || moved.length > 0) {
-        const parts: string[] = [];
-        if (moved.length) parts.push(`moved ${moved.map((m) => (m === 'endwide' ? 'full-width at the end' : m === 'between' ? 'between boxes' : m === 'end' ? 'to the end' : 'to the margin')).join(', ')}`);
-        if (best.level > 0) parts.push(LADDER[best.level].label);
-        log.push(`${name}: ${parts.join('; ')} → ${best.sheets} sheet${best.sheets > 1 ? 's' : ''}`);
-      }
-    }
-    items.forEach((it) => it.ph.remove());
-    synthetic.dataset.synthetic = '';
+    if (st) st.items.forEach((it) => it.ph.remove());
     body.querySelectorAll(':scope > .aside:empty').forEach((a) => a.remove());
-    // Boxes that still touch get a hairline divider that takes over the gap (half above, half below): no added height.
     for (let guard = 0; guard < 6; guard++) {
       const second = adjacentBoxes(body);
       if (!second) break;
@@ -183,8 +258,48 @@ export function fitNotePages(): string[] {
       rule.setAttribute('aria-hidden', 'true');
       if (second.hasAttribute('data-wide') || second.querySelector(':scope > [data-wide]')) rule.setAttribute('data-wide', '');
       body.insertBefore(rule, second);
-      log.push(`${name}: divider between two boxes`);
+      log.push(`${st?.name ?? 'page'}: divider between two boxes`);
     }
   });
   return log;
+}
+
+/**
+ * Source info ("L2 Slides 18-20 · HW2 Q2") lives in the page footer, not under the title. Every topic's kicker is hidden
+ * before fitting (so the layout is measured without it) and a page of its own gets a named @page whose footer centre
+ * carries the text on every sheet of the topic. A topic that shares a sheet (data-join) can't have its own footer, so it
+ * keeps its kicker under the title.
+ */
+export function hideKickers(): void {
+  document.querySelectorAll<HTMLElement>('section.page .topic-kicker').forEach((k) => { k.style.display = 'none'; });
+}
+
+export function sourcesToFooter(): void {
+  const rules: string[] = [];
+  document.querySelectorAll<HTMLElement>('section.page').forEach((page, i) => {
+    const kicker = page.querySelector<HTMLElement>('.topic-kicker');
+    if (!kicker) return;
+    const text = kicker.textContent?.trim();
+    if (!text || page.hasAttribute('data-join') || page.dataset.page !== 'portrait') { kicker.style.display = ''; return; }
+    const id = `src-${i}`;
+    const css = `"${text.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+    rules.push(`@page ${id}{@bottom-center{content:${css};vertical-align:top;padding-top:13px;border-top:1px solid var(--line);font-family:var(--font-body);font-size:var(--text-xs);letter-spacing:0.02em;color:var(--ink-500);text-align:center;white-space:nowrap;overflow:hidden}}`);
+    page.style.setProperty('page', id);
+  });
+  if (rules.length) {
+    const style = document.createElement('style');
+    style.textContent = rules.join('\n');
+    document.head.appendChild(style);
+  }
+}
+
+/** What the fitter predicts, per Contents entry: the sheet count of each topic (joined topics are skipped), read by scripts/pdf.ts to check the print agrees. */
+export function predictedSheets(): Record<number, { index: number; sheets: number }> {
+  const out: Record<number, { index: number; sheets: number }> = {};
+  [...document.querySelectorAll<HTMLElement>('section.page')].forEach((p, index) => {
+    const m = /^toc-(\d+)$/.exec(p.id);
+    if (!m || p.hasAttribute('data-join') || !states.has(p)) return;
+    out[Number(m[1])] = { index, sheets: simulate(p).sheets };
+  });
+  return out;
 }

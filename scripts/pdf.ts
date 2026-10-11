@@ -13,7 +13,7 @@
  * Browser: uses $CHROMIUM_PATH if set, then a Playwright-managed Chromium (e.g. /opt/pw-browsers), then an
  * installed Google Chrome.
  */
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium, type Browser, type Page } from 'playwright-core';
@@ -143,6 +143,68 @@ async function auditWhitespace(pdf: Buffer): Promise<string[]> {
   return out;
 }
 
+/**
+ * Area-based whitespace per printed sheet: render each PDF page in the browser (pdf.js on a canvas), lay an 8pt grid over
+ * the printable area (0.5in margins) and count the cells with no ink. Empty side margins count, as the rule intends.
+ * Returns the empty fraction (0–1) per page.
+ */
+async function measureWhitespace(browser: Browser, pdf: Buffer): Promise<number[]> {
+  const page = await browser.newPage();
+  try {
+    await page.goto('about:blank');
+    const lib = readFileSync(join(root, 'node_modules/pdfjs-dist/legacy/build/pdf.mjs'), 'utf8');
+    const worker = readFileSync(join(root, 'node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs'), 'utf8');
+    return await page.evaluate(async ({ lib, worker, data }) => {
+      const mod = await import(URL.createObjectURL(new Blob([lib], { type: 'text/javascript' })));
+      mod.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([worker], { type: 'text/javascript' }));
+      const bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
+      const doc = await mod.getDocument({ data: bytes }).promise;
+      const out: number[] = [];
+      for (let i = 1; i <= doc.numPages; i++) {
+        const pg = await doc.getPage(i);
+        const vp = pg.getViewport({ scale: 1 });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+        const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+        const m = 36, cell = 24;
+        const x0 = m, y0 = m, x1 = vp.width - m, y1 = vp.height - m - 2;
+        const bg = ctx.getImageData(2, 2, 1, 1).data;
+        let total = 0, empty = 0;
+        for (let y = y0; y + cell <= y1; y += cell) for (let x = x0; x + cell <= x1; x += cell) {
+          const d = ctx.getImageData(x, y, cell, cell).data;
+          let ink = false;
+          for (let k = 0; k < d.length; k += 4) if (Math.abs(d[k] - bg[0]) + Math.abs(d[k + 1] - bg[1]) + Math.abs(d[k + 2] - bg[2]) > 36) { ink = true; break; }
+          total++; if (!ink) empty++;
+        }
+        out.push(empty / total);
+      }
+      return out;
+    }, { lib, worker, data: pdf.toString('base64') });
+  } finally {
+    await page.close();
+  }
+}
+
+/**
+ * The whitespace rule: no printed sheet may waste more than 30% of its printable area (empty side margins count).
+ * Cover and Contents are exempt. A topic sheet over the limit is an error (exit code 1, the PDF is still written);
+ * the other templates (cheat sheet, quiz, glossary…) are reported as warnings because their length comes from the data.
+ */
+const WS_LIMIT = 0.3;
+function enforceWhitespace(ws: number[], tocPages: Record<number, number>, numPages: number): string[] {
+  const out: string[] = [];
+  const ns = Object.keys(tocPages).map(Number).sort((a, b) => a - b);
+  ws.forEach((v, i) => {
+    const pageNo = i + 1;
+    if (pageNo <= 2 || v <= WS_LIMIT) return;
+    out.push(`whitespace rule: page ${pageNo} wastes ${Math.round(v * 100)}% of the sheet (limit ${Math.round(WS_LIMIT * 100)}%) — merge the topic with a neighbour, add content, or move its elements so it fills the sheet`);
+  });
+  void ns; void numPages;
+  return out;
+}
+
 async function main() {
   const filters = process.argv.slice(2);
   if (!existsSync(join(root, 'dist', 'index.html'))) throw new Error('dist/ is missing — run `npm run pdf` (which builds first) or `npm run build`.');
@@ -163,9 +225,10 @@ async function main() {
       const page = await browser.newPage({ viewport: { width: 1200, height: 1000 } });
       const errors: string[] = [];
       page.on('pageerror', (e) => errors.push(e.message));
-      page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+      page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); else if (process.env.FIT_DEBUG && m.text().startsWith('[dbg]')) console.log(m.text()); });
       const url = `${base}?doc=${encodeURIComponent(slug)}`;
 
+      if (process.env.FIT_DEBUG) await page.addInitScript(() => { (window as unknown as { __FIT_DEBUG__: boolean }).__FIT_DEBUG__ = true; });
       await page.goto(url);
       await waitReady(page);
       if (process.env.PAGE_HEIGHTS) console.log(await page.evaluate(() => [...document.querySelectorAll('section.page')].map((pg, i) => { const b = pg.querySelector('.page-body')!; const t = b.getBoundingClientRect().top; let m = t; b.querySelectorAll(':scope > *').forEach((c) => { m = Math.max(m, c.getBoundingClientRect().bottom); }); return `${i + 1}:${Math.round(m - t)}${pg.hasAttribute('data-join') ? 'J' : ''}`; }).join(' ')));
@@ -173,6 +236,27 @@ async function main() {
 
       let pdf = await printPdf(page);
       let { pages: tocPages, numPages } = await readMarkers(pdf);
+
+      // The fitter predicts each topic's sheet count from the screen layout; if the print needs more, make that topic's
+      // prediction more conservative (extra safety margin) and lay out again. A few rounds settle it.
+      const bias: number[] = [];
+      for (let round = 0; round < 4; round++) {
+        const pred = await page.evaluate(() => window.__FIT_PRED__ ?? {});
+        const ns = Object.keys(tocPages).map(Number).sort((a, b) => a - b);
+        let changed = false;
+        for (const [k, n] of ns.entries()) {
+          const entry = pred[n];
+          if (!entry) continue;
+          const printed = (ns[k + 1] != null ? tocPages[ns[k + 1]] : numPages + 1) - tocPages[n];
+          if (printed > entry.sheets) { bias[entry.index] = Math.min(160, (bias[entry.index] ?? 0) + 24); changed = true; }
+        }
+        if (!changed) break;
+        await page.addInitScript((b) => { window.__FIT_BIAS__ = b; }, [...bias]);
+        await page.reload();
+        await waitReady(page);
+        pdf = await printPdf(page);
+        ({ pages: tocPages, numPages } = await readMarkers(pdf));
+      }
 
       if (Object.keys(tocPages).length > 0) {
         await page.addInitScript((p) => { window.__TOC_PAGES__ = p; }, tocPages);
@@ -188,7 +272,10 @@ async function main() {
       writeFileSync(file, pdf);
       console.log(`✓ ${slug}.pdf — ${numPages} pages`);
       for (const l of (await page.evaluate(() => window.__FIT_LOG__ ?? []))) console.log(`  ↳ fitted — ${l}`);
+      const ws = await measureWhitespace(browser, pdf);
+      if (process.env.WS_DEBUG) console.log(ws.map((v, i) => `${i + 1}:${Math.round(v * 100)}`).join(' '));
       overflow.push(...(await auditWhitespace(pdf)));
+      errors.push(...enforceWhitespace(ws, tocPages, numPages));
       for (const w of overflow) console.warn(`  ⚠ ${w}`);
       for (const e of errors) console.error(`  ✗ ${e}`);
       if (errors.length) failed = true;

@@ -18,7 +18,7 @@ export function TopicHeader({ topicNumber, title, kicker }: TopicHeaderProps) {
   return (
     <div data-wide style={wrap}>
       <h2 style={h2}>{num != null && <span style={{ color: 'var(--ink-300)' }}>{String(num)}</span>}{title}</h2>
-      {kicker && <span style={kick}>{kicker}</span>}
+      {kicker && <span className="topic-kicker" style={kick}>{kicker}</span>}
     </div>
   );
 }

@@ -186,6 +186,12 @@ import profileCard from './assets/profile-card.png';
 <Image chapter={13} src={profileCard} alt="Conjoint profile card" caption="Fig. 1 — …" ratio="4/3" fit="contain" />
 ```
 
+## Whitespace rule: at most 30% of a sheet
+
+**No printed sheet may waste more than 30% of its printable area** (empty side margins and an empty foot of the sheet both count; measured on a 1/3-inch grid on the finished PDF). Cover and Contents are exempt. `npm run pdf` enforces it: a sheet over the limit prints `✗ whitespace rule: page N wastes X% …` and the command exits with an error (the PDF is still written). The generator already does everything layout can do: it fits each topic onto the fewest sheets, lets short topics share a sheet (shrinking boxes to 80% if needed) and re-checks against the real print. What is left is a content problem. Fix it by merging a short topic into its neighbour as a subsection (`toc.sub`), adding the missing material, or trimming a topic that spills a small tail onto a second sheet. Re-run until the ✗ lines are gone; if one cannot be fixed (e.g. the last sheet of a glossary), say so in your summary.
+
+**Source info** ("L2 Slides 18-20 · HW2 Q2", the `kicker` of a `TopicHeader`) is printed in the page footer on every sheet of the topic, not under the title. A topic that shares a sheet keeps it under its title.
+
 ## Whitespace: automatic fitting, then a post-render audit
 
 `npm run pdf` runs a **whitespace fitter** before printing and an **audit** of the finished PDF.
