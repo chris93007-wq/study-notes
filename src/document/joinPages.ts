@@ -130,6 +130,18 @@ export function fitNotePages(): string[] {
       }
     }
     body.querySelectorAll(':scope > .aside:empty').forEach((a) => a.remove());
+    // Boxes that still touch (no margin note to spare, or moving one would cost the sheet) get a hairline divider: it
+    // takes over the gap (half above, half below), so it separates them without adding height.
+    for (let guard = 0; guard < 6; guard++) {
+      const second = adjacentBoxes(body);
+      if (!second) break;
+      const rule = document.createElement('div');
+      rule.className = 'box-divider';
+      rule.setAttribute('aria-hidden', 'true');
+      if (second.hasAttribute('data-wide') || second.querySelector(':scope > [data-wide]')) rule.setAttribute('data-wide', '');
+      body.insertBefore(rule, second);
+      log.push(`${name()}: divider between two boxes`);
+    }
   });
   return log;
 }
