@@ -11,6 +11,8 @@ export interface WorkedExampleStep {
   lines?: string[];
 }
 export interface WorkedExampleProps {
+  /** Full page width on a margin-layout page (default). Pass false to keep it in the main column. */
+  wide?: boolean;
   title: string;
   /** One sentence describing the scenario, shown after a bold "Setup:" label */
   setup?: ReactNode;
@@ -30,7 +32,7 @@ export interface WorkedExampleProps {
 
 const GRID = 'repeat(auto-fit, minmax(250px, 1fr))';
 
-export function WorkedExample({ title, setup, context, table, steps = [], answer, soWhat, chapter }: WorkedExampleProps) {
+export function WorkedExample({ title, setup, context, table, steps = [], answer, soWhat, chapter, wide }: WorkedExampleProps) {
   const accent = ch(chapter, 500);
   const ink = ch(chapter, 900);
   const card: CSSProperties = { columnSpan: 'all', border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
@@ -86,7 +88,7 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
   );
 
   return (
-    <div data-wide style={{ ...card, breakInside: 'avoid' }}>
+    <div data-wide={wide === false ? undefined : true} style={{ ...card, breakInside: 'avoid' }}>
       <div style={wrap}>
         <div style={head}><span style={badge}>Worked Example</span><h3 style={titleStyle}>{title}</h3></div>
         {/* setup beside the data table; the work beside the answer and the so-what */}

@@ -85,13 +85,13 @@ h1,h2,h3,h4{break-after:avoid}
  * grid rows, split cleanly across printed sheets. Anything marked data-wide (worked examples, tables, headers,
  * <Wide>) spans the full page and clears the margin notes above it.
  */
-.page{--main-w:55%;--aside-w:41%}
+.page{--main-w:62%;--aside-w:34%}
 .page[data-orientation="landscape"]{--main-w:400px;--aside-w:min(380px, calc(100% - 440px))}
 .page[data-layout="margin"] .page-body{display:block}
 .page[data-layout="margin"] .page-body::after{content:"";display:table;clear:both}
 .page[data-layout="margin"] .page-body > *{width:var(--main-w)}
 .page[data-layout="margin"] .page-body > [data-wide]{width:auto;clear:both}
-.page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w);break-inside:avoid}
+.page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w)}
 .page[data-layout="margin"] .page-body > .aside > * + *{margin-top:var(--space-3)}
 .aside > * + *{margin-top:var(--space-3)}
 .page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--space-4)}
