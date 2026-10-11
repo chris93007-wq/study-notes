@@ -95,6 +95,11 @@ Never stack styles (no bold red inside a highlight, no highlighted green). Colou
   question.
 - Use the layouts above (margin for notes, 2 equal columns for reference pages). Never run text full-width across a portrait page (≈125 characters is too long to track).
 
+**Numbering** (one rule everywhere)
+- Every topic has **one single number** (1, 2, 3 …). It is assigned automatically to each `NotesPage` in order, and the same number appears on the Contents badge, the page pill and the TopicHeader, so they can never disagree. Don't type numbers into `toc` titles or `TopicHeader` (`toc={{ title: 'Corporate Taxes', chapter: 4 }}`, no "4 ·").
+- Only **subsections** may use a dotted number (3.1, 3.2). Give a sub-page `toc={{ title: 'Miller extension', chapter: 4, sub: true }}` and it becomes 3.1 under the topic before it, indented in the Contents. No deeper levels and no other numbering schemes.
+- Unnumbered pages (Topic Map, Cheat Sheet, Formula Sheet, Practice Questions, Glossary) show a blank colored chip in the Contents. Override a number with `toc.number` only if you must.
+
 **Concepts**
 - Every concept gets a plain-language definition, the formula (KaTeX in `ConceptCard`, *in words* in
   `FlashCard`), and the **why**: the logic that makes the formula make sense.

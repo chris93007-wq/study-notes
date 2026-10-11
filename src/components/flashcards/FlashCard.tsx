@@ -25,7 +25,7 @@ export function FlashCard({ number, title, definition, formula, why, chapter }: 
   const section: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 2.6 };
   return (
     <div style={card}>
-      <span style={titleStyle}>{number != null ? `${String(number).padStart(2, '0')} · ${title}` : title}</span>
+      <span style={titleStyle}>{number != null && !/^\d/.test(title) ? `${number} · ${title}` : title}</span>
       <div style={section}><span style={label}>Definition</span><span style={body}>{math(definition)}</span></div>
       {formula && <div style={section}><span style={label}>Formula, in words</span><div style={formulaBox}>{formula}</div></div>}
       <div style={section}><span style={label}>Why</span><span style={body}>{math(why)}</span></div>

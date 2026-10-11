@@ -45,7 +45,7 @@ export function Page({ orientation = 'portrait', footer = true, badge, pill, toc
     <section id={slot?.tocEntry ? `toc-${slot.tocEntry.n}` : undefined} className={['page', className].filter(Boolean).join(' ')} data-page={name} data-orientation={orientation} data-cols={cols} data-layout={mode} data-joinable={join || undefined} style={style}>
       {slot?.tocEntry && <span className="toc-marker" aria-hidden="true">TOCMARK-{slot.tocEntry.n}-</span>}
       <div className="page-body">
-        {(badge || pill) && <PageBadge label={badge ?? ''} week={pill} chapter={pill && toc ? toc.chapter : undefined} />}
+        {(badge || pill) && <PageBadge label={badge ?? ''} week={pill && slot?.tocEntry?.number && pill === toc?.title ? `${slot.tocEntry.number} · ${pill}` : pill} chapter={pill && toc ? toc.chapter : undefined} />}
         {children}
       </div>
       {footer && !cover && (

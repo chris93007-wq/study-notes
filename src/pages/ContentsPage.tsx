@@ -25,8 +25,8 @@ export function ContentsPage({ title = 'Contents' }: ContentsPageProps) {
   const pageNo: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)', color: 'var(--ink-500)', minWidth: 14, textAlign: 'right' };
 
   const Row = (it: TocEntry) => (
-    <a key={it.n} href={`#toc-${it.n}`} style={row} aria-label={`Go to ${it.title}`}>
-      <span style={{ width: 22, height: 22, borderRadius: 5, background: ch(it.chapter, 200), color: ch(it.chapter, 900), fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, alignSelf: 'center' }}>{it.n}</span>
+    <a key={it.n} href={`#toc-${it.n}`} style={{ ...row, paddingLeft: it.level === 1 ? 22 : 0 }} aria-label={`Go to ${it.title}`}>
+      <span style={{ minWidth: 22, height: 22, padding: it.number && it.number.length > 2 ? '0 5px' : 0, borderRadius: 5, background: ch(it.chapter, 200), color: ch(it.chapter, 900), fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, alignSelf: 'center' }}>{it.number ?? ''}</span>
       <span style={titleStyle}>{it.title}</span>
       <span style={leader} />
       <span style={pageNo}>{pages[it.n] ?? ''}</span>

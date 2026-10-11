@@ -17,8 +17,16 @@ declare global {
 
 /** Any page template accepts `toc` to be listed on the Contents page. */
 export interface TocSpec {
+  /** Title without any number — numbering is automatic */
   title: string;
   chapter: Chapter;
+  /**
+   * NotesPages are numbered 1, 2, 3 … automatically (one single number per topic) and the same number is used on the
+   * Contents badge, the page pill and the TopicHeader. Override with a number (or "3.1") only if you must.
+   */
+  number?: number | string;
+  /** Make this a subsection of the preceding topic: numbered 3.1, 3.2 … and indented in the Contents. */
+  sub?: boolean;
 }
 
 export interface NotesDocumentProps {
@@ -39,10 +47,20 @@ export function NotesDocument({ meta, children }: NotesDocumentProps) {
 
   const { toc, slots } = useMemo(() => {
     const toc: TocEntry[] = [];
+    let topic = 0;
+    let sub = 0;
     const slots: PageSlotValue[] = pages.map((el, i) => {
       const spec = el.props.toc;
       if (!spec) return { index: i + 1 };
-      const entry = { n: toc.length + 1, title: spec.title, chapter: spec.chapter };
+      let number: string | undefined;
+      const numbered = (el.type as { numberedTopic?: boolean }).numberedTopic === true;
+      if (spec.number != null) {
+        number = String(spec.number);
+        const m = /^(\d+)(?:\.(\d+))?$/.exec(number);
+        if (m) { topic = Number(m[1]); sub = m[2] ? Number(m[2]) : 0; }
+      } else if (numbered && spec.sub && topic > 0) number = `${topic}.${++sub}`;
+      else if (numbered) { number = String(++topic); sub = 0; }
+      const entry: TocEntry = { n: toc.length + 1, title: spec.title, chapter: spec.chapter, number, level: number?.includes('.') ? 1 : 0 };
       toc.push(entry);
       return { index: i + 1, tocEntry: entry };
     });

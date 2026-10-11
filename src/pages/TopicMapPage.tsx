@@ -61,7 +61,7 @@ export function TopicMapPage({ toc, label = 'Overview', title, subtitle, chapter
       {mode === 'margin' ? (
         <Aside>
           {cards.map((c, i) => (
-            <Callout key={i} chapter={c.chapter ?? (((i % 5) + 1) as Chapter)} label={`${String(c.number ?? i + 1).padStart(2, '0')} · ${c.title}`} items={[c.definition, ...(c.formula ? [c.formula] : []), c.why]} />
+            <Callout key={i} chapter={c.chapter ?? (((i % 5) + 1) as Chapter)} label={/^\d/.test(c.title) ? c.title : `${c.number ?? i + 1} · ${c.title}`} items={[c.definition, ...(c.formula ? [c.formula] : []), c.why]} />
           ))}
         </Aside>
       ) : (

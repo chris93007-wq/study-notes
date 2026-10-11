@@ -41,7 +41,7 @@ export default function Notes() {
       </TopicMapPage>
 
       <NotesPage toc={{ title: 'Topic A', chapter: C.topicA }}>
-        <TopicHeader topicNumber={2} title="Topic A" kicker="TODO what this page covers" />
+        <TopicHeader title="Topic A" kicker="TODO what this page covers" />
         {/* Callouts go in the margin: an <Aside> just before the text it annotates. */}
         <Aside>
           <Callout chapter={C.topicA} label="MEMORY AID">TODO</Callout>
@@ -53,7 +53,7 @@ export default function Notes() {
       </NotesPage>
 
       <NotesPage toc={{ title: 'Topic B', chapter: C.topicB }}>
-        <TopicHeader topicNumber={3} title="Topic B" />
+        <TopicHeader title="Topic B" />
         <p>TODO</p>
       </NotesPage>
 

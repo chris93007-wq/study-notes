@@ -26,6 +26,10 @@ export interface TocEntry {
   n: number;
   title: string;
   chapter: Chapter;
+  /** Topic number shown on the Contents badge, the page pill and the TopicHeader — one number per topic ("3"), or "3.1" for a subsection. Undefined for unnumbered pages (Topic Map, Cheat Sheet, …). */
+  number?: string;
+  /** 0 = topic / unnumbered page, 1 = subsection (indented in the Contents) */
+  level: 0 | 1;
 }
 
 export interface DocumentContextValue {

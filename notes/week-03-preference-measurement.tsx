@@ -69,7 +69,7 @@ export default function Week03() {
 
       {/* ───────────── Topic 2 · MaxDiff ───────────── */}
       <NotesPage toc={{ title: 'MaxDiff (Best-Worst Scaling)', chapter: C.maxdiff }}>
-        <TopicHeader topicNumber={2} title="MaxDiff (Best-Worst Scaling)" kicker="Concept, design rules, the Pecan Street Bank scoring walkthrough, key terms" />
+        <TopicHeader title="MaxDiff (Best-Worst Scaling)" kicker="Concept, design rules, the Pecan Street Bank scoring walkthrough, key terms" />
         <Aside>
           <Callout chapter={C.maxdiff} label="MEMORY AID">“Most minus Least, over every appearance” — never divide by selections only.</Callout>
         </Aside>
@@ -123,7 +123,7 @@ export default function Week03() {
 
       {/* ───────────── Topic 3 · TURF ───────────── */}
       <NotesPage toc={{ title: 'TURF', chapter: C.turf }}>
-        <TopicHeader topicNumber={3} title="TURF (Total Unduplicated Reach & Frequency)" kicker="Picking the bundle under a $60/year budget" />
+        <TopicHeader title="TURF (Total Unduplicated Reach & Frequency)" kicker="Picking the bundle under a $60/year budget" />
         <Aside>
         <Callout chapter={C.turf} label="KEY INSIGHT">
           Only <mark>new</mark> people count toward reach at each step — someone already reached by an earlier item doesn’t add again when a later item also covers them.
@@ -152,7 +152,7 @@ export default function Week03() {
 
       {/* ───────────── Topic 4 · Pipeline ───────────── */}
       <NotesPage toc={{ title: 'MaxDiff → TURF Pipeline', chapter: C.pipeline }}>
-        <TopicHeader topicNumber={4} title="The MaxDiff → TURF Pipeline" kicker="A single pipeline, run in sequence" />
+        <TopicHeader title="The MaxDiff → TURF Pipeline" kicker="A single pipeline, run in sequence" />
         <div style={{ height: 20 }} />
         <StepPipeline
           chapter={C.pipeline}
@@ -189,7 +189,7 @@ export default function Week03() {
 
       {/* ───────────── Topic 5 · Conjoint ───────────── */}
       <NotesPage toc={{ title: 'Conjoint Analysis', chapter: C.conjoint }}>
-        <TopicHeader topicNumber={5} title="Conjoint Analysis" kicker="Part-worths, utility, and willingness to pay" />
+        <TopicHeader title="Conjoint Analysis" kicker="Part-worths, utility, and willingness to pay" />
         <Aside>
         <Callout chapter={C.conjoint} label="MEMORY AID">
           Think of the price part-worth as an exchange rate — “utils per dollar” — and dividing by it is just converting currency.

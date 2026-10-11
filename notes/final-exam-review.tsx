@@ -58,8 +58,8 @@ export default function FinalExamReview() {
       </TopicMapPage>
 
       {/* ───────────── 1 ───────────── */}
-      <NotesPage toc={{ title: '1 · M-M, Arbitrage & Leverage', chapter: C[1] }}>
-        <TopicHeader topicNumber={1} title="M-M, Arbitrage & Leverage" kicker="L1 Slides 21-23, 31 · HW1 Q1, Q6" />
+      <NotesPage toc={{ title: 'M-M, Arbitrage & Leverage', chapter: C[1] }}>
+        <TopicHeader title="M-M, Arbitrage & Leverage" kicker="L1 Slides 21-23, 31 · HW1 Q1, Q6" />
         <Aside>
           <Memory chapter={C[1]}>“Same pie, different slices.” If you ever compute a different total firm value from two capital structures with no taxes/distress/info frictions, you made an arithmetic error, not a discovery.</Memory>
           <Trap chapter={C[1]}>When verifying M-M Prop I across a restructuring, <strong className="trap">don’t compute firm value as just equity value</strong> — always add V(debt) + V(equity) to check the total, not just the share price.</Trap>
@@ -78,8 +78,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 2 ───────────── */}
-      <NotesPage toc={{ title: '2 · Undoing Firms’ Actions', chapter: C[2] }}>
-        <TopicHeader topicNumber={2} title="Can Investors “Undo” Firms’ Financial Actions?" kicker="L1 Slides 24-25 · HW1 Sample Question" />
+      <NotesPage toc={{ title: 'Undoing Firms’ Actions', chapter: C[2] }}>
+        <TopicHeader title="Can Investors “Undo” Firms’ Financial Actions?" kicker="L1 Slides 24-25 · HW1 Sample Question" />
         <Aside>
           <Memory chapter={C[2]}>“If the firm won’t give you the leverage you want, borrow it yourself.” This ‘clientele doesn’t matter’ argument reinforces Topic 1 — financing mix alone can’t be a value source if investors can personally undo it.</Memory>
         </Aside>
@@ -98,8 +98,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 3 ───────────── */}
-      <NotesPage toc={{ title: '3 · M-M and Risky Debt', chapter: C[3] }}>
-        <TopicHeader topicNumber={3} title="M-M and Risky Debt" kicker="L1 Slides 24-25 · HW1 Q3, Q4" />
+      <NotesPage toc={{ title: 'M-M and Risky Debt', chapter: C[3] }}>
+        <TopicHeader title="M-M and Risky Debt" kicker="L1 Slides 24-25 · HW1 Q3, Q4" />
         <Aside>
           <Memory chapter={C[3]}>Always build a state-by-state table (good/bad × each claim) before computing any single number. If the three claim values don’t sum to the same total before and after, that’s an arithmetic error — M-M Prop I is your check digit.</Memory>
           <Trap chapter={C[3]}><strong className="trap">Don’t value new senior debt at face value</strong> when the firm’s assets could fall short of even the senior claim in the worst state — always verify the worst state covers the promised payment before calling the debt riskless.</Trap>
@@ -117,8 +117,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 4 ───────────── */}
-      <NotesPage toc={{ title: '4 · Corporate Taxes', chapter: C[4] }}>
-        <TopicHeader topicNumber={4} title="Corporate Taxes: Can Investors Undo Them?" kicker="L2 Slides 14-15 — the pivot topic" />
+      <NotesPage toc={{ title: 'Corporate Taxes', chapter: C[4] }}>
+        <TopicHeader title="Corporate Taxes: Can Investors Undo Them?" kicker="L2 Slides 14-15 — the pivot topic" />
         <Aside>
           <Memory chapter={C[4]}>“You can borrow for yourself, but you can’t deduct YOUR interest against the CORPORATION’s taxes.” That’s the whole reason personal home-made leverage stops substituting for corporate leverage once corporate taxes exist.</Memory>
         </Aside>
@@ -127,8 +127,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 5 ───────────── */}
-      <NotesPage toc={{ title: '5 · Who Gets the Tax Benefit?', chapter: C[5] }}>
-        <TopicHeader topicNumber={5} title="Who Gets the Tax Benefits of Debt?" kicker="L2 Slides 16-17" />
+      <NotesPage toc={{ title: 'Who Gets the Tax Benefit?', chapter: C[5] }}>
+        <TopicHeader title="Who Gets the Tax Benefits of Debt?" kicker="L2 Slides 16-17" />
         <Aside>
           <Memory chapter={C[5]}>Announcement date = value date. Execution date = just paperwork (assuming no new information arrives between the two). Exam questions often separate “value right after announcement” from “value after the deal is completed” — no additional value is created at execution.</Memory>
         </Aside>
@@ -137,8 +137,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 6 ───────────── */}
-      <NotesPage toc={{ title: '6 · Personal Taxes (Miller)', chapter: C[6] }}>
-        <TopicHeader topicNumber={6} title="Personal Taxes and Capital Structure (Miller Model)" kicker="L2 Slides 18-20 · HW2 Q2 — the most-tested formula" />
+      <NotesPage toc={{ title: 'Personal Taxes (Miller)', chapter: C[6] }}>
+        <TopicHeader title="Personal Taxes and Capital Structure (Miller Model)" kicker="L2 Slides 18-20 · HW2 Q2 — the most-tested formula" />
         <Aside>
           <Memory chapter={C[6]}>Say g out loud: “1 minus the two-tax product over the one-tax survivor.” $$(1-T_C)(1-T_E)$$, all over $$(1-T_D)$$.</Memory>
           <Trap chapter={C[6]}>A REIT ($$T_C = 0$$) <strong className="trap">is not automatically g = 0</strong> — it still has personal taxes on both sides. Plug $$T_C = 0$$ into $$g$$ and it collapses toward <Tex tex="\dfrac{T_D - T_E}{1 - T_D}" />, which is near zero or slightly negative when $$T_E \approx T_D$$, not automatically zero.</Trap>
@@ -161,8 +161,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 7 ───────────── */}
-      <NotesPage toc={{ title: '7 · Who Bears Bankruptcy Costs?', chapter: C[7] }}>
-        <TopicHeader topicNumber={7} title="Who Bears Bankruptcy Costs?" kicker="L2 Slides 31-32 · HW1 Q5, HW2 Q1" />
+      <NotesPage toc={{ title: 'Who Bears Bankruptcy Costs?', chapter: C[7] }}>
+        <TopicHeader title="Who Bears Bankruptcy Costs?" kicker="L2 Slides 31-32 · HW1 Q5, HW2 Q1" />
         <Aside>
           <Memory chapter={C[7]}>Bankruptcy costs shrink the pie; M-M Prop I only holds when there are NO bankruptcy costs. Once a problem has distress costs, stop expecting before/after totals to match.</Memory>
         </Aside>
@@ -182,8 +182,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 8 ───────────── */}
-      <NotesPage toc={{ title: '8 · Debt Overhang', chapter: C[8] }}>
-        <TopicHeader topicNumber={8} title="Debt Overhang" kicker="L4 Slides 6-17 · HW3 Q2–5 — heaviest-weighted topic" />
+      <NotesPage toc={{ title: 'Debt Overhang', chapter: C[8] }}>
+        <TopicHeader title="Debt Overhang" kicker="L4 Slides 6-17 · HW3 Q2–5 — heaviest-weighted topic" />
         <Aside>
           <Memory chapter={C[8]}>Checklist: (1) confirm the project’s own NPV is positive — that’s what makes the result surprising; (2) compute the max residual available to new money after existing senior claims; (3) compare to the amount needed.</Memory>
           <Trap chapter={C[8]}><strong className="trap">Don’t assume a positive-NPV project always gets financed</strong> — debt overhang is specifically the case where it can’t, because existing senior claimholders capture part of the upside for free.</Trap>
@@ -207,8 +207,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 9 ───────────── */}
-      <NotesPage toc={{ title: '9 · Asset Substitution', chapter: C[9] }}>
-        <TopicHeader topicNumber={9} title="Asset Substitution" kicker="L4 Slides 19-21 · HW3 Q7" />
+      <NotesPage toc={{ title: 'Asset Substitution', chapter: C[9] }}>
+        <TopicHeader title="Asset Substitution" kicker="L4 Slides 19-21 · HW3 Q7" />
         <Aside>
           <Memory chapter={C[9]}>Debt overhang = equity underinvests (walks away from positive NPV). Asset substitution = equity overinvests in risk (switches to negative NPV). Same root cause — equity’s option-like payoff plus debt’s fixed claim — opposite-looking symptom.</Memory>
           <Trap chapter={C[9]}>If the question gives a <strong className="trap">choice between two projects</strong> at a given debt level, it’s asset substitution. If it asks whether <strong className="trap">new money can be raised at all</strong>, it’s debt overhang. Don’t confuse the two on a quick read.</Trap>
@@ -226,8 +226,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 10 ───────────── */}
-      <NotesPage toc={{ title: '10 · Strategic Costs', chapter: C[10] }}>
-        <TopicHeader topicNumber={10} title="Strategic Costs of Financial Distress" kicker="L5 Slides 6-10 · HW3 Q8 (G&T 17.5)" />
+      <NotesPage toc={{ title: 'Strategic Costs', chapter: C[10] }}>
+        <TopicHeader title="Strategic Costs of Financial Distress" kicker="L5 Slides 6-10 · HW3 Q8 (G&T 17.5)" />
         <Aside>
           <Memory chapter={C[10]}>“It’s not just lawyers’ fees — it’s suppliers getting nervous, customers walking, and your best people updating their resumes.”</Memory>
         </Aside>
@@ -243,8 +243,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 11 ───────────── */}
-      <NotesPage toc={{ title: '11 · LBOs', chapter: C[11] }}>
-        <TopicHeader topicNumber={11} title="LBOs" kicker="L6 Slides 21-28 · HW3 Q9" />
+      <NotesPage toc={{ title: 'LBOs', chapter: C[11] }}>
+        <TopicHeader title="LBOs" kicker="L6 Slides 21-28 · HW3 Q9" />
         <Aside>
           <Callout chapter={C[11]} label="NOTES">Underwriting red flags to recognize: DSCR &lt; 1.25 and debt ratio &gt; 0.60.</Callout>
           <Memory chapter={C[11]}>Leverage amplifies outcomes, it doesn’t improve the average outcome. If a pitch is just “we used more debt so returns look bigger,” that’s the Return Leverage Fallacy, not value creation.</Memory>
@@ -268,8 +268,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 12 ───────────── */}
-      <NotesPage toc={{ title: '12 · Short-Termism', chapter: C[12] }}>
-        <TopicHeader topicNumber={12} title="Is Short-Termism Good or Bad?" kicker="L7 Slides 27-30 — conceptual, no math" />
+      <NotesPage toc={{ title: 'Short-Termism', chapter: C[12] }}>
+        <TopicHeader title="Is Short-Termism Good or Bad?" kicker="L7 Slides 27-30 — conceptual, no math" />
         <Aside>
           <Callout chapter={C[12]} label="KEY INSIGHT">Short-termism is bad when it sacrifices real long-run value for an easily-verified near-term number; it can be rational when near-term performance is a genuinely useful (if imperfect) signal of execution quality.</Callout>
         </Aside>
@@ -294,8 +294,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 13 ───────────── */}
-      <NotesPage toc={{ title: '13 · Dilution & Equity Issuances', chapter: C[13] }}>
-        <TopicHeader topicNumber={13} title="Dilution & Equity Issuances" kicker="L8 Slides 20-22, 27-28 — a named MCQ/short-answer trap" />
+      <NotesPage toc={{ title: 'Dilution & Equity Issuances', chapter: C[13] }}>
+        <TopicHeader title="Dilution & Equity Issuances" kicker="L8 Slides 20-22, 27-28 — a named MCQ/short-answer trap" />
         <Aside>
           <Memory chapter={C[13]}>Ownership dilution: you own a smaller % slice. Value dilution: your slice is worth less in dollars. A fair-priced issuance always dilutes ownership but never dilutes value.</Memory>
           <Trap chapter={C[13]}><strong className="trap">Don’t treat every new equity issuance as automatically bad</strong> for existing shareholders just because “ownership gets diluted” — only a mispriced (below-fair-value) issuance actually transfers value away from them.</Trap>
@@ -316,8 +316,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 14 ───────────── */}
-      <NotesPage toc={{ title: '14 · Lemons Problem', chapter: C[14] }}>
-        <TopicHeader topicNumber={14} title="The Lemons Problem in Equity Markets (Myers-Majluf)" kicker="L8 Slides 24-32 · HW4 — single largest chunk of HW4, likely a full numeric problem" />
+      <NotesPage toc={{ title: 'Lemons Problem', chapter: C[14] }}>
+        <TopicHeader title="The Lemons Problem in Equity Markets (Myers-Majluf)" kicker="L8 Slides 24-32 · HW4 — single largest chunk of HW4, likely a full numeric problem" />
         <Aside>
           <Memory chapter={C[14]}>Low type LOVES being pooled in (sells overvalued shares); high type HATES it (refuses to sell undervalued shares) — this asymmetric preference is exactly what makes separation possible. Debt doesn’t suffer this problem because its payoff is capped, so it’s far less sensitive to uncertainty about firm value.</Memory>
           <Trap chapter={C[14]}><strong className="trap">Don’t assume a firm always takes a positive-NPV project</strong> if it can “technically afford it” via equity — Myers-Majluf shows a firm can rationally walk away from a genuinely good project because the only financing route (underpriced equity) would cost existing shareholders more than the project is worth to them.</Trap>
@@ -335,8 +335,8 @@ export default function FinalExamReview() {
       </NotesPage>
 
       {/* ───────────── 15 ───────────── */}
-      <NotesPage toc={{ title: '15 · Convertibles', chapter: C[15] }}>
-        <TopicHeader topicNumber={15} title="Convertibles as “Backdoor Equity”" kicker="L9 Slides 34-38 — conceptual only, no math on this topic" />
+      <NotesPage toc={{ title: 'Convertibles', chapter: C[15] }}>
+        <TopicHeader title="Convertibles as “Backdoor Equity”" kicker="L9 Slides 34-38 — conceptual only, no math on this topic" />
         <Aside>
           <Callout chapter={C[15]} label="KEY INSIGHT">Convertibles are the natural “solution” to Topic 14’s lemons problem: if equity issuance is too costly (adverse selection) but pure debt doesn’t let investors share in true upside, convertibles let both sides avoid the worst of each pure instrument’s drawback.</Callout>
           <Memory chapter={C[15]}>A deferred, state-contingent equity sale: debt-like downside protection for investors, delayed-equity upside sharing once the market actually learns the firm’s true value.</Memory>

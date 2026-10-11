@@ -41,3 +41,6 @@ export function NotesPage({ toc, badge, lecture, orientation = 'portrait', colum
     </Page>
   );
 }
+
+/** Marks NotesPage as a numbered topic: NotesDocument gives it the next topic number. */
+NotesPage.numberedTopic = true;
