@@ -14,6 +14,12 @@ export interface NotesPageProps {
    */
   columns?: 1 | 2 | 3;
   /**
+   * 'margin' (default): main text column ~55% wide (≈68 characters) with callouts in the right margin via <Aside>;
+   * wide blocks (worked examples, tables, Matrix, Split) span the page. 'columns': equal columns for reference-style pages.
+   * 'single': one full-width column. Passing `columns` (2/3 → 'columns', 1 → 'single') overrides the default.
+   */
+  layout?: 'margin' | 'columns' | 'single';
+  /**
    * Dense per-topic lecture notes: TopicHeader, paragraphs, Sections, ConceptCards, WorkedExamples,
    * Callouts, tables, diagrams. Plain <p> children get the notes body style. Use <Columns> for 2-col asides.
    */
@@ -21,9 +27,9 @@ export interface NotesPageProps {
 }
 
 /** A real per-topic notes page — flows onto as many sheets as the content needs. */
-export function NotesPage({ toc, badge = 'Notes Page', orientation = 'portrait', columns = 2, children }: NotesPageProps) {
+export function NotesPage({ toc, badge = 'Notes Page', orientation = 'portrait', columns, layout, children }: NotesPageProps) {
   return (
-    <Page toc={toc} badge={badge} orientation={orientation} columns={columns} className="notes-flow">
+    <Page toc={toc} badge={badge} orientation={orientation} layout={layout ?? (columns == null ? 'margin' : columns > 1 ? 'columns' : 'single')} columns={columns ?? 2} className="notes-flow">
       {children}
     </Page>
   );

@@ -28,6 +28,7 @@ export { ComparisonTable } from './components/tables/ComparisonTable';
 export { KeyTermsTable } from './components/tables/KeyTermsTable';
 
 export { Grid, Span, Columns, Full, Stack } from './layout/Grid';
+export { Aside, Wide } from './layout/Aside';
 
 export { NotesDocument, type TocSpec } from './document/NotesDocument';
 export { Page } from './document/Page';

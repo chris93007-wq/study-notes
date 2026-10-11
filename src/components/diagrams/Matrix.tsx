@@ -17,7 +17,7 @@ export function Matrix({ rowLabels, colLabels, cells, chapter }: MatrixProps) {
   const head: CSSProperties = { background: ch(chapter, 100), color: ch(chapter, 900), fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.04em', textTransform: 'uppercase', padding: 'var(--space-3)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' };
   const cell: CSSProperties = { padding: 'var(--space-3)', fontSize: 'var(--text-sm)', color: 'var(--ink-900)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)', textAlign: 'center' };
   return (
-    <div style={wrap}>
+    <div data-wide style={wrap}>
       <div style={corner} />
       {colLabels.map((c, i) => <div key={`c${i}`} style={{ ...head, textAlign: 'center' }}>{c}</div>)}
       {rowLabels.map((r, ri) => (

@@ -78,3 +78,21 @@ h1,h2,h3,h4{break-after:avoid}
 .page[data-cols="2"] .page-body{column-count:2}
 .page[data-cols="3"] .page-body{column-count:3}
 .page[data-cols="2"] .page-body > p,.page[data-cols="3"] .page-body > p{orphans:3;widows:3}
+
+/*
+ * Margin layout (notes pages): a main column about 55% wide (≈68 characters at 11pt — inside the 50–70 measure that
+ * suits ADHD readers) with <Aside> notes floated into the right margin beside the text they annotate. Floats, unlike
+ * grid rows, split cleanly across printed sheets. Anything marked data-wide (worked examples, tables, headers,
+ * <Wide>) spans the full page and clears the margin notes above it.
+ */
+.page{--main-w:55%;--aside-w:41%}
+.page[data-orientation="landscape"]{--main-w:400px;--aside-w:min(380px, calc(100% - 440px))}
+.page[data-layout="margin"] .page-body{display:block}
+.page[data-layout="margin"] .page-body::after{content:"";display:table;clear:both}
+.page[data-layout="margin"] .page-body > *{width:var(--main-w)}
+.page[data-layout="margin"] .page-body > [data-wide]{width:auto;clear:both}
+.page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w);break-inside:avoid}
+.page[data-layout="margin"] .page-body > .aside > * + *{margin-top:var(--space-3)}
+.aside > * + *{margin-top:var(--space-3)}
+.page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--space-4)}
+.page[data-layout="margin"] .page-body > :not(p):not(.aside) + p{margin-top:var(--space-4)}

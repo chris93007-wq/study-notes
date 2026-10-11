@@ -40,7 +40,7 @@ strong.tip{color:var(--highlighter-tip-ink);font-weight:700}
 .ch-13{--c-50:var(--chapter-13-50);--c-100:var(--chapter-13-100);--c-200:var(--chapter-13-200);--c-300:var(--chapter-13-300);--c-400:var(--chapter-13-400);--c-500:var(--chapter-13-500);--c-600:var(--chapter-13-600);--c-700:var(--chapter-13-700);--c-900:var(--chapter-13-900);}
 
 /* NotesPage body copy: plain <p> children read as dense lecture-notes prose */
-.notes-flow .page-body > p{font-size:var(--text-base);line-height:var(--leading-body);margin:0 0 15px;color:var(--ink-900)}
+.notes-flow .page-body > p,.page[data-layout="margin"] .page-body > p{font-size:var(--text-base);line-height:var(--leading-body);margin:0 0 var(--para-gap);color:var(--ink-900)}
 
 /* vertical rhythm inside a Section without making it a flex/grid container (those would stop column-span:all) */
 .stack-3 > * + *{margin-top:var(--space-3)}

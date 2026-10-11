@@ -12,7 +12,7 @@ export function TopicHeader({ topicNumber, title, kicker }: TopicHeaderProps) {
   const h2: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-2xl)', color: 'var(--ink-900)', margin: 0, display: 'flex', alignItems: 'baseline', gap: 'var(--space-3)', lineHeight: 'var(--leading-tight)' };
   const kick: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--ink-500)' };
   return (
-    <div style={wrap}>
+    <div data-wide style={wrap}>
       <h2 style={h2}>{topicNumber != null && <span style={{ color: 'var(--ink-300)' }}>{String(topicNumber).padStart(2, '0')}</span>}{title}</h2>
       {kicker && <span style={kick}>{kicker}</span>}
     </div>

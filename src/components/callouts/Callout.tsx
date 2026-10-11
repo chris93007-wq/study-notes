@@ -18,7 +18,7 @@ export function Callout({ chapter, label, children }: CalloutProps) {
   const dark = ch(chapter, 900);
   const wrap: CSSProperties = { position: 'relative', background: ch(chapter, 100), border: `var(--box-border) solid ${dark}`, borderRadius: 'var(--box-radius)', padding: 'var(--box-pad)', paddingTop: 'var(--space-4)', marginTop: 10.3, breakInside: 'avoid' };
   const labelStyle: CSSProperties = { position: 'absolute', top: -9, left: 14, background: 'var(--surface-page)', padding: '0 8.8px', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', color: dark };
-  const body: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)' };
+  const body: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-prose-leading)', color: 'var(--ink-900)' };
   return (
     <div style={wrap}>
       {label && <span style={labelStyle}>{label}</span>}

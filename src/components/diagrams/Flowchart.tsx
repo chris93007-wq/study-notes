@@ -78,5 +78,5 @@ function FlowNode({ node, chapter }: { node: FlowchartNode; chapter: Chapter }) 
 
 export function Flowchart({ root, chapter }: FlowchartProps) {
   const wrap: CSSProperties = { columnSpan: 'all', display: 'flex', justifyContent: 'center', padding: 'var(--space-4) 0', breakInside: 'avoid' };
-  return <div style={wrap}><FlowNode node={root} chapter={chapter} /></div>;
+  return <div data-wide style={wrap}><FlowNode node={root} chapter={chapter} /></div>;
 }

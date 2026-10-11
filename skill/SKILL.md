@@ -36,7 +36,9 @@ cd christines-notes-work && npm install
 2. Collect what the user gave you: slides, readings, notes, topics. If the course, week, topics or wanted page types are unclear, ask first.
 3. `npm run new -- week-NN-topic "Title"` creates `notes/week-NN-topic.tsx` from the template. Replace every TODO.
    Typical packet: Cover → Contents → Topic Map → one Notes page per topic → Cheat Sheet → Formula Sheet → Practice Questions → Glossary. Optional pages: **Appendix is optional.** Only add one when there is real reference material (a big data table, a full derivation) that would clutter the topic pages. Never add an appendix, or any other page, just to fill out the packet. Cheat Sheet, Formula Sheet, Practice Questions and Glossary should likewise earn their place from the source material.
-4. Follow the rules strictly: one contrasting chapter color per topic, used everywhere that topic appears; red/green/yellow never as chapter colors; `<mark>` is the only highlight; callouts only KEY INSIGHT / NOTES / MEMORY AID; every concept has definition + formula + why; everything printable (nothing hidden); exact numbers with their formula; no emoji.
+4. Follow the rules strictly: one contrasting chapter color per topic, used everywhere that topic appears; red/green/yellow never as chapter colors; `<mark>` is the only highlight; callouts only KEY INSIGHT / NOTES / MEMORY AID / EXAM TRAP, and always inside `<Aside>` in the margin (placed just before the text they annotate), with worked examples, tables and diagrams in `<Section wide>`; every concept has definition + formula + why; everything printable (nothing hidden); exact numbers with their formula; no emoji.
+
+Layout is fixed by the rules in `AUTHORING.md`: notes pages use the margin layout (main column ≈68 characters), reference pages use 2 equal columns, the cheat sheet has at most 3 columns and a 9 pt minimum, labels are never below 9 pt, reading text has 1.5 leading and 2× paragraph spacing. Don't override these to squeeze pages.
 
 ### Charts, diagrams and images
 

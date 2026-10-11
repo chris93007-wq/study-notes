@@ -26,5 +26,5 @@ export function StepPipeline({ steps, chapter }: StepPipelineProps) {
     );
     if (i < steps.length - 1) nodes.push(<div key={`a${i}`} style={arrow}>→</div>);
   });
-  return <div style={wrap}>{nodes}</div>;
+  return <div data-wide style={wrap}>{nodes}</div>;
 }

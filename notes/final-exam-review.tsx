@@ -1,5 +1,5 @@
 import {
-  Callout, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage, Flowchart, FormulaSheetPage, Full,
+  Aside, Callout, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage, Flowchart, FormulaSheetPage, Full,
   GlossaryPage, KeyTermsTable, Matrix, NotesDocument, NotesPage, QuizPage, Section, SectionTitle, Split, Tex,
   TopicHeader, TopicMapPage, WorkedExample, type Chapter,
 } from '@notes';
@@ -12,7 +12,7 @@ const C: Record<number, Chapter> = { 1: 7, 2: 11, 3: 4, 4: 13, 5: 2, 6: 10, 7: 3
 const OVERVIEW: Chapter = 1;
 
 const Trap = ({ chapter, children }: { chapter: Chapter; children: React.ReactNode }) => (
-  <Section chapter={chapter} title="Exam Trap"><p className="prose-sm">{children}</p></Section>
+  <Callout chapter={chapter} label="EXAM TRAP">{children}</Callout>
 );
 const Memory = ({ chapter, children }: { chapter: Chapter; children: React.ReactNode }) => (
   <Callout chapter={chapter} label="MEMORY AID">{children}</Callout>
@@ -44,29 +44,29 @@ export default function FinalExamReview() {
           { title: '13–15 · Information & Signaling', chapter: 8, definition: 'Dilution, the lemons problem, convertibles as backdoor equity.', why: 'What a financing choice reveals when managers know more than the market.' },
         ]}
       >
-        <Full><SectionTitle chapter={OVERVIEW}>Exam format (per class, Oct 5–6)</SectionTitle></Full>
-        <Full>
-          <p className="prose-sm" style={{ marginBottom: 8 }}>
-            Two parts. <strong>Part 1</strong> — 7 qualitative questions (10 pts each, best 6 of 7 count, max 60 pts). <strong>Part 2</strong> — 4 numerical exercises (20 pts each, best 3 of 4 count, max 60 pts). Maximum score 120. Show your work — generous partial credit even if the final number is off. 2 hours (more time than needed).
-          </p>
-          <p className="prose-sm">
-            Formulas will be provided — the exam tests knowing <em>when and how</em> to apply them, not memorizing them from scratch. No math questions on Lecture 9 (conceptual only — see Topic 15). Posted sample questions show question type, not exact content. “Rationalize the numbers” means sanity-check/interpret the answer, not just compute it.
-          </p>
-        </Full>
-        <Callout chapter={OVERVIEW} label="KEY INSIGHT">
+        <SectionTitle chapter={OVERVIEW}>Exam format (per class, Oct 5–6)</SectionTitle>
+        <Aside>
+          <Callout chapter={OVERVIEW} label="KEY INSIGHT">
           Every topic in this packet is a variation on one question: does this change grow the total pie, or just redistribute it among claimants? M-M says capital structure alone never grows the pie. Taxes, distress costs, and information frictions are the only things that do.
-        </Callout>
-        <Callout chapter={OVERVIEW} label="NOTES">
+          </Callout>
+          <Callout chapter={OVERVIEW} label="NOTES">
           Part 1’s 7-question / best-6 structure and Part 2’s 4-exercise / best-3 structure mean you can afford to skip your weakest topic in each part — but with 15 topics compressed into 11 scored items, know enough breadth that no single topic is a total blank.
-        </Callout>
+          </Callout>
+        </Aside>
+        <p>Two parts. <strong>Part 1</strong> — 7 qualitative questions (10 pts each, best 6 of 7 count, max 60 pts). <strong>Part 2</strong> — 4 numerical exercises (20 pts each, best 3 of 4 count, max 60 pts). Maximum score 120. Show your work — generous partial credit even if the final number is off. 2 hours (more time than needed).</p>
+        <p>Formulas will be provided — the exam tests knowing <em>when and how</em> to apply them, not memorizing them from scratch. No math questions on Lecture 9 (conceptual only — see Topic 15). Posted sample questions show question type, not exact content. “Rationalize the numbers” means sanity-check/interpret the answer, not just compute it.</p>
       </TopicMapPage>
 
       {/* ───────────── 1 ───────────── */}
       <NotesPage toc={{ title: '1 · M-M, Arbitrage & Leverage', chapter: C[1] }}>
         <TopicHeader topicNumber={1} title="M-M, Arbitrage & Leverage" kicker="L1 Slides 21-23, 31 · HW1 Q1, Q6" />
+        <Aside>
+          <Memory chapter={C[1]}>“Same pie, different slices.” If you ever compute a different total firm value from two capital structures with no taxes/distress/info frictions, you made an arithmetic error, not a discovery.</Memory>
+          <Trap chapter={C[1]}>When verifying M-M Prop I across a restructuring, <strong className="trap">don’t compute firm value as just equity value</strong> — always add V(debt) + V(equity) to check the total, not just the share price.</Trap>
+        </Aside>
         <p>In a world with no taxes, no bankruptcy costs, and no information asymmetries, total firm value is independent of capital structure. If two otherwise-identical firms are priced differently once you account for leverage, an investor can combine long and short positions (“home-made leverage”) to capture a riskless arbitrage profit.</p>
         <ConceptCard chapter={C[1]} term="M-M Proposition I" definition="The total value of a firm is independent of its capital structure — debt vs. equity is just slicing the same pie differently." formulas={['V(\\text{firm}) = V(\\text{debt}) + V(\\text{equity})']} why="If two firms with identical underlying assets are priced differently once leverage is accounted for, buying the cheap one and shorting the expensive one (in matched proportions) nets a riskless profit today with zero net cash flow in every future state — competition erases that mispricing." />
-        <Section chapter={C[1]} title="Worked Example — HW1 Q1">
+        <Section wide chapter={C[1]} title="Worked Example — HW1 Q1">
           <WorkedExample
             chapter={C[1]}
             title="Arbitraging Two Identical Firms"
@@ -77,18 +77,19 @@ export default function FinalExamReview() {
             soWhat="The arbitrage only works because X and Y hold identical underlying assets — you’re exploiting a pricing error, not creating value. This is the textbook M-M Prop I proof."
           />
         </Section>
-        <Memory chapter={C[1]}>“Same pie, different slices.” If you ever compute a different total firm value from two capital structures with no taxes/distress/info frictions, you made an arithmetic error, not a discovery.</Memory>
-        <Trap chapter={C[1]}>When verifying M-M Prop I across a restructuring, <strong className="trap">don’t compute firm value as just equity value</strong> — always add V(debt) + V(equity) to check the total, not just the share price.</Trap>
       </NotesPage>
 
       {/* ───────────── 2 ───────────── */}
       <NotesPage toc={{ title: '2 · Undoing Firms’ Actions', chapter: C[2] }}>
         <TopicHeader topicNumber={2} title="Can Investors “Undo” Firms’ Financial Actions?" kicker="L1 Slides 24-25 · HW1 Sample Question" />
+        <Aside>
+          <Memory chapter={C[2]}>“If the firm won’t give you the leverage you want, borrow it yourself.” This ‘clientele doesn’t matter’ argument reinforces Topic 1 — financing mix alone can’t be a value source if investors can personally undo it.</Memory>
+        </Aside>
         <p>If a firm changes its own capital structure, any shareholder who preferred the old structure can costlessly re-create their original risk/return profile by borrowing or lending on their own account (“home-made leverage”) — provided they can borrow/lend at the same risk-free rate the firm does, with no frictions.</p>
-        <Section chapter={C[2]} title="The Two Replicating Trades">
+        <Section wide chapter={C[2]} title="The Two Replicating Trades">
           <Matrix chapter={C[2]} rowLabels={['Firm delevers', 'Firm issues new debt']} colLabels={['Investor wants old leverage back']} cells={[['Buy more shares, financed by personal borrowing'], ['Sell some shares, buy some of the new debt in the same proportion']]} />
         </Section>
-        <Section chapter={C[2]} title="Worked Example — HW1 Sample Question">
+        <Section wide chapter={C[2]} title="Worked Example — HW1 Sample Question">
           <WorkedExample
             chapter={C[2]}
             title="Replicating a Levered Payoff From an Unlevered Firm"
@@ -98,15 +99,18 @@ export default function FinalExamReview() {
             soWhat="The exam version cares about mechanics: specify shares bought/sold and the exact dollar amount borrowed or lent — not just ‘it can be replicated.’"
           />
         </Section>
-        <Memory chapter={C[2]}>“If the firm won’t give you the leverage you want, borrow it yourself.” This ‘clientele doesn’t matter’ argument reinforces Topic 1 — financing mix alone can’t be a value source if investors can personally undo it.</Memory>
       </NotesPage>
 
       {/* ───────────── 3 ───────────── */}
       <NotesPage toc={{ title: '3 · M-M and Risky Debt', chapter: C[3] }}>
         <TopicHeader topicNumber={3} title="M-M and Risky Debt" kicker="L1 Slides 24-25 · HW1 Q3, Q4" />
+        <Aside>
+          <Memory chapter={C[3]}>Always build a state-by-state table (good/bad × each claim) before computing any single number. If the three claim values don’t sum to the same total before and after, that’s an arithmetic error — M-M Prop I is your check digit.</Memory>
+          <Trap chapter={C[3]}><strong className="trap">Don’t value new senior debt at face value</strong> when the firm’s assets could fall short of even the senior claim in the worst state — always verify the worst state covers the promised payment before calling the debt riskless.</Trap>
+        </Aside>
         <p>M-M Prop I still holds even when debt is risky (can default) — total firm value is still independent of capital structure — but risky debt opens the door to wealth transfers between old debtholders, new debtholders, and equity when new claims are issued without protective covenants. The pie’s size doesn’t change; who gets which slice can.</p>
         <ConceptCard chapter={C[3]} term="Value of a Risky Claim" definition="A risky claim is worth its expected (probability-weighted) payoff across states — never its promised face value." formulas={['V(\\text{claim}) = \\sum_{\\text{states}} p(\\text{state}) \\times \\min(\\text{promised},\\ \\text{available cash after senior claims})']} why="Face value only matters in states where the firm can fully pay it; in every other state the claim gets whatever cash is left after more senior claims are satisfied." />
-        <Section chapter={C[3]} title="Worked Example — HW1 Q4">
+        <Section wide chapter={C[3]} title="Worked Example — HW1 Q4">
           <WorkedExample
             chapter={C[3]}
             title="New Senior Debt Transfers Wealth From Old Debt to Equity"
@@ -116,32 +120,38 @@ export default function FinalExamReview() {
             soWhat="No covenants = no protection. This is the textbook case for why bond covenants exist: without them, equity can enrich itself at existing bondholders’ expense by issuing new senior claims, even though total firm value never moves."
           />
         </Section>
-        <Memory chapter={C[3]}>Always build a state-by-state table (good/bad × each claim) before computing any single number. If the three claim values don’t sum to the same total before and after, that’s an arithmetic error — M-M Prop I is your check digit.</Memory>
-        <Trap chapter={C[3]}><strong className="trap">Don’t value new senior debt at face value</strong> when the firm’s assets could fall short of even the senior claim in the worst state — always verify the worst state covers the promised payment before calling the debt riskless.</Trap>
       </NotesPage>
 
       {/* ───────────── 4 ───────────── */}
       <NotesPage toc={{ title: '4 · Corporate Taxes', chapter: C[4] }}>
         <TopicHeader topicNumber={4} title="Corporate Taxes: Can Investors Undo Them?" kicker="L2 Slides 14-15 — the pivot topic" />
+        <Aside>
+          <Memory chapter={C[4]}>“You can borrow for yourself, but you can’t deduct YOUR interest against the CORPORATION’s taxes.” That’s the whole reason personal home-made leverage stops substituting for corporate leverage once corporate taxes exist.</Memory>
+        </Aside>
         <p>Once corporate taxes exist, M-M Prop I breaks: interest is tax-deductible, so debt shields income from corporate tax, and that saving is a real, permanent cash flow. Unlike the no-tax case, individual investors cannot personally undo this by borrowing on their own account — a personal loan doesn’t give the investor a corporate tax shield, only the corporation’s own interest payments are deductible against corporate income.</p>
         <ConceptCard chapter={C[4]} term="M-M With Corporate Taxes" definition="Debt adds value to the firm equal to the corporate tax rate times the amount of debt, because interest is tax-deductible every period." formulas={['V_L = V_U + T_C \\times D']} why="This is the single biggest conceptual pivot in the course: Topics 1–3 showed capital structure is irrelevant; here it starts to matter, because the ‘undo it yourself’ trade from Topic 2 stops working once the government is a stakeholder in the firm’s income." />
-        <Memory chapter={C[4]}>“You can borrow for yourself, but you can’t deduct YOUR interest against the CORPORATION’s taxes.” That’s the whole reason personal home-made leverage stops substituting for corporate leverage once corporate taxes exist.</Memory>
       </NotesPage>
 
       {/* ───────────── 5 ───────────── */}
       <NotesPage toc={{ title: '5 · Who Gets the Tax Benefit?', chapter: C[5] }}>
         <TopicHeader topicNumber={5} title="Who Gets the Tax Benefits of Debt?" kicker="L2 Slides 16-17" />
+        <Aside>
+          <Memory chapter={C[5]}>Announcement date = value date. Execution date = just paperwork (assuming no new information arrives between the two). Exam questions often separate “value right after announcement” from “value after the deal is completed” — no additional value is created at execution.</Memory>
+        </Aside>
         <p>The <Tex tex="T_C \times D = \text{tax shield}" /> is captured by whoever holds the firm’s securities at the moment the capital-structure change is announced — not necessarily management, not necessarily future shareholders. A debt-for-equity swap announcement moves the share price immediately, pricing in the full benefit before the exchange is even executed.</p>
         <ConceptCard chapter={C[5]} term="Value Impact on Announcement" definition="Firm value jumps by the tax shield on the change in debt the moment the plan is announced — not when it’s executed." formulas={['\\Delta V_{\\text{firm}} = T_C \\times \\Delta D']} why="Debt is typically repurchased or issued at fair value, so debt’s own value doesn’t move — the entire benefit hits equity value immediately on announcement." />
-        <Memory chapter={C[5]}>Announcement date = value date. Execution date = just paperwork (assuming no new information arrives between the two). Exam questions often separate “value right after announcement” from “value after the deal is completed” — no additional value is created at execution.</Memory>
       </NotesPage>
 
       {/* ───────────── 6 ───────────── */}
       <NotesPage toc={{ title: '6 · Personal Taxes (Miller)', chapter: C[6] }}>
         <TopicHeader topicNumber={6} title="Personal Taxes and Capital Structure (Miller Model)" kicker="L2 Slides 18-20 · HW2 Q2 — the most-tested formula" />
+        <Aside>
+          <Memory chapter={C[6]}>Say g out loud: “1 minus the two-tax product over the one-tax survivor.” (1−T_C)(1−T_E), all over (1−T_D).</Memory>
+          <Trap chapter={C[6]}>A REIT (T_C = 0) <strong className="trap">is not automatically g = 0</strong> — it still has personal taxes on both sides. Plug T_C = 0 into g and it collapses toward (T_D − T_E)/(1−T_D), which is near zero or slightly negative when T_E ≈ T_D, not automatically zero.</Trap>
+        </Aside>
         <p>Adding personal taxes on interest income (<Tex tex="T_D" />) and equity income (<Tex tex="T_E" />) alongside the corporate tax (<Tex tex="T_C" />) shrinks debt’s net tax advantage to a single number, <em>g</em> — which can even turn negative.</p>
         <ConceptCard chapter={C[6]} term="Miller’s g" definition="The net value a dollar of debt adds to the firm after all three taxes — corporate, personal debt, and personal equity — are netted out." formulas={['g = 1 - \\dfrac{(1-T_C)(1-T_E)}{1-T_D}', 'V_L = V_U + g \\times D']} why="If T_D is high relative to T_C and T_E (interest taxed more heavily at the personal level), g shrinks — debt’s corporate-level advantage is partly or fully offset by investors demanding higher pre-tax yields on taxable bonds." />
-        <Section chapter={C[6]} title="Worked Example — HW2 Q2">
+        <Section wide chapter={C[6]} title="Worked Example — HW2 Q2">
           <WorkedExample
             chapter={C[6]}
             title="Reducing Debt When g Is Positive"
@@ -156,19 +166,20 @@ export default function FinalExamReview() {
             soWhat="The share price before and after execution must match (only the announcement moves price) — a built-in self-check for this whole problem type."
           />
         </Section>
-        <Memory chapter={C[6]}>Say g out loud: “1 minus the two-tax product over the one-tax survivor.” (1−T_C)(1−T_E), all over (1−T_D).</Memory>
-        <Trap chapter={C[6]}>A REIT (T_C = 0) <strong className="trap">is not automatically g = 0</strong> — it still has personal taxes on both sides. Plug T_C = 0 into g and it collapses toward (T_D − T_E)/(1−T_D), which is near zero or slightly negative when T_E ≈ T_D, not automatically zero.</Trap>
       </NotesPage>
 
       {/* ───────────── 7 ───────────── */}
       <NotesPage toc={{ title: '7 · Who Bears Bankruptcy Costs?', chapter: C[7] }}>
         <TopicHeader topicNumber={7} title="Who Bears Bankruptcy Costs?" kicker="L2 Slides 31-32 · HW1 Q5, HW2 Q1" />
+        <Aside>
+          <Memory chapter={C[7]}>Bankruptcy costs shrink the pie; M-M Prop I only holds when there are NO bankruptcy costs. Once a problem has distress costs, stop expecting before/after totals to match.</Memory>
+        </Aside>
         <p>Distress costs (direct: legal/administrative fees; indirect: lost customers, distressed-sale losses, management distraction) shrink the total pie available to all claimants.</p>
         <Split
           left={{ title: 'Direct Bearer', chapter: C[7], items: ['Debtholders, in the state where default happens', 'They recover less than going-concern value', 'Observable in that state’s snapshot'] }}
           right={{ title: 'Indirect / Ex-Ante Bearer', chapter: C[7], items: ['Equityholders, before default ever happens', 'Rational bondholders price the expected distress cost in at issuance', 'Equity pays through a higher required yield on debt'] }}
         />
-        <Section chapter={C[7]} title="Worked Example — HW2 Q1">
+        <Section wide chapter={C[7]} title="Worked Example — HW2 Q1">
           <WorkedExample
             chapter={C[7]}
             title="Implied Distress Costs From Observed Market Values"
@@ -178,21 +189,24 @@ export default function FinalExamReview() {
             soWhat="Equity’s value is unchanged ($60M matches prediction exactly — it already gets $0 in recession). The entire shortfall shows up in debt’s value, because debt bears it directly in the state where it happens."
           />
         </Section>
-        <Memory chapter={C[7]}>Bankruptcy costs shrink the pie; M-M Prop I only holds when there are NO bankruptcy costs. Once a problem has distress costs, stop expecting before/after totals to match.</Memory>
       </NotesPage>
 
       {/* ───────────── 8 ───────────── */}
       <NotesPage toc={{ title: '8 · Debt Overhang', chapter: C[8] }}>
         <TopicHeader topicNumber={8} title="Debt Overhang" kicker="L4 Slides 6-17 · HW3 Q2–5 — heaviest-weighted topic" />
+        <Aside>
+          <Memory chapter={C[8]}>Checklist: (1) confirm the project’s own NPV is positive — that’s what makes the result surprising; (2) compute the max residual available to new money after existing senior claims; (3) compare to the amount needed.</Memory>
+          <Trap chapter={C[8]}><strong className="trap">Don’t assume a positive-NPV project always gets financed</strong> — debt overhang is specifically the case where it can’t, because existing senior claimholders capture part of the upside for free.</Trap>
+        </Aside>
         <p>A firm with risky debt outstanding may be unable to raise funds for a genuinely positive-NPV project, because existing debtholders capture part of the project’s upside for free — their existing claim gets safer when new money comes in — leaving too little value for new investors to recoup their investment.</p>
-        <Section chapter={C[8]} title="Maximum Raisable, by Instrument">
+        <Section wide chapter={C[8]} title="Maximum Raisable, by Instrument">
           <KeyTermsTable chapter={C[8]} terms={[
             { term: 'New equity', explanation: 'E[max(future CF − existing senior debt face, 0)]', why: 'New equity only gets the residual after existing claims are paid' },
             { term: 'New junior debt', explanation: 'Same ceiling as equity, no matter the promised face value', why: 'Junior claims sit behind existing senior debt in every state' },
             { term: 'New debt, equal seniority', explanation: 'Solve for face value F so expected pro-rata repayment (shared with old debt) equals the amount needed', why: 'Equal-rank debt shares the recovery pool with old debt in default states' },
           ]} />
         </Section>
-        <Section chapter={C[8]} title="Worked Example — HW3 Q2">
+        <Section wide chapter={C[8]} title="Worked Example — HW3 Q2">
           <WorkedExample
             chapter={C[8]}
             title="A Positive-NPV Project That Can’t Get Financed"
@@ -202,16 +216,18 @@ export default function FinalExamReview() {
             soWhat="Equity is squeezed to $0 in both states; even the OLD $70M senior debt is diluted (now recovers only an expected $50M). A genuinely positive-NPV project ($50M!) still can’t get funded through equity or junior debt at ANY terms — that’s the whole debt overhang result."
           />
         </Section>
-        <Memory chapter={C[8]}>Checklist: (1) confirm the project’s own NPV is positive — that’s what makes the result surprising; (2) compute the max residual available to new money after existing senior claims; (3) compare to the amount needed.</Memory>
-        <Trap chapter={C[8]}><strong className="trap">Don’t assume a positive-NPV project always gets financed</strong> — debt overhang is specifically the case where it can’t, because existing senior claimholders capture part of the upside for free.</Trap>
       </NotesPage>
 
       {/* ───────────── 9 ───────────── */}
       <NotesPage toc={{ title: '9 · Asset Substitution', chapter: C[9] }}>
         <TopicHeader topicNumber={9} title="Asset Substitution" kicker="L4 Slides 19-21 · HW3 Q7" />
+        <Aside>
+          <Memory chapter={C[9]}>Debt overhang = equity underinvests (walks away from positive NPV). Asset substitution = equity overinvests in risk (switches to negative NPV). Same root cause — equity’s option-like payoff plus debt’s fixed claim — opposite-looking symptom.</Memory>
+          <Trap chapter={C[9]}>If the question gives a <strong className="trap">choice between two projects</strong> at a given debt level, it’s asset substitution. If it asks whether <strong className="trap">new money can be raised at all</strong>, it’s debt overhang. Don’t confuse the two on a quick read.</Trap>
+        </Aside>
         <p>Once debt is in place, equityholders — who keep all the upside above the debt’s face value but are protected by limited liability on the downside — have an incentive to switch to a riskier project even if it has lower (or negative) expected value, because the extra variance benefits the option-like equity claim at debtholders’ expense.</p>
         <ConceptCard chapter={C[9]} term="Equity’s Project Choice Under Debt" definition="Equity picks whichever project maximizes its own residual, not whichever maximizes total firm value." formulas={['\\max_{\\text{project}}\\ \\mathbb{E}[\\max(CF - F,\\ 0)]']} why="If the riskier project wins on this metric even with lower/negative NPV, rational lenders anticipate the switch and price debt (or ration credit) accordingly — which can prevent even a genuinely good, safer project from being financed." />
-        <Section chapter={C[9]} title="Worked Example — HW3 Q3C">
+        <Section wide chapter={C[9]} title="Worked Example — HW3 Q3C">
           <WorkedExample
             chapter={C[9]}
             title="Risk-Shifting Poisons Financing for the Good Project Too"
@@ -221,15 +237,16 @@ export default function FinalExamReview() {
             soWhat="Anticipated asset substitution poisons financing even for the genuinely good project. Compute equity’s payoff under each project at the proposed face value — don’t just compare the two projects’ raw NPVs."
           />
         </Section>
-        <Memory chapter={C[9]}>Debt overhang = equity underinvests (walks away from positive NPV). Asset substitution = equity overinvests in risk (switches to negative NPV). Same root cause — equity’s option-like payoff plus debt’s fixed claim — opposite-looking symptom.</Memory>
-        <Trap chapter={C[9]}>If the question gives a <strong className="trap">choice between two projects</strong> at a given debt level, it’s asset substitution. If it asks whether <strong className="trap">new money can be raised at all</strong>, it’s debt overhang. Don’t confuse the two on a quick read.</Trap>
       </NotesPage>
 
       {/* ───────────── 10 ───────────── */}
       <NotesPage toc={{ title: '10 · Strategic Costs', chapter: C[10] }}>
         <TopicHeader topicNumber={10} title="Strategic Costs of Financial Distress" kicker="L5 Slides 6-10 · HW3 Q8 (G&T 17.5)" />
+        <Aside>
+          <Memory chapter={C[10]}>“It’s not just lawyers’ fees — it’s suppliers getting nervous, customers walking, and your best people updating their resumes.”</Memory>
+        </Aside>
         <p>Beyond direct legal/administrative bankruptcy costs, financial distress imposes strategic/indirect costs through relationships with non-financial stakeholders: suppliers tighten credit terms, customers avoid a firm that might not honor warranties, key employees leave, competitors prey on a weakened rival. These costs can be large even without an actual filing — simply from the increased risk of distress.</p>
-        <Section chapter={C[10]} title="Worked Example — HW3 Q8 / G&T 17.5">
+        <Section wide chapter={C[10]} title="Worked Example — HW3 Q8 / G&T 17.5">
           <WorkedExample
             chapter={C[10]}
             title="Weighing a Tax Shield Against a Relationship Cost"
@@ -239,14 +256,18 @@ export default function FinalExamReview() {
             soWhat="A complete capital-structure analysis weighs the tax benefit against ALL costs of leverage — the $30M strategic cost may even understate the true relationship risk, since it’s harder to quantify precisely than the tax savings."
           />
         </Section>
-        <Memory chapter={C[10]}>“It’s not just lawyers’ fees — it’s suppliers getting nervous, customers walking, and your best people updating their resumes.”</Memory>
       </NotesPage>
 
       {/* ───────────── 11 ───────────── */}
       <NotesPage toc={{ title: '11 · LBOs', chapter: C[11] }}>
         <TopicHeader topicNumber={11} title="LBOs" kicker="L6 Slides 21-28 · HW3 Q9" />
+        <Aside>
+          <Callout chapter={C[11]} label="NOTES">Underwriting red flags to recognize: DSCR &lt; 1.25 and debt ratio &gt; 0.60.</Callout>
+          <Memory chapter={C[11]}>Leverage amplifies outcomes, it doesn’t improve the average outcome. If a pitch is just “we used more debt so returns look bigger,” that’s the Return Leverage Fallacy, not value creation.</Memory>
+          <Trap chapter={C[11]}><strong className="trap">Don’t treat a high IRR achieved mostly through leverage as proof of skill</strong> — always ask whether EV grew through one of the 4 real sources or just the mechanical leverage-amplification fallacy.</Trap>
+        </Aside>
         <p>A leveraged buyout acquires a company using a large proportion of debt relative to the sponsor’s equity check. Genuine LBO value creation comes from four real sources — not from two popular fallacies that merely redistribute risk/return without creating value.</p>
-        <Section chapter={C[11]} title="Real Value Sources">
+        <Section wide chapter={C[11]} title="Real Value Sources">
           <KeyTermsTable chapter={C[11]} terms={[
             { term: 'Governance engineering', explanation: 'Concentrated ownership, management equity stakes', why: 'Sharper incentives than diffuse public ownership' },
             { term: 'Operational engineering', explanation: 'Cost cuts, efficiency improvements', why: 'Real cash-flow gains, not financial engineering' },
@@ -254,22 +275,22 @@ export default function FinalExamReview() {
             { term: 'Deal-making / timing', explanation: 'Buying and selling at the right market moments', why: 'Skill in identifying mispriced opportunities' },
           ]} />
         </Section>
-        <Section chapter={C[11]} title="Fallacies — No Real Value">
+        <Section wide chapter={C[11]} title="Fallacies — No Real Value">
           <KeyTermsTable chapter={C[11]} terms={[
             { term: 'Return Leverage Fallacy', explanation: 'Leverage mechanically amplifies gains AND losses', why: 'A $100M asset at +50%/−10% unlevered becomes +90%/−30% at 50% debt — net value created = $0' },
             { term: 'Multiple Expansion Fallacy', explanation: 'Assuming exit at a higher multiple than entry, with no operational change to justify it', why: 'Multiples can mean-revert — this is a bet, not value creation' },
           ]} />
         </Section>
-        <Callout chapter={C[11]} label="NOTES">Underwriting red flags to recognize: DSCR &lt; 1.25 and debt ratio &gt; 0.60.</Callout>
-        <Memory chapter={C[11]}>Leverage amplifies outcomes, it doesn’t improve the average outcome. If a pitch is just “we used more debt so returns look bigger,” that’s the Return Leverage Fallacy, not value creation.</Memory>
-        <Trap chapter={C[11]}><strong className="trap">Don’t treat a high IRR achieved mostly through leverage as proof of skill</strong> — always ask whether EV grew through one of the 4 real sources or just the mechanical leverage-amplification fallacy.</Trap>
       </NotesPage>
 
       {/* ───────────── 12 ───────────── */}
       <NotesPage toc={{ title: '12 · Short-Termism', chapter: C[12] }}>
         <TopicHeader topicNumber={12} title="Is Short-Termism Good or Bad?" kicker="L7 Slides 27-30 — conceptual, no math" />
+        <Aside>
+          <Callout chapter={C[12]} label="KEY INSIGHT">Short-termism is bad when it sacrifices real long-run value for an easily-verified near-term number; it can be rational when near-term performance is a genuinely useful (if imperfect) signal of execution quality.</Callout>
+        </Aside>
         <p>Managers (or the market) over-weight near-term earnings/cash flows relative to longer-term value, sometimes rejecting projects with a worse near-term profile but a much better long-term payoff. Whether this is “bad” depends on why it happens.</p>
-        <Section chapter={C[12]} title="Project A vs. Project B (class example)">
+        <Section wide chapter={C[12]} title="Project A vs. Project B (class example)">
           <Flowchart chapter={C[12]} root={{
             label: 'Can the market eventually verify true long-run value?', shape: 'diamond',
             children: [
@@ -278,7 +299,6 @@ export default function FinalExamReview() {
             ],
           }} />
         </Section>
-        <Callout chapter={C[12]} label="KEY INSIGHT">Short-termism is bad when it sacrifices real long-run value for an easily-verified near-term number; it can be rational when near-term performance is a genuinely useful (if imperfect) signal of execution quality.</Callout>
         <Section chapter={C[12]} title="Exam Approach">
           <p className="prose-sm">Usually tested as a conceptual short-answer (“is short-termism good or bad, explain”) rather than a numeric problem — be ready to argue both directions and identify the condition (<strong>verifiability of long-run value</strong>) that decides which way it goes.</p>
         </Section>
@@ -287,11 +307,15 @@ export default function FinalExamReview() {
       {/* ───────────── 13 ───────────── */}
       <NotesPage toc={{ title: '13 · Dilution & Equity Issuances', chapter: C[13] }}>
         <TopicHeader topicNumber={13} title="Dilution & Equity Issuances" kicker="L8 Slides 20-22, 27-28 — a named MCQ/short-answer trap" />
+        <Aside>
+          <Memory chapter={C[13]}>Ownership dilution: you own a smaller % slice. Value dilution: your slice is worth less in dollars. A fair-priced issuance always dilutes ownership but never dilutes value.</Memory>
+          <Trap chapter={C[13]}><strong className="trap">Don’t treat every new equity issuance as automatically bad</strong> for existing shareholders just because “ownership gets diluted” — only a mispriced (below-fair-value) issuance actually transfers value away from them.</Trap>
+        </Aside>
         <p>Ownership dilution (your % stake falls) is not the same as value dilution (your $ stake falls). Issuing new equity at a fair price dilutes ownership % but does not destroy value for existing shareholders.</p>
-        <Section chapter={C[13]} title="Direction of the Wealth Transfer">
+        <Section wide chapter={C[13]} title="Direction of the Wealth Transfer">
           <Matrix chapter={C[13]} rowLabels={['Issue price = true value', 'Issue price > true value', 'Issue price < true value']} colLabels={['Existing shareholders’ $ value']} cells={[['Unchanged — ownership % falls, $ value doesn’t'], ['Gain — new buyers overpay'], ['Lose — new buyers get a bargain (what asymmetric info makes more likely)']]} />
         </Section>
-        <Section chapter={C[13]} title="Worked Example — HW4 Q5A">
+        <Section wide chapter={C[13]} title="Worked Example — HW4 Q5A">
           <WorkedExample
             chapter={C[13]}
             title="A Repurchase at the Wrong Price Transfers Wealth"
@@ -301,15 +325,17 @@ export default function FinalExamReview() {
             soWhat="Mirror-image logic applies to new issuance (HW4 Q5b): issuing ABOVE true value benefits existing holders; issuing BELOW true value costs them. The transfer always runs toward whichever side got the better price relative to true value."
           />
         </Section>
-        <Memory chapter={C[13]}>Ownership dilution: you own a smaller % slice. Value dilution: your slice is worth less in dollars. A fair-priced issuance always dilutes ownership but never dilutes value.</Memory>
-        <Trap chapter={C[13]}><strong className="trap">Don’t treat every new equity issuance as automatically bad</strong> for existing shareholders just because “ownership gets diluted” — only a mispriced (below-fair-value) issuance actually transfers value away from them.</Trap>
       </NotesPage>
 
       {/* ───────────── 14 ───────────── */}
       <NotesPage toc={{ title: '14 · Lemons Problem', chapter: C[14] }}>
         <TopicHeader topicNumber={14} title="The Lemons Problem in Equity Markets (Myers-Majluf)" kicker="L8 Slides 24-32 · HW4 — single largest chunk of HW4, likely a full numeric problem" />
+        <Aside>
+          <Memory chapter={C[14]}>Low type LOVES being pooled in (sells overvalued shares); high type HATES it (refuses to sell undervalued shares) — this asymmetric preference is exactly what makes separation possible. Debt doesn’t suffer this problem because its payoff is capped, so it’s far less sensitive to uncertainty about firm value.</Memory>
+          <Trap chapter={C[14]}><strong className="trap">Don’t assume a firm always takes a positive-NPV project</strong> if it can “technically afford it” via equity — Myers-Majluf shows a firm can rationally walk away from a genuinely good project because the only financing route (underpriced equity) would cost existing shareholders more than the project is worth to them.</Trap>
+        </Aside>
         <p>When managers know more about firm value than outside investors, the market can’t tell a high-value firm’s equity issuance apart from a low-value firm’s, and prices any issuance at a pooled (average) value. A high-value firm that issues at this pooled price gives away too much to new investors, so it may rationally refuse to issue even to fund a genuinely positive-NPV project — the underinvestment / lemons result. This underlies the pecking order: retained earnings first, then debt, equity only as a last resort.</p>
-        <Section chapter={C[14]} title="Worked Example — HW4 Q3">
+        <Section wide chapter={C[14]} title="Worked Example — HW4 Q3">
           <WorkedExample
             chapter={C[14]}
             title="A Separating Equilibrium: Low Type Issues Equity, High Type Issues Debt"
@@ -320,17 +346,17 @@ export default function FinalExamReview() {
             soWhat="This exactly matches the market’s assumption that equity issuers are the low type. If the market instead prices equity at the pooled average (HW4 Q3b), both types prefer equity and the separating equilibrium collapses into a pooling equilibrium — know both versions."
           />
         </Section>
-        <Memory chapter={C[14]}>Low type LOVES being pooled in (sells overvalued shares); high type HATES it (refuses to sell undervalued shares) — this asymmetric preference is exactly what makes separation possible. Debt doesn’t suffer this problem because its payoff is capped, so it’s far less sensitive to uncertainty about firm value.</Memory>
-        <Trap chapter={C[14]}><strong className="trap">Don’t assume a firm always takes a positive-NPV project</strong> if it can “technically afford it” via equity — Myers-Majluf shows a firm can rationally walk away from a genuinely good project because the only financing route (underpriced equity) would cost existing shareholders more than the project is worth to them.</Trap>
       </NotesPage>
 
       {/* ───────────── 15 ───────────── */}
       <NotesPage toc={{ title: '15 · Convertibles', chapter: C[15] }}>
         <TopicHeader topicNumber={15} title="Convertibles as “Backdoor Equity”" kicker="L9 Slides 34-38 — conceptual only, no math on this topic" />
+        <Aside>
+          <Callout chapter={C[15]} label="KEY INSIGHT">Convertibles are the natural “solution” to Topic 14’s lemons problem: if equity issuance is too costly (adverse selection) but pure debt doesn’t let investors share in true upside, convertibles let both sides avoid the worst of each pure instrument’s drawback.</Callout>
+          <Memory chapter={C[15]}>A deferred, state-contingent equity sale: debt-like downside protection for investors, delayed-equity upside sharing once the market actually learns the firm’s true value.</Memory>
+        </Aside>
         <p>A convertible bond lets the holder convert debt into a fixed number of equity shares, typically when the stock price rises enough. Because conversion only happens in good states, convertibles let a firm effectively issue equity on a delayed, state-contingent basis — raising capital now while deferring the equity dilution (and its adverse-selection discount, see Topic 14) until the firm’s true value is more apparent to the market.</p>
         <ConceptCard chapter={C[15]} term="Convertible Payoff" definition="A convertible behaves like straight debt in bad states and like equity in good states." formulas={['\\text{Payoff} = \\max(\\text{promised debt payment},\\ \\text{value of shares upon conversion})']} why="In bad states it protects the under-informed investor from a lemons-style loss, exactly like straight debt. In good states it shares in the upside once uncertainty resolves favorably, exactly like equity." />
-        <Callout chapter={C[15]} label="KEY INSIGHT">Convertibles are the natural “solution” to Topic 14’s lemons problem: if equity issuance is too costly (adverse selection) but pure debt doesn’t let investors share in true upside, convertibles let both sides avoid the worst of each pure instrument’s drawback.</Callout>
-        <Memory chapter={C[15]}>A deferred, state-contingent equity sale: debt-like downside protection for investors, delayed-equity upside sharing once the market actually learns the firm’s true value.</Memory>
       </NotesPage>
 
       {/* ───────────── Review pages ───────────── */}

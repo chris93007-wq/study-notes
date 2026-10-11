@@ -45,17 +45,21 @@ These are the design decisions settled in the design sessions. Keep to them.
 - Spacing tokens (`--space-1` … `--space-10`: 3.3 · 6.9 · 10.3 · 13.8 · 17.3 · 20.9 · 27.5 · 34.1 · 41.8 · 55 px) were scaled with the type. Use the tokens, not hard-coded gaps.
 
 **Type size**
-- Body text is **11 pt**. The whole scale is in `src/styles/tokens/typography.css` (xs 8.8pt · sm 9.9pt · base 11pt · lg 13.2pt · xl 16.5pt · 2xl 22pt · 3xl 28.6pt). Use these tokens rather than hard-coded sizes, so changing the scale changes everything together.
+- Body text is **11 pt**. The whole scale is in `src/styles/tokens/typography.css` (xs 9pt · sm 9.9pt · base 11pt · lg 13.2pt · xl 16.5pt · 2xl 22pt · 3xl 28.6pt). Use these tokens rather than hard-coded sizes, so changing the scale changes everything together.
 
-**Textbook layout rules** (from the print-textbook conventions Christine supplied):
-- **Grid:** notes pages use a 2-column grid (`<NotesPage columns={2}>`, the default). A half-width column at 11 pt is about 50 characters, inside the 50–75 character measure. Headings, tables, diagrams and worked examples span both columns; callouts and concept cards flow in one. Use `columns={1}` only when a page arranges its own side-by-side blocks with `<Columns>`.
-- **Leading:** font size plus 2–3 pt (about 1.3–1.35): body 1.35, boxed text 1.3.
-- **Hierarchy:** title 28.6 pt → section/topic 22 pt → subsection 13–16.5 pt → body 11 pt → captions and notes 8.8–9.9 pt. One serif display face for titles, one sans face for text; hierarchy comes from size and weight, not more fonts.
-- **Space inside boxes:** don't stack labelled parts in one tall column. Cards put Definition beside Formula, and Setup beside the data table, with the work beside the answer and the so-what.
+**Reading layout** (ADHD-friendly, textbook-informed; settled with Christine):
+- **Measure:** reading text is 50–70 characters per line. Notes pages use the **margin layout** (the `NotesPage` default): a main column about 55% wide (≈68 characters at 11 pt) and a margin about 41% wide. Reference pages (`QuizPage`, `GlossaryPage`, or `<NotesPage layout="columns">`) use 2 equal columns (≈60 characters). Use `layout="single"` only for exceptions.
+- **Callouts live in the margin.** All four kinds (Key Insight, Notes, Memory Aid, Exam Trap) go inside `<Aside>`, placed just *before* the paragraph, card or section they annotate, so the main column stays continuous prose. Several callouts in one `<Aside>` stack.
+- **Wide blocks span the page:** worked examples, tables, Matrix, Split, headers and any `<Section wide>` / `<Wide>`. They clear the margin notes above them, so put the `<Aside>` above the text it belongs with, not above a wide block.
+- **Leading:** 1.5 for reading text (prose, definition and why text in cards, callouts); 1.35 for compact items (table cells, formula rows, steps, glossary entries, cheat-sheet bullets); headings 1.2.
+- **Paragraph spacing:** a full 2× the font size (`--para-gap`, 22 pt) between paragraphs of running prose. Bullets, table cells and glossary entries stay tight.
+- **Labels:** small uppercase labels are never smaller than 9 pt (`--text-xs`).
+- **Cheat sheet:** at most 3 columns, with a vertical rule between them; type stays ≥ 9 pt; a long one continues on a second sheet.
+- **Hierarchy:** title 28.6 pt → section/topic 22 pt → subsection 13–16.5 pt → body 11 pt → captions and notes 9–9.9 pt. One serif display face for titles, one sans face for text; hierarchy comes from size and weight, not more fonts.
+- **Space inside boxes:** don't stack labelled parts in one tall column where there is room. Worked examples put Setup beside the data table and the work beside the answer and the so-what.
 
 **Boxed content (Concept cards, Worked examples, Callouts) is set "one step down" from the body**, the way textbooks set
-sidebars and boxed examples, so a box reads as an aside and several fit on a page. With body size B (11 pt): text 0.9 B,
-labels 0.8 B, box title 1.2 B, leading 1.5 (body 1.65), padding about 1 em of the box's own text, gaps about 0.75 em,
+sidebars and boxed examples. With body size B (11 pt): text 0.9 B, labels 9 pt (floor), box title 1.2 B, leading 1.5 for reading text and 1.35 for compact items, padding about 1 em of the box's own text, gaps about 0.75 em,
 and one ring only (1.5 px border plus a 4 px accent on top; inner tinted boxes get a 1 px hairline). All of it is in
 `src/styles/tokens/box.css` as `--box-*` tokens. Tune the values there, never inside a component.
 
@@ -68,8 +72,8 @@ and one ring only (1.5 px border plus a 4 px accent on top; inner tinted boxes g
   Text badges are the system's only "icons". No emoji, no drawn icons.
 
 **Callouts**
-- There are only three: `KEY INSIGHT`, `NOTES` and `MEMORY AID`. Everything else, such as a common mistake, an
-  exam note or a worked example, is a regular `<Section>` or a dedicated component.
+- There are four: `KEY INSIGHT`, `NOTES`, `MEMORY AID` and `EXAM TRAP`. All four go in the margin (`<Aside>`). A worked example or other
+  content is a regular `<Section>` or a dedicated component.
 
 **Pages**
 - US Letter with 0.5in margins on every page. Content flows onto extra sheets automatically, and each
@@ -78,8 +82,7 @@ and one ring only (1.5 px border plus a 4 px accent on top; inner tinted boxes g
   Every other content page gets a `PageBadge` and the footer (breadcrumb + `page / total`).
 - Everything must be printable. Nothing hidden, collapsed or tooltip-only. Quiz answers are printed under each
   question.
-- Use space-saving layouts: 2 columns (`<Columns>`) for short paired blocks in portrait, and landscape
-  with 3–4 columns for dense reference pages. The Cheat Sheet picks its own orientation: portrait when it's small, landscape when it's big.
+- Use the layouts above (margin for notes, 2 equal columns for reference pages). Never run text full-width across a portrait page (≈125 characters is too long to track).
 
 **Concepts**
 - Every concept gets a plain-language definition, the formula (KaTeX in `ConceptCard`, *in words* in
@@ -94,10 +97,10 @@ Not every packet needs every page. The Appendix in particular is optional: add o
 | `CoverPage` | portrait | — | — | title/eyebrow from `meta`; `dots` = topic chapters |
 | `ContentsPage` | portrait | Contents | — | built from every page's `toc`; page numbers filled by `npm run pdf` |
 | `TopicMapPage` | portrait | ChapterHeader | ✓ | flashcard per topic + 2-col intro (`<Full>` spans both columns) |
-| `NotesPage` | portrait* | Notes Page | ✓ | free content; plain `<p>` gets notes body style |
-| `CheatSheetPage` | auto: portrait if small, landscape if dense | Cheat Sheet | ✓ | one column per topic: bullets + formula in words. Portrait = 2 columns, regular type; landscape (>4 topics or >16 bullets) = 4 columns, ultra-dense. Override with `orientation` / `perRow` |
+| `NotesPage` | portrait* | Notes Page | ✓ | margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style; callouts in `<Aside>` |
+| `CheatSheetPage` | portrait | Cheat Sheet | ✓ | one column per topic: bullets + formula in words. At most 3 columns with dividers, ≥ 9 pt, may run to two sheets |
 | `FormulaSheetPage` | portrait | Formula Sheet | ✓ | Concept / Decomposition / KaTeX formula, chapter bands |
-| `QuizPage` | portrait | — | — | one chapter color; light-green answer strip |
+| `QuizPage` | portrait | — | — | 2 equal columns; one chapter color; light-green answer strip |
 | `AppendixPage` | landscape* | Appendix | ✓ | **Optional.** Only for real reference material that would clutter the topic pages (big data tables, derivations). label badge, TopicHeader, intro, then a wide table |
 | `GlossaryPage` | portrait | Glossary | ✓ | auto-sorted 2-column dictionary |
 | `Page` | either | optional | optional | build any custom page |
@@ -110,7 +113,7 @@ Any template takes `toc={{ title, chapter }}` to appear on the Contents page.
 
 | Component | Use |
 |---|---|
-| `Callout` | Key Insight / Notes / Memory Aid box; label sits in the border notch |
+| `Callout` | Key Insight / Notes / Memory Aid / Exam Trap box; label sits in the border notch |
 | `ConceptCard` | definition + KaTeX formulas + optional `breakdown` tree + why |
 | `WorkedExample` | setup (+ `context` figure), data table, show-the-work steps, highlighted answer, so-what |
 | `FlashCard`, `FlashcardGrid` | mini definition / formula in words / why |
@@ -129,6 +132,7 @@ Any template takes `toc={{ title, chapter }}` to appear on the Contents page.
 | `ScatterPlot` | labeled points, optional dashed quadrant lines (importance vs. performance, perceptual maps) |
 | `Mermaid` | auto-laid-out diagrams from text: flowcharts that merge/loop, sequence, state, Gantt, ER, mind maps; themed to the chapter |
 | `Tex` | inline KaTeX anywhere |
+| `Aside`, `Wide` | margin note (callouts) / full-width block on a margin-layout page |
 | `Grid` / `Span`, `Columns`, `Full`, `Stack` | 12-column layout, N columns, full-width row, vertical stack |
 
 Prop types are in each component's source file (`src/components/**`), with JSDoc on every prop.

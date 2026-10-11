@@ -30,7 +30,7 @@ function Side({ side }: { side: SplitSide }) {
 export function Split({ left, right }: SplitProps) {
   const wrap: CSSProperties = { columnSpan: 'all', display: 'grid', gridTemplateColumns: '1fr 2px 1fr', gap: 'var(--space-6)', alignItems: 'start', breakInside: 'avoid' };
   return (
-    <div style={wrap}>
+    <div data-wide style={wrap}>
       <Side side={left} />
       <div style={{ background: 'var(--line)', alignSelf: 'stretch' }} />
       <Side side={right} />

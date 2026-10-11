@@ -1,6 +1,6 @@
 import {
-  Callout, CheatSheetPage, ConceptCard, ContentsPage, CoverPage, FormulaSheetPage, GlossaryPage, NotesDocument,
-  NotesPage, QuizPage, Section, SectionTitle, Stack, Full, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
+  Aside, Callout, CheatSheetPage, ConceptCard, ContentsPage, CoverPage, FormulaSheetPage, GlossaryPage, NotesDocument,
+  NotesPage, QuizPage, Section, SectionTitle, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
 } from '@notes';
 
 /**
@@ -35,21 +35,23 @@ export default function Notes() {
           { title: 'Topic B', chapter: C.topicB, definition: 'TODO plain-language definition.', why: 'TODO the why.' },
         ]}
       >
-        <Full><SectionTitle chapter={C.overview}>Introduction</SectionTitle></Full>
-        <p className="prose">TODO intro paragraph. <mark>The one sentence to remember.</mark></p>
-        <Stack>
-          <Callout chapter={C.overview} label="KEY INSIGHT">TODO</Callout>
-        </Stack>
+        <SectionTitle chapter={C.overview}>Introduction</SectionTitle>
+        <Aside><Callout chapter={C.overview} label="KEY INSIGHT">TODO</Callout></Aside>
+        <p>TODO intro paragraph. <mark>The one sentence to remember.</mark></p>
       </TopicMapPage>
 
       <NotesPage toc={{ title: 'Topic A', chapter: C.topicA }}>
         <TopicHeader topicNumber={2} title="Topic A" kicker="TODO what this page covers" />
+        {/* Callouts go in the margin: an <Aside> just before the text it annotates. */}
+        <Aside>
+          <Callout chapter={C.topicA} label="MEMORY AID">TODO</Callout>
+          <Callout chapter={C.topicA} label="EXAM TRAP">TODO</Callout>
+        </Aside>
         <p>TODO dense notes paragraph.</p>
         <ConceptCard chapter={C.topicA} term="TODO term" definition="TODO" formulas={['a = \\dfrac{b}{c}']} why="TODO" />
-        <Section chapter={C.topicA} title="Worked Example">
+        <Section wide chapter={C.topicA} title="Worked Example">
           <WorkedExample chapter={C.topicA} title="TODO" setup="TODO" steps={[{ label: 'TODO', lines: ['TODO'] }]} answer={{ value: 'TODO', label: 'TODO' }} soWhat="TODO" />
         </Section>
-        <Callout chapter={C.topicA} label="MEMORY AID">TODO</Callout>
       </NotesPage>
 
       <NotesPage toc={{ title: 'Topic B', chapter: C.topicB }}>

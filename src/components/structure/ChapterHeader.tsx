@@ -29,7 +29,7 @@ export function ChapterHeader({ week, chapterNumber, chapter = 'Chapter 1', eyeb
   const topicRow: CSSProperties = { display: 'flex', alignItems: 'baseline', gap: 'var(--space-3)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--ink-900)' };
   const topicNum: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-sm)', minWidth: 22 };
   return (
-    <div style={wrap}>
+    <div data-wide style={wrap}>
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10.3 }}>
         {week && <span style={badge}>{week}</span>}
         <span style={mono}>{chapter}</span>

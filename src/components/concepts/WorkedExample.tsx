@@ -39,7 +39,7 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
   const badge: CSSProperties = { display: 'inline-flex', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-pill)' };
   const titleStyle: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-title)', color: 'var(--ink-900)', margin: 0, lineHeight: 'var(--leading-tight)' };
   const row: CSSProperties = { display: 'grid', gridTemplateColumns: GRID, gap: 'var(--box-gap) var(--space-5)', alignItems: 'start' };
-  const setupStyle: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', margin: 0 };
+  const setupStyle: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-prose-leading)', color: 'var(--ink-900)', margin: 0 };
   const tableWrap: CSSProperties = { border: '1px solid var(--line)', borderRadius: 'var(--box-inner-radius)', overflow: 'hidden', breakInside: 'avoid' };
   const tableEl: CSSProperties = { width: '100%', borderCollapse: 'collapse' };
   const th: CSSProperties = { padding: 'var(--space-1) var(--space-3)', background: ch(chapter, 100), color: ink, fontFamily: 'var(--font-display)', fontSize: 'var(--box-label)', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 };
@@ -52,7 +52,7 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
   const answerBox: CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 2, padding: 'var(--space-3)', borderRadius: 'var(--box-inner-radius)', background: ink, color: '#fff', breakInside: 'avoid' };
   const answerValue: CSSProperties = { fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--text-xl)', lineHeight: 1.2 };
   const answerLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', opacity: 0.85 };
-  const soWhatBox: CSSProperties = { borderLeft: `3px solid ${accent}`, paddingLeft: 'var(--space-3)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', breakInside: 'avoid' };
+  const soWhatBox: CSSProperties = { borderLeft: `3px solid ${accent}`, paddingLeft: 'var(--space-3)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-prose-leading)', color: 'var(--ink-900)', breakInside: 'avoid' };
 
   const setupBlock = (setup || context) && (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', minWidth: 0 }}>
@@ -86,7 +86,7 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
   );
 
   return (
-    <div style={card}>
+    <div data-wide style={{ ...card, breakInside: 'avoid' }}>
       <div style={wrap}>
         <div style={head}><span style={badge}>Worked Example</span><h3 style={titleStyle}>{title}</h3></div>
         {/* setup beside the data table; the work beside the answer and the so-what */}

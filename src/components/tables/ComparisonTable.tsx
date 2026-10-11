@@ -18,7 +18,7 @@ export function ComparisonTable({ columns, rows, chapter, dense = false }: Compa
   const td: CSSProperties = { padding: dense ? 'var(--space-1) var(--space-4)' : 'var(--space-3) var(--space-4)', fontSize: 'var(--text-sm)', lineHeight: 'var(--leading-body)', color: 'var(--ink-900)', borderTop: '1px solid var(--border-default)', borderRight: '1px solid var(--border-default)' };
   const trAlt: CSSProperties = { background: `color-mix(in srgb, ${ch(chapter, 100)} 45%, var(--surface-card))` };
   return (
-    <div style={wrap}>
+    <div data-wide style={wrap}>
       <table style={table}>
         <thead><tr>{columns.map((c, i) => <th key={i} style={{ ...th, textAlign: c.align ?? 'left', width: c.width }}>{c.label}</th>)}</tr></thead>
         <tbody>

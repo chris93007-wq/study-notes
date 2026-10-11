@@ -16,7 +16,7 @@ export function KeyTermsTable({ terms, chapter }: KeyTermsTableProps) {
   const trAlt: CSSProperties = { background: `color-mix(in srgb, ${ch(chapter, 100)} 45%, var(--surface-card))` };
   const hasExamples = terms.some((t) => t.example);
   return (
-    <div style={wrap}>
+    <div data-wide style={wrap}>
       <table style={table}>
         <thead><tr>
           <th style={{ ...th, width: '20%' }}>Term</th>

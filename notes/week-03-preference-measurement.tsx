@@ -1,6 +1,6 @@
 import {
-  Callout, Chain, CheatSheetPage, Columns, ComparisonTable, ConceptCard, ContentsPage, CoverPage,
-  FormulaSheetPage, Flowchart, Full, GlossaryPage, Image, KeyTermsTable, Matrix, NotesDocument, NotesPage, QuizPage,
+  Aside, Callout, Chain, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage,
+  FormulaSheetPage, Flowchart, GlossaryPage, Image, KeyTermsTable, Matrix, NotesDocument, NotesPage, QuizPage,
   Section, SectionTitle, Split, Stack, StepPipeline, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
 } from '@notes';
 
@@ -42,6 +42,7 @@ export default function Week03() {
       {/* ───────────── Topic Map ───────────── */}
       <TopicMapPage
         toc={{ title: 'Topic Map (Overview)', chapter: C.overview }}
+        cardColumns={4}
         subtitle="Measuring & quantifying consumer preferences · Conjoint = Consider + Jointly"
         cards={[
           { title: 'MaxDiff', chapter: C.maxdiff, definition: 'Repeatedly pick the Most and Least important item from a small set.', formula: 'Net score = Most% − Least%, over every appearance.', why: 'Forces a real trade-off instead of a rating everyone inflates.' },
@@ -50,38 +51,38 @@ export default function Week03() {
           { title: 'Conjoint Analysis', chapter: C.conjoint, definition: 'Turns trade-off choices into willingness-to-pay, in real dollars.', formula: 'WTP = attribute’s utility ÷ utils per dollar.', why: 'Price is the only attribute in real dollars, so dividing by it converts utils back to dollars.' },
         ]}
       >
-        <Full style={{ margin: '6.9px 0 0' }}>
-          <SectionTitle chapter={C.overview}>Introduction</SectionTitle>
-        </Full>
-        <Full><p className="prose">
-          Both tools exist because direct questions fail — stated preferences (“what do you want?”) and stated importance ratings (“rate this 1–9”) both cost the respondent nothing, so people either ask for everything or rate everything as important.{' '}
-          <mark>Forcing a real trade-off and observing the choice is what reveals true value.</mark>
-        </p></Full>
-
+        <SectionTitle chapter={C.overview}>Introduction</SectionTitle>
+        <Aside>
         <Callout chapter={C.overview} label="KEY INSIGHT">
             Two tools, one agenda: MaxDiff answers “what matters most” (a ranking); Conjoint Analysis answers “how much does it matter, in dollars” (willingness-to-pay).
         </Callout>
         <Callout chapter={C.overview} label="NOTES">
             Quiz 2 moved to Session 4, rescoped to CBC interpretation only — the MaxDiff/TURF/ratings-conjoint material in this packet is still core course content.
         </Callout>
+        </Aside>
+        <p style={{ marginTop: 'var(--space-3)' }}>
+          Both tools exist because direct questions fail — stated preferences (“what do you want?”) and stated importance ratings (“rate this 1–9”) both cost the respondent nothing, so people either ask for everything or rate everything as important.{' '}
+          <mark>Forcing a real trade-off and observing the choice is what reveals true value.</mark>
+        </p>
+
       </TopicMapPage>
 
       {/* ───────────── Topic 2 · MaxDiff ───────────── */}
-      <NotesPage columns={1} toc={{ title: 'MaxDiff (Best-Worst Scaling)', chapter: C.maxdiff }}>
+      <NotesPage toc={{ title: 'MaxDiff (Best-Worst Scaling)', chapter: C.maxdiff }}>
         <TopicHeader topicNumber={2} title="MaxDiff (Best-Worst Scaling)" kicker="Concept, design rules, the Pecan Street Bank scoring walkthrough, key terms" />
+        <Aside>
+          <Callout chapter={C.maxdiff} label="MEMORY AID">“Most minus Least, over every appearance” — never divide by selections only.</Callout>
+        </Aside>
         <div style={{ height: 16 }} />
         <p>
           Respondents see a small set of items (4–5 typical) and pick the ONE they like most and the ONE they like least — items in the middle stay unranked for that question; repetition across questions, with different item pairings, is what produces a full ranking.
         </p>
-        <Columns count={2}>
           <Stack gap={12}>
             <span className={`badge ch-${C.maxdiff}`}>Best use case</span>
             <p className="prose-sm">8–30 features/benefits/ideas where you need to know which ones matter most, without rating-scale bias.</p>
           </Stack>
-          <Callout chapter={C.maxdiff} label="MEMORY AID">“Most minus Least, over every appearance” — never divide by selections only.</Callout>
-        </Columns>
 
-        <Section chapter={C.maxdiff} title="Why not just ask?">
+        <Section wide chapter={C.maxdiff} title="Why not just ask?">
           <Split
             left={{ title: 'Stated Preference', chapter: C.maxdiff, items: ['“What do you want?”', 'Costs the respondent nothing', 'Everyone asks for everything'] }}
             right={{ title: 'Revealed Preference', chapter: C.maxdiff, items: ['Forced trade-off choice', 'Reveals true value', 'What MaxDiff & Conjoint measure'] }}
@@ -109,7 +110,7 @@ export default function Week03() {
           why={<>Subtracting Least from Most cancels out items that are merely <em>visible</em> a lot. Dividing by <mark>every appearance</mark> puts items shown different numbers of times on the same scale.</>}
         />
 
-        <Section chapter={C.maxdiff} title="Key Terms">
+        <Section wide chapter={C.maxdiff} title="Key Terms">
           <KeyTermsTable
             chapter={C.maxdiff}
             terms={[
@@ -121,16 +122,18 @@ export default function Week03() {
       </NotesPage>
 
       {/* ───────────── Topic 3 · TURF ───────────── */}
-      <NotesPage columns={1} toc={{ title: 'TURF', chapter: C.turf }}>
+      <NotesPage toc={{ title: 'TURF', chapter: C.turf }}>
         <TopicHeader topicNumber={3} title="TURF (Total Unduplicated Reach & Frequency)" kicker="Picking the bundle under a $60/year budget" />
+        <Aside>
+        <Callout chapter={C.turf} label="KEY INSIGHT">
+          Only <mark>new</mark> people count toward reach at each step — someone already reached by an earlier item doesn’t add again when a later item also covers them.
+        </Callout>
+        </Aside>
         <div style={{ height: 16 }} />
         <p>
           Continuing Topic 2’s Pecan Street Bank case: MaxDiff scored and ranked all 12 perks by net choice score. Now TURF narrows that ranking to the 4-perk bundle that reaches the most people under a $60/year cost cap.
         </p>
-        <Callout chapter={C.turf} label="KEY INSIGHT">
-          Only <mark>new</mark> people count toward reach at each step — someone already reached by an earlier item doesn’t add again when a later item also covers them.
-        </Callout>
-        <Section chapter={C.turf} title="Candidate Bundles">
+        <Section wide chapter={C.turf} title="Candidate Bundles">
           <ComparisonTable
             chapter={C.turf}
             columns={[{ key: 'bundle', label: 'Bundle', width: '12%' }, { key: 'perks', label: 'Four Perks' }, { key: 'cost', label: 'Cost/Year', width: '16%' }, { key: 'reach', label: 'Reach', width: '14%' }]}
@@ -148,7 +151,7 @@ export default function Week03() {
       </NotesPage>
 
       {/* ───────────── Topic 4 · Pipeline ───────────── */}
-      <NotesPage columns={1} toc={{ title: 'MaxDiff → TURF Pipeline', chapter: C.pipeline }}>
+      <NotesPage toc={{ title: 'MaxDiff → TURF Pipeline', chapter: C.pipeline }}>
         <TopicHeader topicNumber={4} title="The MaxDiff → TURF Pipeline" kicker="A single pipeline, run in sequence" />
         <div style={{ height: 20 }} />
         <StepPipeline
@@ -159,10 +162,10 @@ export default function Week03() {
             { label: 'Optimal bundle', body: 'Run TURF on that binary data to find the mix with the widest reach' },
           ]}
         />
-        <Section chapter={C.pipeline} title="In One Line">
+        <Section wide chapter={C.pipeline} title="In One Line">
           <Chain chapter={C.pipeline} items={['MaxDiff scores', 'Binary top-choice data', 'TURF bundle']} connector="→" />
         </Section>
-        <Section chapter={C.pipeline} title="Which Tool?">
+        <Section wide chapter={C.pipeline} title="Which Tool?">
           <Flowchart
             chapter={C.pipeline}
             root={{
@@ -174,7 +177,7 @@ export default function Week03() {
             }}
           />
         </Section>
-        <Section chapter={C.pipeline} title="What Each Tool Answers">
+        <Section wide chapter={C.pipeline} title="What Each Tool Answers">
           <Matrix
             chapter={C.pipeline}
             rowLabels={['MaxDiff', 'Conjoint', 'TURF']}
@@ -185,21 +188,23 @@ export default function Week03() {
       </NotesPage>
 
       {/* ───────────── Topic 5 · Conjoint ───────────── */}
-      <NotesPage columns={1} toc={{ title: 'Conjoint Analysis', chapter: C.conjoint }}>
+      <NotesPage toc={{ title: 'Conjoint Analysis', chapter: C.conjoint }}>
         <TopicHeader topicNumber={5} title="Conjoint Analysis" kicker="Part-worths, utility, and willingness to pay" />
+        <Aside>
+        <Callout chapter={C.conjoint} label="MEMORY AID">
+          Think of the price part-worth as an exchange rate — “utils per dollar” — and dividing by it is just converting currency.
+        </Callout>
+        </Aside>
         <div style={{ margin: '13.8px 0' }}><span className={`badge ch-${C.conjoint}`}>Ratings-based conjoint</span></div>
-        <Columns count={2} style={{ marginBottom: 15.4 }}>
           <p className="prose-sm">
             Conjoint analysis shows respondents full product profiles — several attributes bundled together, like a camera with a resolution, battery life, and price — and asks them to rate or choose between profiles. Because every attribute moves at once, the trade-offs respondents are forced to make reveal how much each attribute level is actually worth, rather than how important they say it is.
           </p>
           <Image chapter={C.conjoint} ratio="4/3" alt="Conjoint profile card example" caption="Fig. 1 — A full product profile shown to respondents." />
-        </Columns>
         <Section chapter={C.conjoint} title="Part-Worths & Utility">
           <p className="prose-sm">
             Each attribute level (e.g. “50ft range” vs. “5ft range”) gets its own part-worth — a number representing how much that level alone contributes to a respondent’s overall liking. A profile’s total utility is just the sum of the part-worths for its levels.
           </p>
         </Section>
-        <Columns count={2} style={{ margin: '15.4px 0' }}>
           <ConceptCard
             chapter={C.conjoint}
             term="Utility"
@@ -214,11 +219,7 @@ export default function Week03() {
             formulas={['WTP_i = \\dfrac{u_i}{\\beta_{price}}']}
             why={<>Price is the only attribute measured in <mark>real dollars</mark>. Dividing the upgrade’s utility by the price part-worth’s slope converts utils back into dollars.</>}
           />
-        </Columns>
-        <Callout chapter={C.conjoint} label="MEMORY AID">
-          Think of the price part-worth as an exchange rate — “utils per dollar” — and dividing by it is just converting currency.
-        </Callout>
-        <Section chapter={C.conjoint} title="Worked Example">
+        <Section wide chapter={C.conjoint} title="Worked Example">
           <WorkedExample
             chapter={C.conjoint}
             title="Converting Utility Into Willingness to Pay"

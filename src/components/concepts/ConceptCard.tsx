@@ -37,7 +37,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
   const section: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-1)', minWidth: 0 };
   const label: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-500)' };
   const termStyle: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-title)', color: 'var(--ink-900)', margin: 0, lineHeight: 'var(--leading-tight)' };
-  const text: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-leading)', color: 'var(--ink-900)', margin: 0 };
+  const text: CSSProperties = { fontSize: 'var(--box-text)', lineHeight: 'var(--box-prose-leading)', color: 'var(--ink-900)', margin: 0 };
   const formulaBox: CSSProperties = { border: `1px solid ${ch(chapter, 300)}`, background: ch(chapter, 100), borderRadius: 'var(--box-inner-radius)', padding: 'var(--box-inner-pad)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-3)', flexWrap: 'wrap', fontSize: 'var(--text-base)' };
   const orStyle: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--box-label)', color: 'var(--ink-500)', fontStyle: 'italic' };
   const Part = ({ title, children }: { title: string; children: ReactNode }) => (
@@ -60,7 +60,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
   );
   const whyPart = <Part title="Why It Works"><p style={text}>{why}</p></Part>;
   return (
-    <div style={wrap}>
+    <div data-wide={spanAll || undefined} style={wrap}>
       <div style={body}>
         <div style={head}><span style={badge}>Concept</span><h3 style={termStyle}>{term}</h3></div>
         {longFormula ? (

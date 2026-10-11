@@ -8,14 +8,16 @@ export interface SectionProps {
   chapter: Chapter;
   /** The section's label (e.g. "Introduction", "Worked Example") */
   title: string;
+  /** In the margin layout, span the full page width (use for sections holding worked examples, tables, diagrams) */
+  wide?: boolean;
   children?: ReactNode;
 }
 
-export function Section({ chapter, title, children }: SectionProps) {
+export function Section({ chapter, title, wide, children }: SectionProps) {
   const wrap: CSSProperties = { margin: 'var(--space-4) 0' };
   const content: CSSProperties = { marginTop: 'var(--space-3)' };
   return (
-    <div style={wrap}>
+    <div data-wide={wide || undefined} style={wrap}>
       <SectionTitle chapter={chapter}>{title}</SectionTitle>
       <div className="stack-3" style={content}>{children}</div>
     </div>
