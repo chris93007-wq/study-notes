@@ -15,7 +15,7 @@ export function ComparisonTable({ columns, rows, chapter, dense = false }: Compa
   const wrap: CSSProperties = { columnSpan: 'all', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)' };
   const table: CSSProperties = { width: '100%', borderCollapse: 'collapse' };
   const th: CSSProperties = { textAlign: 'left', padding: 'var(--space-3) var(--space-4)', background: ch(chapter, 100), color: ch(chapter, 900), fontFamily: 'var(--font-display)', fontSize: 'var(--text-xs)', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600, borderRight: '1px solid var(--border-default)' };
-  const td: CSSProperties = { padding: dense ? 'var(--space-1) var(--space-4)' : 'var(--space-3) var(--space-4)', fontSize: 'var(--text-sm)', lineHeight: 'var(--leading-body)', color: 'var(--ink-900)', borderTop: '1px solid var(--border-default)', borderRight: '1px solid var(--border-default)' };
+  const td: CSSProperties = { padding: dense ? 'var(--space-1) var(--space-4)' : 'var(--space-2) var(--space-4)', fontSize: 'var(--text-xs)', lineHeight: 'var(--leading-compact)', color: 'var(--ink-900)', borderTop: '1px solid var(--border-default)', borderRight: '1px solid var(--border-default)' };
   const trAlt: CSSProperties = { background: `color-mix(in srgb, ${ch(chapter, 100)} 45%, var(--surface-card))` };
   return (
     <div data-wide style={wrap}>

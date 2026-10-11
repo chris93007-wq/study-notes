@@ -17,18 +17,18 @@ export interface FlowchartProps {
 }
 
 function Shape({ node, chapter }: { node: FlowchartNode; chapter: Chapter }) {
-  const base: CSSProperties = { fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-sm)', color: ch(chapter, 900), textAlign: 'center', lineHeight: 1.35 };
+  const base: CSSProperties = { fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-xs)', color: ch(chapter, 900), textAlign: 'center', lineHeight: 1.3 };
   if (node.shape === 'diamond') {
     // grows with the question so long labels fit inside the diamond
-    const size = Math.min(220, Math.max(120, 56 + node.label.length * 3.6));
+    const size = Math.min(170, Math.max(100, 40 + node.label.length * 2.9));
     return (
       <div style={{ width: size, height: size, position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: ch(chapter, 100), border: `1.5px solid ${ch(chapter, 500)}`, transform: 'rotate(45deg) scale(0.72)', borderRadius: 6 }} />
-        <div style={{ ...base, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10.3 }}>{node.label}</div>
+        <div style={{ ...base, position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6.9 }}>{node.label}</div>
       </div>
     );
   }
-  const box: CSSProperties = { ...base, maxWidth: 250, padding: '8.8px 15.4px', borderRadius: 'var(--radius-md)', background: node.filled ? ch(chapter, 900) : ch(chapter, 100), color: node.filled ? '#fff' : ch(chapter, 900), border: node.filled ? 'none' : `1.5px solid ${ch(chapter, 500)}` };
+  const box: CSSProperties = { ...base, maxWidth: 250, padding: '5px 12px', borderRadius: 'var(--radius-md)', background: node.filled ? ch(chapter, 900) : ch(chapter, 100), color: node.filled ? '#fff' : ch(chapter, 900), border: node.filled ? 'none' : `1.5px solid ${ch(chapter, 500)}` };
   return <div style={box}>{node.label}</div>;
 }
 
