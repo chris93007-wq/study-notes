@@ -85,21 +85,21 @@ h1,h2,h3,h4{break-after:avoid}
  * grid rows, split cleanly across printed sheets. Anything marked data-wide (worked examples, tables, headers,
  * <Wide>) spans the full page and clears the margin notes above it.
  */
-.page{--main-w:62%;--aside-w:34%;--aside-gap:21.3px}
+.page{--main-w:62%;--aside-w:34%;--aside-gap:21.3px;--block-gap:var(--para-gap)}
 .page[data-orientation="landscape"]{--main-w:400px;--aside-w:min(380px, calc(100% - 440px))}
 .page[data-layout="margin"] .page-body{display:block}
 .page[data-layout="margin"] .page-body::after{content:"";display:table;clear:both}
 .page[data-layout="margin"] .page-body > *{width:var(--main-w)}
 .page[data-layout="margin"] .page-body > [hidden]{display:none}
 .page[data-layout="margin"] .page-body > [data-wide]{width:auto;clear:both}
-.page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w)}
+.page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w);margin-bottom:var(--block-gap)}
 .page[data-layout="margin"] .page-body > .aside > * + *{margin-top:var(--aside-gap)}
 .aside > * + *{margin-top:var(--aside-gap)}
 /* One rhythm in the main column: the same gap (= the paragraph gap, 2× the font size) between paragraph and box and between two boxes. */
-.page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--para-gap)}
-.page[data-layout="margin"] .page-body > :not(p):not(.aside) + p{margin-top:var(--para-gap)}
+.page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--block-gap)}
+.page[data-layout="margin"] .page-body > :not(p):not(.aside) + p{margin-top:var(--block-gap)}
 .page[data-layout="margin"] .page-body > .section{margin-top:0;margin-bottom:0}
-.page[data-layout="margin"] .page-body > .section + *:not(.aside){margin-top:var(--para-gap)}
+.page[data-layout="margin"] .page-body > .section + *:not(.aside){margin-top:var(--block-gap)}
 
 /* A topic that fits in the rest of the previous sheet continues on it (set by joinShortPages in NotesDocument). */
 @media print{
@@ -114,5 +114,8 @@ h1,h2,h3,h4{break-after:avoid}
 
 /* Hairline between two boxes that would otherwise touch: it replaces the gap (half above, half below). */
 .box-divider{height:0;border-top:2px solid var(--ink-300);border-radius:1px;opacity:.55}
-.page[data-layout="margin"] .page-body > * + .box-divider:not(p):not(.aside){margin-top:calc(var(--para-gap)/2)}
-.page[data-layout="margin"] .page-body > .box-divider + *:not(p):not(.aside){margin-top:calc(var(--para-gap)/2)}
+.page[data-layout="margin"] .page-body > * + .box-divider:not(p):not(.aside){margin-top:calc(var(--block-gap)/2)}
+.page[data-layout="margin"] .page-body > .box-divider + *:not(p):not(.aside){margin-top:calc(var(--block-gap)/2)}
+
+/* Compaction keeps the gaps around boxes at the 16pt minimum (the paragraph gap itself stays 2x). */
+.page[data-compact]{--block-gap:21.3px}

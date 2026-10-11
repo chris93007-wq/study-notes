@@ -11,6 +11,8 @@ export interface SplitSide {
 export interface SplitProps {
   left: SplitSide;
   right: SplitSide;
+  /** Span the full page width on a margin-layout page. Default false: the split sits in the main column so margin notes stay beside it. */
+  wide?: boolean;
 }
 
 function Side({ side }: { side: SplitSide }) {
@@ -27,10 +29,10 @@ function Side({ side }: { side: SplitSide }) {
   );
 }
 
-export function Split({ left, right }: SplitProps) {
+export function Split({ left, right, wide }: SplitProps) {
   const wrap: CSSProperties = { columnSpan: 'all', display: 'grid', gridTemplateColumns: '1fr 2px 1fr', gap: 'var(--space-6)', alignItems: 'start', breakInside: 'avoid' };
   return (
-    <div data-wide style={wrap}>
+    <div data-wide={wide || undefined} style={wrap}>
       <Side side={left} />
       <div style={{ background: 'var(--line)', alignSelf: 'stretch' }} />
       <Side side={right} />

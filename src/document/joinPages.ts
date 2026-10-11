@@ -50,7 +50,7 @@ function simulate(page: HTMLElement): { height: number; sheets: number } {
     }
     end = Math.max(end, b);
   }
-  body.querySelectorAll<HTMLElement>(':scope > .aside').forEach((a) => { end = Math.max(end, a.getBoundingClientRect().bottom - top + offset); });
+  body.querySelectorAll<HTMLElement>(':scope > .aside').forEach((a) => { end = Math.max(end, a.getBoundingClientRect().bottom - top + offset + (a.children.length ? parseFloat(getComputedStyle(a).marginBottom) || 0 : 0)); });
   return { height: end, sheets: end <= sheet - biasOf(page) ? 1 : Math.max(2, Math.ceil(end / sheet)) };
 }
 
