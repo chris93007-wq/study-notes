@@ -4,7 +4,7 @@
  * Textbooks set sidebars and boxed examples smaller and tighter than running text, so the box reads as an
  * aside and several of them fit on a page. The rule, in terms of the body size B (11pt):
  *   text     0.9 B  (--text-sm)   one step down the scale — LaTeX's \normalsize → \small
- *   labels   9pt floor (--text-xs) — never smaller
+ *   labels   9pt (--text-xs) at comfortable density; a denser card shrinks them with everything else
  *   title    1.2 B  (--text-lg)   a "\large" title, not a 1.5 B headline
  *   leading  1.35 for compact box items, 1.5 for reading text inside boxes (definitions, why, callouts)
  *   padding  ≈ 1em  of the box's own text (13.8px at 0.9 B), not 2em
@@ -28,18 +28,9 @@
 }
 
 /*
- * Box scale. A box (ConceptCard, WorkedExample, Callout, FlashCard) renders at 100% by default and can be scaled down to
- * 80% for tight spots with its `scale` prop (or page-wide by the whitespace fitter via --bs-page). Everything inside
- * scales together: type, spacing, border and accent thickness. Labels never go below the 9pt floor. Tokens are
- * re-declared per box from the base scale (--t-* and --s-*), so the scale is applied once, never compounded.
+ * Card density (ConceptCard, WorkedExample). An inner wrapper is zoomed, so everything inside — type incl. labels, step
+ * lines and formulas, spacing, borders, radii, shadows — shrinks together and is laid out again for the room the card
+ * has (margin, main or full width). The authored `density` prop pins it; otherwise the page-level --d-page set by the
+ * whitespace fitter applies (default 1 = comfortable).
  */
-.box-scale{
---bsx:var(--bs,var(--bs-page,1));
---space-1:calc(var(--s-1)*var(--bsx));--space-2:calc(var(--s-2)*var(--bsx));--space-3:calc(var(--s-3)*var(--bsx));
---space-4:calc(var(--s-4)*var(--bsx));--space-5:calc(var(--s-5)*var(--bsx));--space-6:calc(var(--s-6)*var(--bsx));
---text-xs:max(9pt,calc(var(--t-xs)*var(--bsx)));--text-sm:calc(var(--t-sm)*var(--bsx));--text-base:calc(var(--t-base)*var(--bsx));
---text-lg:calc(var(--t-lg)*var(--bsx));--text-xl:calc(var(--t-xl)*var(--bsx));
---box-text:var(--text-sm);--box-label:var(--text-xs);--box-title:var(--text-lg);
---box-pad:var(--space-4);--box-gap:var(--space-3);--box-inner-pad:var(--space-3) var(--space-4);
---box-border:calc(1.5px*var(--bsx));--box-accent:calc(4px*var(--bsx));
-}
+.card-density{zoom:var(--d-page,1)}

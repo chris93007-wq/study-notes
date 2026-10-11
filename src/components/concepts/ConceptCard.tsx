@@ -3,7 +3,7 @@ import { math } from '../math/Tex';
 import { Tex } from '../math/Tex';
 import { FormulaTree, type FormulaTreeNode } from '../diagrams/FormulaTree';
 import { ch, type Chapter } from '../types';
-import { boxScale, SCALE_DOC } from '../boxScale';
+import { densityStyle, type Density } from '../density';
 
 /**
  * Three-part explainer for one concept: plain-language definition, the formula(s) rendered as real math
@@ -21,20 +21,19 @@ export interface ConceptCardProps {
   why: ReactNode;
   /** Which chapter color (1-13) tints the card */
   chapter: Chapter;
-  /** Span both page columns. Default: automatic — on when a formula is long enough that it would not fit a half-width card. */
+  /** Pin the width: true = full page width, false = main column. Leave it out and the whitespace fitter chooses margin / main / full width (starting from full width when a formula is long). */
   wide?: boolean;
-  /** Scale this box between 0.8 and 1 (default 1): type, spacing and line thickness shrink together. */
-  scale?: number;
+  /** Card density: "comfortable" (100%, default), "cozy" (90%), "compact" (80%) or a number 0.8–1. Everything inside shrinks together. Leave it out and the fitter picks the least density that makes the topic fit. */
+  density?: Density;
 }
 
 /** Parts sit side by side when the card is wide enough for two ~230px columns, and stack in a half-width column. */
 const GRID = 'repeat(auto-fit, minmax(230px, 1fr))';
 
-export function ConceptCard({ term, definition, formulas = [], breakdown, why, chapter, wide, scale }: ConceptCardProps) {
+export function ConceptCard({ term, definition, formulas = [], breakdown, why, chapter, wide, density }: ConceptCardProps) {
   const spanAll = wide ?? (formulas.some((f) => f.length > 52) || !!breakdown);
-  const box = boxScale(scale);
   const accent = ch(chapter, 500);
-  const wrap: CSSProperties = { columnSpan: spanAll ? 'all' : undefined, border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
+  const wrap: CSSProperties = { border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', overflow: 'hidden', fontFamily: 'var(--font-body)' };
   const body: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', padding: 'var(--box-pad)' };
   const head: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap' };
   const badge: CSSProperties = { display: 'inline-flex', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-pill)' };
@@ -65,7 +64,8 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
   );
   const whyPart = <Part title="Why It Works"><p style={text}>{math(why)}</p></Part>;
   return (
-    <div data-box data-movable={spanAll ? undefined : true} data-wide={spanAll || undefined} className={box.className} style={{ ...box.vars, ...wrap }}>
+    <div data-box data-concept data-width-auto={(wide === undefined && !breakdown) || undefined} data-wide={spanAll || undefined} style={{ breakInside: 'avoid', columnSpan: spanAll ? 'all' : undefined }}>
+     <div className="card-density" style={{ ...densityStyle(density), ...wrap }}>
       <div style={body}>
         <div style={head}><span style={badge}>Concept</span><h3 style={termStyle}>{term}</h3></div>
         {longFormula ? (
@@ -90,6 +90,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
         )}
         {longFormula && breakdown && <FormulaTree root={breakdown} chapter={chapter} />}
       </div>
+     </div>
     </div>
   );
 }

@@ -1,12 +1,23 @@
 /**
- * Short topics share a sheet. Pages that opted in (data-joinable) are measured at their rendered height; when one fits
- * in what is left of the sheet its predecessor (or predecessor group) occupies, plus a 24pt gap, it gets data-join and
- * print.css lets it continue on that sheet instead of starting a new one. Only single-sheet predecessors qualify, and a
- * safety margin covers differences between this measurement and the print layout.
+ * Layout fitter for notes pages (runs in the browser, before printing).
+ *
+ * Three jobs:
+ *  1. fitNotePages — search each topic's layout for the fewest printed sheets: where every movable element sits
+ *     (margin note → margin beside any block, between two boxes, end of the topic, or full width at the end; concept
+ *     card → margin / main column / full width; example → main column / full width) × card density (100% → 80%).
+ *  2. packPages — a topic that leaves its sheet under 70% full shares the sheet with the next one when both fit.
+ *  3. finalizeFits — clean up, and put a hairline divider between cards that would otherwise touch.
+ *
+ * A page-break simulation (blocks that must not split jump to the next sheet) stands in for the printer; scripts/pdf.ts
+ * checks the real print against it and makes it more cautious for a topic where they disagree.
  */
-const GAP = 32;     // 24pt
+const GAP = 32; // 24pt between topics that share a sheet
 const SAFETY = 28;
-const SAFETY_DEFAULT = 0; // simulation vs print: a topic counts as one sheet only if it fits with this much to spare (the PDF script raises it per topic if the print disagrees)
+const SAFETY_DEFAULT = 16; // a topic counts as one sheet only if it fits with this much to spare
+const WASTE_LIMIT = 0.3;
+const COMBO_LIMIT = 300; // exhaustive search up to this many layouts per density level, coordinate descent beyond
+
+const debug = () => !!(window as unknown as { __FIT_DEBUG__?: boolean }).__FIT_DEBUG__;
 
 /** Height of the laid-out content (including floated margin notes), ignoring the min-height of a screen sheet. */
 export function contentHeight(page: Element): number {
@@ -21,36 +32,45 @@ export function contentHeight(page: Element): number {
 const sheetOf = (page: HTMLElement) => (page.dataset.orientation === 'landscape' ? 8.5 : 11) * 96 - 96;
 const biasOf = (page: HTMLElement) => SAFETY_DEFAULT + (window.__FIT_BIAS__?.[[...document.querySelectorAll('section.page')].indexOf(page)] ?? 0);
 
-/**
- * Whitespace fitter. A margin note taller than the text beside it leaves a blank hole in the main column (the next
- * full-width block has to clear it), and that is often what pushes a topic onto a second sheet. For each notes page,
- * try moving margin notes — last one first — out of the margin to the end of the topic, and keep a move only when it
- * saves a sheet or at least 40px. A page-break simulation (blocks that must not split jump to the next sheet) stands
- * in for the printer.
- */
-const MIN_SAVING = 40;
-const WASTE_LIMIT = 0.3;
+/** break-inside: avoid is static per element — read it once. */
+const avoidCache = new WeakMap<Element, boolean>();
+const avoids = (el: HTMLElement) => {
+  let v = avoidCache.get(el);
+  if (v === undefined) { v = getComputedStyle(el).breakInside === 'avoid'; avoidCache.set(el, v); }
+  return v;
+};
 
+/** Simulated end of the content, with blocks that must not split pushed to the next sheet; and the resulting sheet count. */
 function simulate(page: HTMLElement): { height: number; sheets: number } {
   const body = page.querySelector<HTMLElement>('.page-body');
   if (!body) return { height: 0, sheets: 1 };
-  const sheet = (page.dataset.orientation === 'landscape' ? 8.5 : 11) * 96 - 96;
+  const sheet = sheetOf(page);
   const top = body.getBoundingClientRect().top;
   let offset = 0;
   let end = 0;
   for (const c of Array.from(body.children) as HTMLElement[]) {
-    if (c.hidden || c.classList.contains('aside')) continue;
+    if (c.hidden || c.style.display === 'none' || c.classList.contains('aside')) continue;
     const r = c.getBoundingClientRect();
     let t = r.top - top + offset;
     let b = r.bottom - top + offset;
-    const avoid = c.hasAttribute('data-wide') || getComputedStyle(c).breakInside === 'avoid';
+    const avoid = c.hasAttribute('data-wide') || avoids(c);
     if (avoid && b - t <= sheet && Math.floor(t / sheet) !== Math.floor((b - 1) / sheet)) {
       const push = Math.floor((b - 1) / sheet) * sheet - t;
       offset += push; t += push; b += push;
     }
     end = Math.max(end, b);
   }
-  body.querySelectorAll<HTMLElement>(':scope > .aside').forEach((a) => { end = Math.max(end, a.getBoundingClientRect().bottom - top + offset + (a.children.length ? parseFloat(getComputedStyle(a).marginBottom) || 0 : 0)); });
+  body.querySelectorAll<HTMLElement>(':scope > .aside').forEach((a) => {
+    if (a.style.display === 'none' || !a.children.length) return;
+    // margin items that must not split jump to the next sheet too
+    for (const c of Array.from(a.children) as HTMLElement[]) {
+      const r = c.getBoundingClientRect();
+      const t = r.top - top + offset;
+      const b = r.bottom - top + offset;
+      if (avoids(c) && b - t <= sheet && Math.floor(t / sheet) !== Math.floor((b - 1) / sheet)) end = Math.max(end, Math.floor((b - 1) / sheet) * sheet + (b - t));
+    }
+    end = Math.max(end, a.getBoundingClientRect().bottom - top + offset + (parseFloat(getComputedStyle(a).marginBottom) || 0));
+  });
   return { height: end, sheets: end <= sheet - biasOf(page) ? 1 : Math.max(2, Math.ceil(end / sheet)) };
 }
 
@@ -72,7 +92,7 @@ function wasteOf(page: HTMLElement): number {
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) grid[y * cols + x] = 1;
   };
   Array.from(body.children).forEach((c) => {
-    if ((c as HTMLElement).hidden) return;
+    if ((c as HTMLElement).hidden || (c as HTMLElement).style.display === 'none') return;
     if (c.classList.contains('aside')) Array.from(c.children).forEach(mark); else mark(c);
   });
   let empty = 0;
@@ -80,121 +100,256 @@ function wasteOf(page: HTMLElement): number {
   return empty / grid.length;
 }
 
-/** Two boxes (concept card, worked example) with nothing between them: returns the second one. */
+const isBox = (el: Element) => el.hasAttribute('data-box') || !!el.querySelector(':scope > [data-box]');
+
+/** Flow children of the page body (no margin asides). Dividers are included: they separate. */
+const flowKids = (body: HTMLElement) => (Array.from(body.children) as HTMLElement[]).filter((c) => !c.hidden && c.style.display !== 'none' && !c.classList.contains('aside'));
+
+/** Two cards with nothing between them (not even a divider): returns the second one. */
 function adjacentBoxes(body: HTMLElement): HTMLElement | null {
-  const isBox = (el: Element) => el.hasAttribute('data-box') || !!el.querySelector(':scope > [data-box]');
-  const kids = (Array.from(body.children) as HTMLElement[]).filter((c) => !c.hidden && !c.classList.contains('aside') && !c.classList.contains('box-divider'));
+  const kids = flowKids(body);
   for (let i = 1; i < kids.length; i++) if (isBox(kids[i - 1]) && isBox(kids[i])) return kids[i];
   return null;
 }
 
-/** Shrink ladder: boxes scale (type, spacing, strokes together) from 100% to 80%, then the gaps tighten. */
-const LADDER: Array<{ bs: number; compact: '' | '1' | '2'; label: string }> = [
-  { bs: 1, compact: '', label: 'boxes at 100%' },
-  { bs: 0.95, compact: '', label: 'boxes at 95%' },
-  { bs: 0.9, compact: '', label: 'boxes at 90%' },
-  { bs: 0.85, compact: '', label: 'boxes at 85%' },
-  { bs: 0.8, compact: '', label: 'boxes at 80%' },
-  { bs: 0.8, compact: '1', label: 'boxes at 80% + tighter gaps' },
-  { bs: 0.8, compact: '2', label: 'boxes at 80% + tightest gaps' },
+/** A formula that wraps onto a second line (KaTeX breaks after relations/operators): detected by a base starting left of the previous one. */
+function formulaWraps(card: HTMLElement): boolean {
+  for (const f of Array.from(card.querySelectorAll('.katex-html'))) {
+    const bases = Array.from(f.querySelectorAll(':scope > .base'));
+    for (let i = 1; i < bases.length; i++) if (bases[i].getBoundingClientRect().left < bases[i - 1].getBoundingClientRect().left + 1) return true;
+  }
+  return false;
+}
+
+/** Density ladder: cards from comfortable (100%) down to compact (80%), then the gaps around boxes tighten. */
+const LADDER: Array<{ d: number; compact: '' | '1' | '2'; label: string }> = [
+  { d: 1, compact: '', label: 'cards comfortable (100%)' },
+  { d: 0.95, compact: '', label: 'cards at 95%' },
+  { d: 0.9, compact: '', label: 'cards cozy (90%)' },
+  { d: 0.85, compact: '', label: 'cards at 85%' },
+  { d: 0.8, compact: '', label: 'cards compact (80%)' },
+  { d: 0.8, compact: '1', label: 'cards compact + tighter gaps' },
+  { d: 0.8, compact: '2', label: 'cards compact + tightest gaps' },
 ];
 
-type Place = 'margin' | 'main' | 'between' | 'end' | 'endwide';
+/** Where an element sits. home = authored. */
+type Pos =
+  | { t: 'home' }
+  | { t: 'flow'; wide: boolean } // card: authored place, width forced
+  | { t: 'margin'; a: number } // in a margin aside placed before content block a (0 = right under the title)
+  | { t: 'between' }
+  | { t: 'end' }
+  | { t: 'endwide' };
 
-interface Item { el: HTMLElement; home: 'margin' | 'main'; ph: Comment }
-interface FitState { items: Item[]; synthetic: HTMLElement; between: HTMLElement | null; combos: Place[][]; level: number; name: string }
+interface Item { el: HTMLElement; kind: 'note' | 'card'; ph: Comment; homeWide: boolean; auto: boolean; concept: boolean; name: string }
+interface FitState { items: Item[]; level: number; name: string; header: HTMLElement | null; blocks: number }
 const states = new WeakMap<HTMLElement, FitState>();
+
+const setWide = (el: HTMLElement, wide: boolean) => { if (wide) el.setAttribute('data-wide', ''); else el.removeAttribute('data-wide'); };
 
 function stateFor(page: HTMLElement): FitState | null {
   if (states.has(page)) return states.get(page)!;
   const body = page.querySelector<HTMLElement>('.page-body');
   if (!body || page.dataset.layout !== 'margin' || !page.dataset.joinable) return null;
   const items: Item[] = [];
-  const track = (el: HTMLElement, home: 'margin' | 'main') => {
+  const track = (el: HTMLElement, kind: 'note' | 'card') => {
     const ph = document.createComment('slot');
     el.parentNode!.insertBefore(ph, el);
-    items.push({ el, home, ph });
+    const label = kind === 'note' ? el.querySelector('div > span')?.textContent : el.querySelector('h3')?.textContent;
+    items.push({ el, kind, ph, homeWide: el.hasAttribute('data-wide'), auto: el.hasAttribute('data-width-auto'), concept: el.hasAttribute('data-concept'), name: (label || (kind === 'note' ? 'note' : 'card')).trim().slice(0, 28) });
   };
-  const between = adjacentBoxes(body);
-  body.querySelectorAll<HTMLElement>(':scope > .aside > *').forEach((el) => track(el, 'margin'));
-  body.querySelectorAll<HTMLElement>(':scope > [data-movable]').forEach((el) => track(el, 'main'));
-  const header = Array.from(body.children).find((c) => c.querySelector('h2') || c.tagName === 'H2') as HTMLElement | undefined;
-  const synthetic = document.createElement('aside');
-  synthetic.className = 'aside';
-  if (header?.nextSibling) body.insertBefore(synthetic, header.nextSibling); else body.appendChild(synthetic);
-  const options = (it: Item): Place[] => {
-    if (it.home === 'main') return ['main', 'margin'];
-    const o: Place[] = ['margin'];
-    if (between) o.push('between');
-    o.push('end', 'endwide');
-    return o;
-  };
-  let combos: Place[][] = [[]];
-  for (const it of items) { const prev = combos; combos = []; for (const c of prev) for (const o of options(it)) combos.push([...c, o]); }
-  const st = { items, synthetic, between, combos, level: 0, name: page.querySelector('h2')?.textContent ?? 'page' };
+  body.querySelectorAll<HTMLElement>(':scope > .aside > *').forEach((el) => track(el, 'note'));
+  body.querySelectorAll<HTMLElement>(':scope > [data-box]').forEach((el) => track(el, 'card'));
+  const header = (Array.from(body.children) as HTMLElement[]).find((c) => !!c.querySelector('h2')) ?? null;
+  const kids = flowKids(body);
+  const blocks = Math.max(0, kids.length - (header ? kids.indexOf(header) + 1 : 0));
+  const st = { items, level: 0, name: page.querySelector('h2')?.textContent ?? 'page', header, blocks };
   states.set(page, st);
   return st;
 }
 
-function applyConfig(page: HTMLElement, st: FitState, combo: Place[], level: number) {
+/** Lay the page out as `cfg` says at density level `level`. */
+function applyConfig(page: HTMLElement, st: FitState, cfg: Pos[], level: number) {
   const body = page.querySelector<HTMLElement>('.page-body')!;
-  const { bs, compact } = LADDER[level];
-  if (bs === 1) page.style.removeProperty('--bs-page'); else page.style.setProperty('--bs-page', String(bs));
+  const { d, compact } = LADDER[level];
+  if (d === 1) page.style.removeProperty('--d-page'); else page.style.setProperty('--d-page', String(d));
   if (compact) page.setAttribute('data-compact', compact); else page.removeAttribute('data-compact');
-  st.items.forEach((it) => { it.ph.parentNode!.insertBefore(it.el, it.ph); it.el.removeAttribute('data-wide'); });
-  combo.forEach((pl, i) => {
-    const { el, home } = st.items[i];
-    if (pl === 'margin' && home === 'main') st.synthetic.appendChild(el);
-    else if (pl === 'between' && st.between) body.insertBefore(el, st.between);
-    else if (pl === 'end') body.appendChild(el);
-    else if (pl === 'endwide') { el.setAttribute('data-wide', ''); body.appendChild(el); }
+
+  // 1. everything back to its authored place and width; drop the margin asides made for earlier layouts
+  body.querySelectorAll(':scope > .aside[data-synthetic]').forEach((a) => { while (a.firstChild) a.firstChild.remove(); a.remove(); });
+  st.items.forEach((it) => { it.ph.parentNode!.insertBefore(it.el, it.ph); setWide(it.el, it.homeWide); });
+  // 2. card widths
+  cfg.forEach((pos, i) => {
+    const it = st.items[i];
+    if (it.kind !== 'card') return;
+    if (pos.t === 'flow') setWide(it.el, pos.wide);
+    else if (pos.t === 'margin') setWide(it.el, false);
   });
+  // 3. pull out what leaves its authored place
+  const out = cfg.map((pos, i) => ({ pos, it: st.items[i] })).filter(({ pos, it }) => pos.t === 'margin' && (it.kind === 'card' || pos.a >= 0) || pos.t === 'between' || pos.t === 'end' || pos.t === 'endwide');
+  out.forEach(({ it }) => it.el.remove());
+  // 4. content blocks now in the flow (after the title), then place what was pulled out
+  const kids = flowKids(body);
+  const blocks = kids.slice(st.header ? kids.indexOf(st.header) + 1 : 0);
+  const asides = new Map<number, HTMLElement>();
+  const asideFor = (a: number) => {
+    const key = Math.min(a, blocks.length);
+    if (!asides.has(key)) {
+      const el = document.createElement('aside');
+      el.className = 'aside';
+      el.dataset.synthetic = '1';
+      if (key < blocks.length) body.insertBefore(el, blocks[key]); else body.appendChild(el);
+      asides.set(key, el);
+    }
+    return asides.get(key)!;
+  };
+  for (const { pos, it } of out) {
+    if (pos.t === 'margin') asideFor(pos.a).appendChild(it.el);
+    else if (pos.t === 'between') { const second = adjacentBoxes(body); if (second) body.insertBefore(it.el, second); else body.appendChild(it.el); }
+    else if (pos.t === 'end') body.appendChild(it.el);
+    else if (pos.t === 'endwide') { setWide(it.el, true); body.appendChild(it.el); }
+  }
+  // an authored aside with nothing left in it must not leave a float behind
+  body.querySelectorAll<HTMLElement>(':scope > .aside').forEach((a) => { a.style.display = a.children.length ? '' : 'none'; });
   st.level = level;
 }
 
-/**
- * Search placements (margin / main / between two boxes / end / full-width at the end, for every movable element) ×
- * box scale (levels fromLevel..toLevel of the shrink ladder) for the fewest printed sheets, then apply the winner.
- * Ties break on: least shrinking, a note separating two adjacent boxes, fewest elements moved from where they were
- * authored, shortest. Returns the applied layout's simulated height and sheets.
- */
-function fitPage(page: HTMLElement, fromLevel = 0, toLevel = LADDER.length - 1): { sheets: number; height: number; level: number; moved: Place[] } | null {
-  const st = stateFor(page);
-  if (!st) return null;
-  let best: { key: number[]; level: number; combo: Place[]; sheets: number; height: number } | null = null;
-  for (let level = fromLevel; level <= toLevel; level++) {
-    for (const combo of st.combos) {
-      applyConfig(page, st, combo, level);
-      const r = simulate(page);
-      const separated = st.between && combo.includes('between') ? 0 : 1;
-      const moved = combo.filter((c, i) => c !== st.items[i].home && !(c === 'main' && st.items[i].home === 'main')).length;
-      const waste = r.sheets === 1 ? wasteOf(page) : 0;
-      const key = [r.sheets, waste > WASTE_LIMIT ? 1 : 0, level, st.between ? separated : 0, moved, Math.round(waste * 100), Math.round(r.height)];
-      let better = !best;
-      if (best) for (let i = 0; i < key.length; i++) { if (key[i] !== best.key[i]) { better = key[i] < best.key[i]; break; } }
-      if (better) best = { key, level, combo, sheets: r.sheets, height: r.height };
-    }
-    if (best && best.sheets === 1 && best.key[1] === 0) break;
-  }
-  if (!best) return null;
-  applyConfig(page, st, best.combo, best.level);
-  const moved = best.combo.map((c, i) => (c === st.items[i].home ? '' : c)).filter(Boolean) as Place[];
-  return { sheets: best.sheets, height: best.height, level: best.level, moved };
+interface Measure { sheets: number; height: number; waste: number; moved: number; unseparated: number; invalid: boolean }
+
+function measure(page: HTMLElement, st: FitState, cfg: Pos[], level: number): Measure {
+  applyConfig(page, st, cfg, level);
+  const body = page.querySelector<HTMLElement>('.page-body')!;
+  const r = simulate(page);
+  // a card squeezed narrower than authored must still hold its formula on one line and not clip anything
+  let invalid = false;
+  cfg.forEach((pos, i) => {
+    const it = st.items[i];
+    if (it.kind !== 'card') return;
+    const narrowed = pos.t === 'margin' || (pos.t === 'flow' && !pos.wide && it.homeWide);
+    if (!narrowed) return;
+    const inner = it.el.querySelector<HTMLElement>('.card-density');
+    if (formulaWraps(it.el) || (inner && inner.scrollWidth > inner.clientWidth + 1)) invalid = true;
+  });
+  const moved = cfg.filter((p) => p.t !== 'home').length;
+  return { sheets: r.sheets, height: r.height, waste: r.sheets === 1 ? wasteOf(page) : 0, moved, unseparated: adjacentBoxes(body) ? 1 : 0, invalid };
 }
 
-const describe = (moved: Place[]) => moved.map((m) => (m === 'endwide' ? 'full-width at the end' : m === 'between' ? 'between boxes' : m === 'end' ? 'to the end' : 'to the margin')).join(', ');
+/** Lower is better. Fewer sheets; while over one sheet, shorter; then within the whitespace limit; cards separated by a note; fewest moves; less waste; shorter. */
+const keyOf = (m: Measure): number[] => [m.sheets, m.sheets > 1 ? Math.round(m.height) : 0, m.waste > WASTE_LIMIT ? 1 : 0, m.unseparated, m.moved, Math.round(m.waste * 100), Math.round(m.height)];
+const less = (a: number[], b: number[]) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] < b[i]; return false; };
+
+function optionsFor(it: Item, st: FitState): Pos[] {
+  const home: Pos = { t: 'home' };
+  const anchors: Pos[] = Array.from({ length: Math.min(5, st.blocks + 1) }, (_, a) => ({ t: 'margin', a }));
+  if (it.kind === 'note') return [home, ...anchors, { t: 'between' }, { t: 'end' }, { t: 'endwide' }];
+  if (!it.auto) return [home];
+  const flip: Pos = { t: 'flow', wide: !it.homeWide };
+  return it.concept ? [home, flip, ...anchors] : [home, flip];
+}
+
+/**
+ * Best layout at one density level. `exhaustive` tries every layout when there are few enough; otherwise (or when not
+ * asked) coordinate descent from the authored layout: improve one element at a time until nothing improves.
+ */
+function searchLevel(page: HTMLElement, st: FitState, level: number, exhaustive: boolean): { cfg: Pos[]; m: Measure } | null {
+  const opts = st.items.map((it) => optionsFor(it, st));
+  const total = opts.reduce((n, o) => n * o.length, 1);
+  let best: { cfg: Pos[]; m: Measure; key: number[] } | null = null;
+  const consider = (cfg: Pos[]) => {
+    const m = measure(page, st, cfg, level);
+    if (m.invalid) return false;
+    const key = keyOf(m);
+    if (!best || less(key, best.key)) { best = { cfg, m, key }; return true; }
+    return false;
+  };
+  if (exhaustive && total <= COMBO_LIMIT) {
+    const walk = (i: number, cur: Pos[]) => {
+      if (i === opts.length) { consider(cur.slice()); return; }
+      for (const o of opts[i]) { cur[i] = o; walk(i + 1, cur); }
+    };
+    walk(0, []);
+  } else {
+    consider(st.items.map((): Pos => ({ t: 'home' })));
+    for (let pass = 0; pass < 3 && best; pass++) {
+      let improved = false;
+      st.items.forEach((_, i) => {
+        for (const o of opts[i]) {
+          const cfg = (best as { cfg: Pos[] }).cfg.slice();
+          cfg[i] = o;
+          if (consider(cfg)) improved = true;
+        }
+      });
+      if (!improved) break;
+    }
+  }
+  const b = best as { cfg: Pos[]; m: Measure } | null;
+  if (!b) return null;
+  // Still more than one sheet and no sheet saved by moving things: keep the layout as authored rather than a reshuffle that gains nothing.
+  const homeCfg = st.items.map((): Pos => ({ t: 'home' }));
+  const homeM = measure(page, st, homeCfg, level);
+  if (!homeM.invalid && homeM.sheets > 1 && b.m.sheets >= homeM.sheets) return { cfg: homeCfg, m: homeM };
+  return { cfg: b.cfg, m: b.m };
+}
+
+const describe = (st: FitState, cfg: Pos[]): string[] => cfg.map((p, i) => {
+  const n = st.items[i].name;
+  if (p.t === 'home') return '';
+  if (p.t === 'margin') return `${n} → margin${p.a ? ` beside block ${p.a}` : ''}`;
+  if (p.t === 'between') return `${n} → between the cards`;
+  if (p.t === 'end') return `${n} → end of the topic`;
+  if (p.t === 'endwide') return `${n} → full width at the end`;
+  return `${n} → ${p.wide ? 'full width' : 'main column'}`;
+}).filter(Boolean);
+
+interface Fit { sheets: number; height: number; level: number; cfg: Pos[] }
+
+/**
+ * Fewest sheets across placements × density levels fromLevel..toLevel; at equal sheets the least density change wins.
+ * Quick descent finds the first level that fits, then exhaustive searches at that level and the ones above it check that
+ * no lighter density would have done. Applies the winner.
+ */
+function fitPage(page: HTMLElement, fromLevel = 0, toLevel = LADDER.length - 1): Fit | null {
+  const st = stateFor(page);
+  if (!st) return null;
+  type Cand = { level: number; cfg: Pos[]; m: Measure; key: number[] };
+  const mk = (level: number, res: { cfg: Pos[]; m: Measure }): Cand => ({ level, cfg: res.cfg, m: res.m, key: [res.m.sheets, level, ...keyOf(res.m).slice(1)] });
+  let best: Cand | null = null;
+  let fitLevel = -1;
+  for (let level = fromLevel; level <= toLevel; level++) {
+    const res = searchLevel(page, st, level, fromLevel === toLevel);
+    if (!res) continue;
+    const c = mk(level, res);
+    if (!best || less(c.key, best.key)) best = c;
+    if (res.m.sheets === 1) { fitLevel = level; break; }
+  }
+  if (best && fitLevel >= 0 && fromLevel !== toLevel) {
+    // polish: exhaustive at the level found, and at lighter levels in case the quick search missed a layout
+    for (let level = fitLevel; level >= fromLevel; level--) {
+      const res = searchLevel(page, st, level, true);
+      if (!res) break;
+      const c = mk(level, res);
+      if (res.m.sheets === 1 && less(c.key, best.key)) best = c;
+      else if (level < fitLevel && res.m.sheets !== 1) break;
+    }
+  }
+  if (!best) return null;
+  applyConfig(page, st, best.cfg, best.level);
+  return { sheets: best.m.sheets, height: best.m.height, level: best.level, cfg: best.cfg };
+}
 
 /** Solo fit of every notes page. */
 export function fitNotePages(): string[] {
   const log: string[] = [];
   document.querySelectorAll<HTMLElement>('section.page').forEach((page) => {
     const r = fitPage(page);
-    if (r && (window as unknown as { __FIT_DEBUG__?: boolean }).__FIT_DEBUG__) log.push(`[debug] ${states.get(page)!.name}: sheets=${r.sheets} height=${Math.round(r.height)} level=${r.level}`);
-    if (r && (r.level > 0 || r.moved.length)) {
-      const parts: string[] = [];
-      if (r.moved.length) parts.push(`moved ${describe(r.moved)}`);
+    if (!r) return;
+    const st = states.get(page)!;
+    if (debug()) log.push(`[debug] ${st.name}: sheets=${r.sheets} height=${Math.round(r.height)} level=${r.level}`);
+    const moves = describe(st, r.cfg);
+    if (r.level > 0 || moves.length) {
+      const parts = [...moves];
       if (r.level > 0) parts.push(LADDER[r.level].label);
-      log.push(`${states.get(page)!.name}: ${parts.join('; ')} → ${r.sheets} sheet${r.sheets > 1 ? 's' : ''}`);
+      log.push(`${st.name}: ${parts.join('; ')} → ${r.sheets} sheet${r.sheets > 1 ? 's' : ''}`);
     }
   });
   return log;
@@ -202,8 +357,8 @@ export function fitNotePages(): string[] {
 
 /**
  * Whitespace rule: a sheet may waste about 30% (counting empty margins). A short topic that leaves its sheet under 70%
- * full shares it with the next topic when the two fit together — shrinking the boxes of both (down to 80%) if that is
- * what it takes. Footers and badges adapt (a joined topic has no sheet of its own).
+ * full shares it with the next topic when the two fit together — at a denser card setting for both if that is what it
+ * takes. Footers and badges adapt (a joined topic has no sheet of its own).
  */
 export function packPages(): string[] {
   const log: string[] = [];
@@ -216,7 +371,6 @@ export function packPages(): string[] {
 
   for (const el of pages) {
     const sheet = sheetOf(el);
-    if ((window as unknown as { __FIT_DEBUG__?: boolean }).__FIT_DEBUG__) log.push(`[debug] pack ${states.get(el)?.name ?? el.querySelector('h1,h2')?.textContent ?? el.dataset.page}: group=${group.length} used=${Math.round(used())} h=${Math.round(height(el))} single=${single(el)} joinable=${!!el.dataset.joinable}`);
     if (group.length && el.dataset.joinable && el.dataset.page === group[0].dataset.page && single(el) && used() < 0.7 * sheet) {
       const members = [...group, el];
       const before = members.map((m) => (states.has(m) ? states.get(m)!.level : 0));
@@ -229,7 +383,7 @@ export function packPages(): string[] {
       }
       if (ok) {
         const lv = states.get(el)?.level ?? 0;
-        log.push(`${states.get(el)?.name ?? 'page'}: shares the sheet with the topic before it${lv > 0 ? ` (boxes at ${Math.round(LADDER[lv].bs * 100)}%)` : ''}`);
+        log.push(`${states.get(el)?.name ?? 'page'}: shares the sheet with the topic before it${lv > 0 ? ` (${LADDER[lv].label})` : ''}`);
         group = members;
         continue;
       }
@@ -241,7 +395,7 @@ export function packPages(): string[] {
   return log;
 }
 
-/** Clean up after fitting, and put a hairline divider between boxes that still touch (it takes over the gap: no added height). */
+/** Clean up after fitting, and put a hairline divider between cards that still touch (it takes over the gap: no added height). */
 export function finalizeFits(): string[] {
   const log: string[] = [];
   document.querySelectorAll<HTMLElement>('section.page').forEach((page) => {
@@ -249,8 +403,8 @@ export function finalizeFits(): string[] {
     const body = page.querySelector<HTMLElement>('.page-body');
     if (!body) return;
     if (st) st.items.forEach((it) => it.ph.remove());
-    body.querySelectorAll(':scope > .aside:empty').forEach((a) => a.remove());
-    for (let guard = 0; guard < 6; guard++) {
+    body.querySelectorAll(':scope > .aside').forEach((a) => { if (!a.children.length) a.remove(); });
+    for (let guard = 0; guard < 10; guard++) {
       const second = adjacentBoxes(body);
       if (!second) break;
       const rule = document.createElement('div');
@@ -258,7 +412,7 @@ export function finalizeFits(): string[] {
       rule.setAttribute('aria-hidden', 'true');
       if (second.hasAttribute('data-wide') || second.querySelector(':scope > [data-wide]')) rule.setAttribute('data-wide', '');
       body.insertBefore(rule, second);
-      log.push(`${st?.name ?? 'page'}: divider between two boxes`);
+      log.push(`${st?.name ?? 'page'}: divider between two cards`);
     }
   });
   return log;

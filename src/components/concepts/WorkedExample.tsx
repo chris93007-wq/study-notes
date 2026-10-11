@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
-import { boxScale, SCALE_DOC } from '../boxScale';
+import { densityStyle, type Density } from '../density';
 
 /**
  * Full worked-example walkthrough in a card: "Worked Example" badge + title, a Setup sentence (with an
@@ -13,10 +13,10 @@ export interface WorkedExampleStep {
   lines?: string[];
 }
 export interface WorkedExampleProps {
-  /** Full page width on a margin-layout page (default). Pass `wide={false}` to set the card in the main column (≈62%) beside the margin notes, which suits short examples with no big table. */
+  /** Pin the width: true = full page width, false = main column (≈62%, beside the margin notes). Leave it out and the whitespace fitter chooses (it starts from full width). */
   wide?: boolean;
-  /** Scale this box between 0.8 and 1 (default 1): type, spacing and line thickness shrink together. */
-  scale?: number;
+  /** Card density: "comfortable" (100%, default), "cozy" (90%), "compact" (80%) or a number 0.8–1. Everything inside shrinks together (labels, step lines, answer banner). Leave it out and the fitter picks the least density that makes the topic fit. */
+  density?: Density;
   title: string;
   /** Badge text: 'Worked Example' (default) for numeric walk-throughs, or 'Example' for any other example (a scenario, a diagram, a comparison). Every example goes in this card. */
   label?: string;
@@ -38,11 +38,10 @@ export interface WorkedExampleProps {
 
 const GRID = 'repeat(auto-fit, minmax(250px, 1fr))';
 
-export function WorkedExample({ title, label = 'Worked Example', setup, context, table, steps = [], answer, soWhat, chapter, wide, scale }: WorkedExampleProps) {
-  const box = boxScale(scale);
+export function WorkedExample({ title, label = 'Worked Example', setup, context, table, steps = [], answer, soWhat, chapter, wide, density }: WorkedExampleProps) {
   const accent = ch(chapter, 500);
   const ink = ch(chapter, 900);
-  const card: CSSProperties = { columnSpan: 'all', border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
+  const card: CSSProperties = { border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
   const wrap: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', fontFamily: 'var(--font-body)' };
   const head: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap', breakAfter: 'avoid' };
   const badge: CSSProperties = { display: 'inline-flex', background: accent, color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-pill)' };
@@ -95,7 +94,8 @@ export function WorkedExample({ title, label = 'Worked Example', setup, context,
   );
 
   return (
-    <div data-box data-wide={wide === false ? undefined : true} className={box.className} style={{ ...box.vars, ...card, breakInside: 'avoid' }}>
+    <div data-box data-width-auto={wide === undefined || undefined} data-wide={wide === false ? undefined : true} style={{ breakInside: 'avoid', columnSpan: 'all' }}>
+     <div className="card-density" style={{ ...densityStyle(density), ...card }}>
       <div style={wrap}>
         <div style={head}><span style={badge}>{label}</span><h3 style={titleStyle}>{title}</h3></div>
         {/* setup beside the data table; the work beside the answer and the so-what */}
@@ -115,6 +115,7 @@ export function WorkedExample({ title, label = 'Worked Example', setup, context,
           </div>
         )}
       </div>
+     </div>
     </div>
   );
 }

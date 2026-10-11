@@ -103,7 +103,7 @@ async function readMarkers(pdf: Buffer) {
  * Whitespace audit of the finished PDF. Per sheet: how much of the printable area is filled (lowest text above the
  * footer). Flags (1) a sheet left partly empty because the next block jumped to the following sheet, and (2) a topic
  * that spans two sheets whose content would fit on one — the cases the authoring rules tell you to fix by moving a
- * margin note into the text, switching an example to wide={false}, or trimming content.
+ * margin note into the text, shortening a margin note, trimming words, or splitting a long example.
  */
 async function auditWhitespace(pdf: Buffer): Promise<string[]> {
   const doc = await pdfjs.getDocument({ data: new Uint8Array(pdf), useSystemFonts: false }).promise;
@@ -135,7 +135,7 @@ async function auditWhitespace(pdf: Buffer): Promise<string[]> {
       const combined = fills[i] + fills[i + 1];
       out.push(`whitespace: page ${i + 1} is ${Math.round(blank * 100)}% empty at the bottom because the next block moved to page ${i + 2}` + (combined <= 0.96 ? ` — these two pages hold ${Math.round(combined * 100)}% of one sheet; fit them on one` : ''));
     } else if (cont && fills[i + 1] > 0 && fills[i + 1] < 0.25 && starts[i] !== undefined && (i + 2 >= fills.length || starts[i + 2])) {
-      out.push(`whitespace: only a ${Math.round(fills[i + 1] * 100)}% tail spills onto page ${i + 2} — trim about ${Math.round(fills[i + 1] * 900)}px from the topic (shorter margin note, wide={false} example, or fewer words) to keep it on one sheet`);
+      out.push(`whitespace: only a ${Math.round(fills[i + 1] * 100)}% tail spills onto page ${i + 2} — trim about ${Math.round(fills[i + 1] * 900)}px from the topic (a shorter margin note, a shorter example, or fewer words) to keep it on one sheet`);
     } else if (!cont && blank >= 0.6 && fills[i] > 0.02) {
       out.push(`whitespace: page ${i + 1} is only ${Math.round(fills[i] * 100)}% full (a short topic; consider letting it share a sheet)`);
     }
@@ -217,6 +217,8 @@ async function main() {
   const server = await preview({ root, preview: { port: 0, host: '127.0.0.1', open: false }, logLevel: 'error' });
   const base = server.resolvedUrls?.local[0] ?? 'http://127.0.0.1:4173/';
   const browser = await launchBrowser();
+  const chromeMajor = Number(/\d+/.exec(browser.version())?.[0] ?? 0);
+  if (chromeMajor && chromeMajor < 128) console.warn(`  ⚠ Chromium ${chromeMajor} found; card density uses CSS zoom, which needs Chrome/Chromium 128 or newer for exact layout. Update Chrome (or set CHROMIUM_PATH) if cards look off.`);
   mkdirSync(outDir, { recursive: true });
   let failed = false;
 
@@ -248,7 +250,7 @@ async function main() {
           const entry = pred[n];
           if (!entry) continue;
           const printed = (ns[k + 1] != null ? tocPages[ns[k + 1]] : numPages + 1) - tocPages[n];
-          if (printed > entry.sheets) { bias[entry.index] = Math.min(160, (bias[entry.index] ?? 0) + 24); changed = true; }
+          if (printed > entry.sheets) { bias[entry.index] = Math.min(48, (bias[entry.index] ?? 0) + 16); changed = true; }
         }
         if (!changed) break;
         await page.addInitScript((b) => { window.__FIT_BIAS__ = b; }, [...bias]);
