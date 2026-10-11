@@ -85,14 +85,22 @@ h1,h2,h3,h4{break-after:avoid}
  * grid rows, split cleanly across printed sheets. Anything marked data-wide (worked examples, tables, headers,
  * <Wide>) spans the full page and clears the margin notes above it.
  */
-.page{--main-w:62%;--aside-w:34%}
+.page{--main-w:62%;--aside-w:34%;--aside-gap:21.3px}
 .page[data-orientation="landscape"]{--main-w:400px;--aside-w:min(380px, calc(100% - 440px))}
 .page[data-layout="margin"] .page-body{display:block}
 .page[data-layout="margin"] .page-body::after{content:"";display:table;clear:both}
 .page[data-layout="margin"] .page-body > *{width:var(--main-w)}
+.page[data-layout="margin"] .page-body > [hidden]{display:none}
 .page[data-layout="margin"] .page-body > [data-wide]{width:auto;clear:both}
 .page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w)}
-.page[data-layout="margin"] .page-body > .aside > * + *{margin-top:var(--space-3)}
-.aside > * + *{margin-top:var(--space-3)}
+.page[data-layout="margin"] .page-body > .aside > * + *{margin-top:var(--aside-gap)}
+.aside > * + *{margin-top:var(--aside-gap)}
 .page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--space-4)}
 .page[data-layout="margin"] .page-body > :not(p):not(.aside) + p{margin-top:var(--space-4)}
+
+/* A topic that fits in the rest of the previous sheet continues on it (set by joinShortPages in NotesDocument). */
+@media print{
+  .page + .page[data-join]{break-before:auto;margin-top:32px}
+}
+.page[data-join] .page-badge{display:none}
+@media screen{.page[data-join]{outline:2px dashed var(--chapter-1-300)}}

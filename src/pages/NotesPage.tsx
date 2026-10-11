@@ -20,6 +20,11 @@ export interface NotesPageProps {
    */
   layout?: 'margin' | 'columns' | 'single';
   /**
+   * A short topic shares the sheet with the topic before it when it fits in the space left (24pt below it), instead of
+   * starting a new sheet. Default true; set false to force a fresh sheet. Topics that don't fit start a new sheet as before.
+   */
+  join?: boolean;
+  /**
    * Dense per-topic lecture notes: TopicHeader, paragraphs, Sections, ConceptCards, WorkedExamples,
    * Callouts, tables, diagrams. Plain <p> children get the notes body style. Use <Columns> for 2-col asides.
    */
@@ -27,9 +32,9 @@ export interface NotesPageProps {
 }
 
 /** A real per-topic notes page — flows onto as many sheets as the content needs. */
-export function NotesPage({ toc, badge = 'Notes Page', orientation = 'portrait', columns, layout, children }: NotesPageProps) {
+export function NotesPage({ toc, badge = 'Notes Page', orientation = 'portrait', columns, layout, join = true, children }: NotesPageProps) {
   return (
-    <Page toc={toc} badge={badge} orientation={orientation} layout={layout ?? (columns == null ? 'margin' : columns > 1 ? 'columns' : 'single')} columns={columns ?? 2} className="notes-flow">
+    <Page join={join} toc={toc} badge={badge} orientation={orientation} layout={layout ?? (columns == null ? 'margin' : columns > 1 ? 'columns' : 'single')} columns={columns ?? 2} className="notes-flow">
       {children}
     </Page>
   );

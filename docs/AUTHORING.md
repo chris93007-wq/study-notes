@@ -37,6 +37,7 @@ These are the design decisions settled in the design sessions. Keep to them.
   1 indigo · 2 orange · 3 teal · 4 pink · 5 lime · 6 deep purple · 7 amber · 8 light blue · 9 deep orange ·
   10 purple · 11 cyan · 12 light green · 13 blue.
 - **Red, green and yellow are reserved.** Never use them as a chapter color.
+- **One hue per chapter.** Every shade of a chapter (-50 … -900) is generated from that chapter's -500 hue (same hue, different lightness), so a chapter never drifts into a neighbouring Material hue (amber -900 no longer turns orange). Don't mix hues from different palette families inside one component.
 - Text on color always uses the chapter's pastel **-100 fill with -900 ink**, never a translucent tint.
 - The `PageBadge` on every page uses the document's `brandChapter`, not the topic color.
 - The full Material palette is also available directly: `var(--green-100)`, `var(--deep-orange-700)` and so on.
@@ -49,8 +50,11 @@ These are the design decisions settled in the design sessions. Keep to them.
 
 **Reading layout** (ADHD-friendly, textbook-informed; settled with Christine):
 - **Measure:** reading text is 50–70 characters per line. Notes pages use the **margin layout** (the `NotesPage` default): a main column about 62% wide (≈60 characters at 11 pt) and a margin about 34% wide. Reference pages (`QuizPage`, `GlossaryPage`, or `<NotesPage layout="columns">`) use 2 equal columns (≈60 characters). Use `layout="single"` only for exceptions.
-- **Callouts live in the margin.** All four kinds (Key Insight, Notes, Memory Aid, Exam Trap) go inside `<Aside>`, placed just *before* the paragraph, card or section they annotate, so the main column stays continuous prose. Several callouts in one `<Aside>` stack.
+- **Margin notes are a title and bullets, not cards.** `Callout` renders a colored title (with a rule above it, only when it has a title) over a short bullet list, one bullet per sentence (or pass `items`). **Callouts live in the margin.** All four kinds (Key Insight, Notes, Memory Aid, Exam Trap) go inside `<Aside>`, placed just *before* the paragraph, card or section they annotate, so the main column stays continuous prose. Several callouts in one `<Aside>` stack.
 - **Balance the two columns.** Decide per page what sits in the margin so both columns end at about the same height: usually the callouts in the margin and the concept card in the main column under the intro; move the card into the `<Aside>` only when the intro prose is long. An empty margin or an empty main column beside a tall neighbour is wasted space.
+- **A worked example is not wrapped in a `Section`**: its card is already labelled, so a second title line would repeat it.
+- **Short topics share a sheet.** A `NotesPage` that fits in what is left of the previous sheet (plus a 24 pt gap) continues there instead of starting a new one (`join={false}` to opt out). Topics that don't fit start a new sheet.
+- **Topic Map cards:** `TopicMapPage` tries margin notes beside the introduction, then a 2-column grid, then a 4-column grid, and keeps the first that fits on one sheet.
 - **Wide blocks span the page:** worked examples, tables, Matrix, Split, headers and any `<Section wide>` / `<Wide>`. They clear the margin notes above them, so put the `<Aside>` above the text it belongs with, not above a wide block.
 - **Leading:** 1.5 for reading text (prose, definition and why text in cards, callouts); 1.35 for compact items (table cells, formula rows, steps, glossary entries, cheat-sheet bullets); headings 1.2.
 - **Paragraph spacing:** a full 2× the font size (`--para-gap`, 22 pt) between paragraphs of running prose. Bullets, table cells and glossary entries stay tight.

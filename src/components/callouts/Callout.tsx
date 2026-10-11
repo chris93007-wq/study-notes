@@ -1,28 +1,57 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { Children, Fragment, isValidElement, type CSSProperties, type ReactNode } from 'react';
 import { ch, type Chapter } from '../types';
 
 /**
- * Pastel note box, colored by the chapter it sits in (never a fixed per-type color). The label sits in a
- * notch that breaks the rounded border. Only three callout kinds exist in notes — "KEY INSIGHT", "NOTES"
- * and "MEMORY AID" — everything else is a regular Section.
+ * Margin note: a chapter-colored title over a short bullet list — no box, no fill. Four kinds exist in notes —
+ * "KEY INSIGHT", "NOTES", "MEMORY AID" and "EXAM TRAP". Pass `items` for explicit bullets; otherwise the children are
+ * split into one bullet per sentence (inline <strong>/<mark> are kept).
  */
 export interface CalloutProps {
-  /** Which chapter color (1-13) tints the border and background — always pass this */
+  /** Which chapter color (1-13) tints the rule, title and bullets — always pass this */
   chapter: Chapter;
-  /** All-caps label shown in the border notch, typed by hand (e.g. "KEY INSIGHT", "NOTES", "MEMORY AID") */
+  /** All-caps title, typed by hand (e.g. "KEY INSIGHT", "NOTES", "MEMORY AID", "EXAM TRAP") */
   label?: string;
+  /** Explicit bullets (each may contain inline markup). Overrides children. */
+  items?: ReactNode[];
   children?: ReactNode;
 }
 
-export function Callout({ chapter, label, children }: CalloutProps) {
+/** Split text children into one bullet per sentence, carrying inline elements along with the sentence they sit in. */
+export function toBullets(children: ReactNode): ReactNode[][] {
+  const bullets: ReactNode[][] = [[]];
+  const push = (n: ReactNode) => bullets[bullets.length - 1].push(n);
+  const walk = (node: ReactNode) => {
+    Children.forEach(node, (c) => {
+      if (typeof c === 'string' || typeof c === 'number') {
+        const parts = String(c).split(/(?<=[.?!][”"’)]?)\s+/);
+        parts.forEach((p, i) => {
+          if (i > 0) bullets.push([]);
+          if (p) push(p);
+        });
+      } else if (isValidElement(c) && c.type === Fragment) {
+        walk((c.props as { children?: ReactNode }).children);
+      } else push(c);
+    });
+  };
+  walk(children);
+  return bullets.filter((b) => b.some((x) => typeof x !== 'string' || x.trim()));
+}
+
+export function Callout({ chapter, label, items, children }: CalloutProps) {
   const dark = ch(chapter, 900);
-  const wrap: CSSProperties = { position: 'relative', background: ch(chapter, 100), border: `var(--box-border) solid ${dark}`, borderRadius: 'var(--box-radius)', padding: 'var(--box-pad)', paddingTop: 'var(--space-4)', marginTop: 10.3, breakInside: 'avoid' };
-  const labelStyle: CSSProperties = { position: 'absolute', top: -9, left: 14, background: 'var(--surface-page)', padding: '0 8.8px', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', color: dark };
-  const body: CSSProperties = { fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-prose-leading)', color: 'var(--ink-900)' };
+  const wrap: CSSProperties = { borderTop: label ? `3px solid ${ch(chapter, 500)}` : undefined, paddingTop: label ? 'var(--space-2)' : undefined, breakInside: 'avoid' };
+  const title: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color: dark, margin: '0 0 var(--space-2)' };
+  const list: CSSProperties = { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' };
+  const li: CSSProperties = { position: 'relative', paddingLeft: 14, fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--leading-compact)', color: 'var(--ink-900)' };
+  const rows = items ? items.map((i) => [i]) : toBullets(children);
   return (
     <div style={wrap}>
-      {label && <span style={labelStyle}>{label}</span>}
-      <div style={body}>{children}</div>
+      {label && <div style={title}>{label}</div>}
+      <ul style={list}>
+        {rows.map((b, i) => (
+          <li key={i} style={li}><span aria-hidden style={{ position: 'absolute', left: 0, color: ch(chapter, 500) }}>•</span>{b}</li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -18,7 +18,23 @@ export interface MermaidProps {
   maxWidth?: number;
 }
 
-const cssVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+/** Resolve a CSS variable to hex/rgb — chapter shades are oklch() relative colors, which Mermaid's color parser can't read. */
+const cssVar = (name: string) => {
+  const probe = document.createElement('span');
+  probe.style.color = `var(${name})`;
+  document.body.appendChild(probe);
+  const resolved = getComputedStyle(probe).color;
+  probe.remove();
+  if (!/^(rgb|#)/.test(resolved) || !resolved) {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    if (!resolved && raw) return raw;
+  }
+  if (/^rgb/.test(resolved)) return resolved;
+  const cv = document.createElement('canvas'); cv.width = cv.height = 1;
+  const g = cv.getContext('2d')!; g.fillStyle = resolved || '#000'; g.fillRect(0, 0, 1, 1);
+  const [r, gg, b] = g.getImageData(0, 0, 1, 1).data;
+  return `rgb(${r}, ${gg}, ${b})`;
+};
 
 // Mermaid keeps global config, so renders run one at a time.
 let queue: Promise<unknown> = Promise.resolve();

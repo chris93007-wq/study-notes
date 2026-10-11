@@ -219,30 +219,28 @@ export default function Week03() {
             formulas={['WTP_i = \\dfrac{u_i}{\\beta_{price}}']}
             why={<>Price is the only attribute measured in <mark>real dollars</mark>. Dividing the upgrade’s utility by the price part-worth’s slope converts utils back into dollars.</>}
           />
-        <Section wide chapter={C.conjoint} title="Worked Example">
-          <WorkedExample
-            chapter={C.conjoint}
-            title="Converting Utility Into Willingness to Pay"
-            setup="Four binary attributes — Accuracy (5ft vs. 50ft), Battery (12hr vs. 32hr), Display (LCD vs. OLED), Price ($199 vs. $249) — fit with OLS regression on 300 ranked profiles."
-            context={
-              <ComparisonTable
-                chapter={C.conjoint}
-                columns={[{ key: 'v', label: 'Variable' }, { key: 'b', label: 'Partworth (β)', align: 'right' }]}
-                rows={[
-                  { v: '5ft → 50ft range', b: '11.85 utils' },
-                  { v: '$199 → $249', b: '−60.34 utils' },
-                ]}
-              />
-            }
-            steps={[
-              { label: 'Accuracy utility gained', lines: ['11.85 utils'] },
-              { label: 'Convert the price slope to a rate', lines: ['60.34 utils over a $50 span', '60.34 ÷ 50 = 1.207 utils per $1 → $0.829 per util'] },
-              { label: 'Apply the rate', lines: ['WTP = 11.85 utils × $0.829/util'] },
-            ]}
-            answer={{ value: '$9.83', label: 'Willingness to Pay' }}
-            soWhat="A 50ft range upgrade is worth under $10 to the average respondent — not enough to justify a $30 price increase on its own."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C.conjoint}
+          title="Converting Utility Into Willingness to Pay"
+          setup="Four binary attributes — Accuracy (5ft vs. 50ft), Battery (12hr vs. 32hr), Display (LCD vs. OLED), Price ($199 vs. $249) — fit with OLS regression on 300 ranked profiles."
+          context={
+            <ComparisonTable
+              chapter={C.conjoint}
+              columns={[{ key: 'v', label: 'Variable' }, { key: 'b', label: 'Partworth (β)', align: 'right' }]}
+              rows={[
+                { v: '5ft → 50ft range', b: '11.85 utils' },
+                { v: '$199 → $249', b: '−60.34 utils' },
+              ]}
+            />
+          }
+          steps={[
+            { label: 'Accuracy utility gained', lines: ['11.85 utils'] },
+            { label: 'Convert the price slope to a rate', lines: ['60.34 utils over a $50 span', '60.34 ÷ 50 = 1.207 utils per $1 → $0.829 per util'] },
+            { label: 'Apply the rate', lines: ['WTP = 11.85 utils × $0.829/util'] },
+          ]}
+          answer={{ value: '$9.83', label: 'Willingness to Pay' }}
+          soWhat="A 50ft range upgrade is worth under $10 to the average respondent — not enough to justify a $30 price increase on its own."
+        />
       </NotesPage>
 
       {/* ───────────── Review pages ───────────── */}

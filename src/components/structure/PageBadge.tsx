@@ -24,7 +24,7 @@ export function PageBadge({ label, week, chapter }: PageBadgeProps) {
   const pill: CSSProperties = { background: ch(c, 100), color: ch(c, 900), fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', padding: '4.4px 12.1px', borderRadius: 'var(--radius-pill)', textTransform: 'uppercase', flexShrink: 0 };
   const mono: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)', color: 'var(--ink-500)', letterSpacing: '0.04em', textTransform: 'uppercase' };
   return (
-    <div data-wide style={row}>
+    <div data-wide className="page-badge" style={row}>
       {wk && <span style={pill}>{wk}</span>}
       <span style={mono}>{label}</span>
     </div>

@@ -66,17 +66,15 @@ export default function FinalExamReview() {
         </Aside>
         <p>In a world with no taxes, no bankruptcy costs, and no information asymmetries, total firm value is independent of capital structure. If two otherwise-identical firms are priced differently once you account for leverage, an investor can combine long and short positions (“home-made leverage”) to capture a riskless arbitrage profit.</p>
           <ConceptCard chapter={C[1]} term="M-M Proposition I" definition="The total value of a firm is independent of its capital structure — debt vs. equity is just slicing the same pie differently." formulas={['V(\\text{firm}) = V(\\text{debt}) + V(\\text{equity})']} why="If two firms with identical underlying assets are priced differently once leverage is accounted for, buying the cheap one and shorting the expensive one (in matched proportions) nets a riskless profit today with zero net cash flow in every future state — competition erases that mispricing." />
-        <Section wide chapter={C[1]} title="Worked Example — HW1 Q1">
-          <WorkedExample
-            chapter={C[1]}
-            title="Arbitraging Two Identical Firms"
-            setup="Firm X: 1,000 shares @ $10 + 100 bonds @ $100 (V = $20,000). Firm Y: 2,000 shares @ $8 + 50 bonds @ $100 (V = $21,000). Both hold identical assets; bonds are risk-free zero-coupons at 10%."
-            table={{ columns: ['Trade', 'Cash flow today'], rows: [['Buy 50 shares of X (5%)', '−$500'], ['Buy 5 bonds of X (5%)', '−$500'], ['Short 100 shares of Y (5%)', '+$800'], ['Short 2.5 bonds of Y (5%)', '+$250']] }}
-            steps={[{ label: 'Net cash flow today', lines: ['−500 − 500 + 800 + 250 = +$50 arbitrage profit'] }, { label: 'Net cash flow at t = 1, every state', lines: ['Long and short positions exactly cancel = $0'] }]}
-            answer={{ value: '+$50', label: 'Riskless arbitrage profit' }}
-            soWhat="The arbitrage only works because X and Y hold identical underlying assets — you’re exploiting a pricing error, not creating value. This is the textbook M-M Prop I proof."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[1]}
+          title="Arbitraging Two Identical Firms"
+          setup="Firm X: 1,000 shares @ $10 + 100 bonds @ $100 (V = $20,000). Firm Y: 2,000 shares @ $8 + 50 bonds @ $100 (V = $21,000). Both hold identical assets; bonds are risk-free zero-coupons at 10%."
+          table={{ columns: ['Trade', 'Cash flow today'], rows: [['Buy 50 shares of X (5%)', '−$500'], ['Buy 5 bonds of X (5%)', '−$500'], ['Short 100 shares of Y (5%)', '+$800'], ['Short 2.5 bonds of Y (5%)', '+$250']] }}
+          steps={[{ label: 'Net cash flow today', lines: ['−500 − 500 + 800 + 250 = +$50 arbitrage profit'] }, { label: 'Net cash flow at t = 1, every state', lines: ['Long and short positions exactly cancel = $0'] }]}
+          answer={{ value: '+$50', label: 'Riskless arbitrage profit' }}
+          soWhat="The arbitrage only works because X and Y hold identical underlying assets — you’re exploiting a pricing error, not creating value. This is the textbook M-M Prop I proof."
+        />
       </NotesPage>
 
       {/* ───────────── 2 ───────────── */}
@@ -89,16 +87,14 @@ export default function FinalExamReview() {
         <Section wide chapter={C[2]} title="The Two Replicating Trades">
           <Matrix chapter={C[2]} rowLabels={['Firm delevers', 'Firm issues new debt']} colLabels={['Investor wants old leverage back']} cells={[['Buy more shares, financed by personal borrowing'], ['Sell some shares, buy some of the new debt in the same proportion']]} />
         </Section>
-        <Section wide chapter={C[2]} title="Worked Example — HW1 Sample Question">
-          <WorkedExample
-            chapter={C[2]}
-            title="Replicating a Levered Payoff From an Unlevered Firm"
-            setup="Firms U (all-equity, $500 stock) and L ($400 risk-free debt @ 10%) are identical, paying $150 boom / $50 slump (50/50 each). You hold $20 of L’s stock — replicate the same payoff using U instead."
-            steps={[{ label: 'L’s claim', lines: ['$20 of stock buys a residual claim after $40 interest is paid'] }, { label: 'Replicate with U + personal borrowing', lines: ['Buy a larger stake in U, financed partly by borrowing at the risk-free rate', 'This re-creates L’s leverage synthetically (“home-made leverage”)'] }]}
-            answer={{ value: 'M-M Prop II holds', label: 'Expected return on replica = L’s equity return' }}
-            soWhat="The exam version cares about mechanics: specify shares bought/sold and the exact dollar amount borrowed or lent — not just ‘it can be replicated.’"
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[2]}
+          title="Replicating a Levered Payoff From an Unlevered Firm"
+          setup="Firms U (all-equity, $500 stock) and L ($400 risk-free debt @ 10%) are identical, paying $150 boom / $50 slump (50/50 each). You hold $20 of L’s stock — replicate the same payoff using U instead."
+          steps={[{ label: 'L’s claim', lines: ['$20 of stock buys a residual claim after $40 interest is paid'] }, { label: 'Replicate with U + personal borrowing', lines: ['Buy a larger stake in U, financed partly by borrowing at the risk-free rate', 'This re-creates L’s leverage synthetically (“home-made leverage”)'] }]}
+          answer={{ value: 'M-M Prop II holds', label: 'Expected return on replica = L’s equity return' }}
+          soWhat="The exam version cares about mechanics: specify shares bought/sold and the exact dollar amount borrowed or lent — not just ‘it can be replicated.’"
+        />
       </NotesPage>
 
       {/* ───────────── 3 ───────────── */}
@@ -110,16 +106,14 @@ export default function FinalExamReview() {
         </Aside>
         <p>M-M Prop I still holds even when debt is risky (can default) — total firm value is still independent of capital structure — but risky debt opens the door to wealth transfers between old debtholders, new debtholders, and equity when new claims are issued without protective covenants. The pie’s size doesn’t change; who gets which slice can.</p>
         <ConceptCard chapter={C[3]} term="Value of a Risky Claim" definition="A risky claim is worth its expected (probability-weighted) payoff across states — never its promised face value." formulas={['V(\\text{claim}) = \\sum_{\\text{states}} p(\\text{state}) \\times \\min(\\text{promised},\\ \\text{available cash after senior claims})']} why="Face value only matters in states where the firm can fully pay it; in every other state the claim gets whatever cash is left after more senior claims are satisfied." />
-        <Section wide chapter={C[3]} title="Worked Example — HW1 Q4">
-          <WorkedExample
-            chapter={C[3]}
-            title="New Senior Debt Transfers Wealth From Old Debt to Equity"
-            setup="Old zero-coupon debt promises $100 at t = 1. Assets will be worth $200 / $100 / $50 (each p = 1/3). Firm issues new debt senior to the old, promising $50, and pays the proceeds out as a special dividend."
-            steps={[{ label: 'New debt (riskless)', lines: ['Paid $50 in every state → V(new debt) = $50'] }, { label: 'Old debt (now junior)', lines: ['Payoff becomes High $100 / Mid $50 / Low $0', 'V(old debt) after = 1/3(100)+1/3(50)+1/3(0) = $50 (down from $83.33)'] }, { label: 'Check: total firm value', lines: ['Unchanged at $116.67 (M-M holds)'] }]}
-            answer={{ value: '−$33.33 / +$33.33', label: 'Old debt’s loss = equity’s gain' }}
-            soWhat="No covenants = no protection. This is the textbook case for why bond covenants exist: without them, equity can enrich itself at existing bondholders’ expense by issuing new senior claims, even though total firm value never moves."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[3]}
+          title="New Senior Debt Transfers Wealth From Old Debt to Equity"
+          setup="Old zero-coupon debt promises $100 at t = 1. Assets will be worth $200 / $100 / $50 (each p = 1/3). Firm issues new debt senior to the old, promising $50, and pays the proceeds out as a special dividend."
+          steps={[{ label: 'New debt (riskless)', lines: ['Paid $50 in every state → V(new debt) = $50'] }, { label: 'Old debt (now junior)', lines: ['Payoff becomes High $100 / Mid $50 / Low $0', 'V(old debt) after = 1/3(100)+1/3(50)+1/3(0) = $50 (down from $83.33)'] }, { label: 'Check: total firm value', lines: ['Unchanged at $116.67 (M-M holds)'] }]}
+          answer={{ value: '−$33.33 / +$33.33', label: 'Old debt’s loss = equity’s gain' }}
+          soWhat="No covenants = no protection. This is the textbook case for why bond covenants exist: without them, equity can enrich itself at existing bondholders’ expense by issuing new senior claims, even though total firm value never moves."
+        />
       </NotesPage>
 
       {/* ───────────── 4 ───────────── */}
@@ -151,21 +145,19 @@ export default function FinalExamReview() {
         </Aside>
         <p>Adding personal taxes on interest income (<Tex tex="T_D" />) and equity income (<Tex tex="T_E" />) alongside the corporate tax (<Tex tex="T_C" />) shrinks debt’s net tax advantage to a single number, <em>g</em> — which can even turn negative.</p>
           <ConceptCard chapter={C[6]} term="Miller’s g" definition="The net value a dollar of debt adds to the firm after all three taxes — corporate, personal debt, and personal equity — are netted out." formulas={['g = 1 - \\dfrac{(1-T_C)(1-T_E)}{1-T_D}', 'V_L = V_U + g \\times D']} why="If T_D is high relative to T_C and T_E (interest taxed more heavily at the personal level), g shrinks — debt’s corporate-level advantage is partly or fully offset by investors demanding higher pre-tax yields on taxable bonds." />
-        <Section wide chapter={C[6]} title="Worked Example — HW2 Q2">
-          <WorkedExample
-            chapter={C[6]}
-            title="Reducing Debt When g Is Positive"
-            setup="E0 = $500M, D0 = $500M, 10M shares. Firm issues $250M new equity, uses proceeds to repurchase $250M debt. T_C = 35%, T_E = 10%, T_D = 20%."
-            steps={[
-              { label: 'Compute g', lines: ['g = 1 − [(0.65)(0.90)/(0.80)] = 1 − 0.73125 = 26.875%'] },
-              { label: 'Value impact of reducing debt', lines: ['ΔV = g × ΔD = 0.26875 × (−$250M) = −$67.1875M'] },
-              { label: 'New equity value & price', lines: ['Equity = $500M − $67.1875M = $432.8125M', 'Price/share = $432.8125M / 10M = $43.28 (down from $50)'] },
-              { label: 'Check at execution', lines: ['New shares issued ≈ 5,776,173', 'After execution: $682.8125M / 15,776,173 shares ≈ $43.28/share — UNCHANGED'] },
-            ]}
-            answer={{ value: 'g = 26.875%', label: 'Debt still has a net tax advantage' }}
-            soWhat="The share price before and after execution must match (only the announcement moves price) — a built-in self-check for this whole problem type."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[6]}
+          title="Reducing Debt When g Is Positive"
+          setup="E0 = $500M, D0 = $500M, 10M shares. Firm issues $250M new equity, uses proceeds to repurchase $250M debt. T_C = 35%, T_E = 10%, T_D = 20%."
+          steps={[
+            { label: 'Compute g', lines: ['g = 1 − [(0.65)(0.90)/(0.80)] = 1 − 0.73125 = 26.875%'] },
+            { label: 'Value impact of reducing debt', lines: ['ΔV = g × ΔD = 0.26875 × (−$250M) = −$67.1875M'] },
+            { label: 'New equity value & price', lines: ['Equity = $500M − $67.1875M = $432.8125M', 'Price/share = $432.8125M / 10M = $43.28 (down from $50)'] },
+            { label: 'Check at execution', lines: ['New shares issued ≈ 5,776,173', 'After execution: $682.8125M / 15,776,173 shares ≈ $43.28/share — UNCHANGED'] },
+          ]}
+          answer={{ value: 'g = 26.875%', label: 'Debt still has a net tax advantage' }}
+          soWhat="The share price before and after execution must match (only the announcement moves price) — a built-in self-check for this whole problem type."
+        />
       </NotesPage>
 
       {/* ───────────── 7 ───────────── */}
@@ -179,16 +171,14 @@ export default function FinalExamReview() {
           left={{ title: 'Direct Bearer', chapter: C[7], items: ['Debtholders, in the state where default happens', 'They recover less than going-concern value', 'Observable in that state’s snapshot'] }}
           right={{ title: 'Indirect / Ex-Ante Bearer', chapter: C[7], items: ['Equityholders, before default ever happens', 'Rational bondholders price the expected distress cost in at issuance', 'Equity pays through a higher required yield on debt'] }}
         />
-        <Section wide chapter={C[7]} title="Worked Example — HW2 Q1">
-          <WorkedExample
-            chapter={C[7]}
-            title="Implied Distress Costs From Observed Market Values"
-            setup="Good Time Co.: boom (p=.6) pays $250M, recession (p=.4) pays $100M. Required debt repayment = $150M. Actual observed market values: equity = $60M, debt = $125M."
-            steps={[{ label: 'No-distress-cost prediction', lines: ['V(debt) = 0.6(150) + 0.4(100) = $130M', 'V(equity) = 0.6(100) + 0.4(0) = $60M', 'Total = $190M'] }, { label: 'Actual observed total', lines: ['$60M + $125M = $185M'] }, { label: 'Implied distress cost', lines: ['$190M − $185M = $5M'] }]}
-            answer={{ value: '$5M', label: 'Implied distress cost — all absorbed by debt' }}
-            soWhat="Equity’s value is unchanged ($60M matches prediction exactly — it already gets $0 in recession). The entire shortfall shows up in debt’s value, because debt bears it directly in the state where it happens."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[7]}
+          title="Implied Distress Costs From Observed Market Values"
+          setup="Good Time Co.: boom (p=.6) pays $250M, recession (p=.4) pays $100M. Required debt repayment = $150M. Actual observed market values: equity = $60M, debt = $125M."
+          steps={[{ label: 'No-distress-cost prediction', lines: ['V(debt) = 0.6(150) + 0.4(100) = $130M', 'V(equity) = 0.6(100) + 0.4(0) = $60M', 'Total = $190M'] }, { label: 'Actual observed total', lines: ['$60M + $125M = $185M'] }, { label: 'Implied distress cost', lines: ['$190M − $185M = $5M'] }]}
+          answer={{ value: '$5M', label: 'Implied distress cost — all absorbed by debt' }}
+          soWhat="Equity’s value is unchanged ($60M matches prediction exactly — it already gets $0 in recession). The entire shortfall shows up in debt’s value, because debt bears it directly in the state where it happens."
+        />
       </NotesPage>
 
       {/* ───────────── 8 ───────────── */}
@@ -206,16 +196,14 @@ export default function FinalExamReview() {
             { term: 'New debt, equal seniority', explanation: 'Solve for face value F so expected pro-rata repayment (shared with old debt) equals the amount needed', why: 'Equal-rank debt shares the recovery pool with old debt in default states' },
           ]} />
         </Section>
-        <Section wide chapter={C[8]} title="Worked Example — HW3 Q2">
-          <WorkedExample
-            chapter={C[8]}
-            title="A Positive-NPV Project That Can’t Get Financed"
-            setup="Longhorn has $70M senior debt outstanding. New project costs $100M, pays $90M (p=.5) or $210M (p=.5) — NPV = +$50M, genuinely positive. Can it raise the $100M needed?"
-            table={{ columns: ['Route', 'Max raisable', 'Enough?'], rows: [['(a) New equity', 'E[max(CF−70,0)] = 0.5(20)+0.5(140) = $80M', 'No'], ['(b) New junior debt', 'Same $80M ceiling', 'No'], ['(c) New senior debt, F=$120', '0.5(56.84)+0.5(120) = $88.42M', 'No'], ['(d) New senior debt, F=$140', '0.5(60)+0.5(140) = $100M', 'Yes']] }}
-            answer={{ value: 'Only route (d) works', label: 'Equal-seniority debt at F = $140M' }}
-            soWhat="Equity is squeezed to $0 in both states; even the OLD $70M senior debt is diluted (now recovers only an expected $50M). A genuinely positive-NPV project ($50M!) still can’t get funded through equity or junior debt at ANY terms — that’s the whole debt overhang result."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[8]}
+          title="A Positive-NPV Project That Can’t Get Financed"
+          setup="Longhorn has $70M senior debt outstanding. New project costs $100M, pays $90M (p=.5) or $210M (p=.5) — NPV = +$50M, genuinely positive. Can it raise the $100M needed?"
+          table={{ columns: ['Route', 'Max raisable', 'Enough?'], rows: [['(a) New equity', 'E[max(CF−70,0)] = 0.5(20)+0.5(140) = $80M', 'No'], ['(b) New junior debt', 'Same $80M ceiling', 'No'], ['(c) New senior debt, F=$120', '0.5(56.84)+0.5(120) = $88.42M', 'No'], ['(d) New senior debt, F=$140', '0.5(60)+0.5(140) = $100M', 'Yes']] }}
+          answer={{ value: 'Only route (d) works', label: 'Equal-seniority debt at F = $140M' }}
+          soWhat="Equity is squeezed to $0 in both states; even the OLD $70M senior debt is diluted (now recovers only an expected $50M). A genuinely positive-NPV project ($50M!) still can’t get funded through equity or junior debt at ANY terms — that’s the whole debt overhang result."
+        />
       </NotesPage>
 
       {/* ───────────── 9 ───────────── */}
@@ -227,16 +215,14 @@ export default function FinalExamReview() {
         </Aside>
         <p>Once debt is in place, equityholders — who keep all the upside above the debt’s face value but are protected by limited liability on the downside — have an incentive to switch to a riskier project even if it has lower (or negative) expected value, because the extra variance benefits the option-like equity claim at debtholders’ expense.</p>
           <ConceptCard chapter={C[9]} term="Equity’s Project Choice Under Debt" definition="Equity picks whichever project maximizes its own residual, not whichever maximizes total firm value." formulas={['\\max_{\\text{project}}\\ \\mathbb{E}[\\max(CF - F,\\ 0)]']} why="If the riskier project wins on this metric even with lower/negative NPV, rational lenders anticipate the switch and price debt (or ration credit) accordingly — which can prevent even a genuinely good, safer project from being financed." />
-        <Section wide chapter={C[9]} title="Worked Example — HW3 Q3C">
-          <WorkedExample
-            chapter={C[9]}
-            title="Risk-Shifting Poisons Financing for the Good Project Too"
-            setup="Project 1: $300 (p=.5) / $120 (p=.5), NPV=+$10. Project 2: $600 (p=.2) / $80 (p=.8), NPV=−$16. No binding commitment — can the firm raise $200 in the bond market for either?"
-            steps={[{ label: 'If F ≤ 112.5', lines: ['Equity prefers Project 1 (safe, positive-NPV)', 'Max raisable while keeping Project 1 = $112.50 — short of $200'] }, { label: 'If F > 112.5', lines: ['Equity switches to Project 2 (risk-shifting) despite negative NPV', 'Max E[repayment] capped at 0.2(600)+0.8(80) = $184 — still short of $200'] }]}
-            answer={{ value: 'No', label: 'Cannot raise $200 for either project' }}
-            soWhat="Anticipated asset substitution poisons financing even for the genuinely good project. Compute equity’s payoff under each project at the proposed face value — don’t just compare the two projects’ raw NPVs."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[9]}
+          title="Risk-Shifting Poisons Financing for the Good Project Too"
+          setup="Project 1: $300 (p=.5) / $120 (p=.5), NPV=+$10. Project 2: $600 (p=.2) / $80 (p=.8), NPV=−$16. No binding commitment — can the firm raise $200 in the bond market for either?"
+          steps={[{ label: 'If F ≤ 112.5', lines: ['Equity prefers Project 1 (safe, positive-NPV)', 'Max raisable while keeping Project 1 = $112.50 — short of $200'] }, { label: 'If F > 112.5', lines: ['Equity switches to Project 2 (risk-shifting) despite negative NPV', 'Max E[repayment] capped at 0.2(600)+0.8(80) = $184 — still short of $200'] }]}
+          answer={{ value: 'No', label: 'Cannot raise $200 for either project' }}
+          soWhat="Anticipated asset substitution poisons financing even for the genuinely good project. Compute equity’s payoff under each project at the proposed face value — don’t just compare the two projects’ raw NPVs."
+        />
       </NotesPage>
 
       {/* ───────────── 10 ───────────── */}
@@ -246,16 +232,14 @@ export default function FinalExamReview() {
           <Memory chapter={C[10]}>“It’s not just lawyers’ fees — it’s suppliers getting nervous, customers walking, and your best people updating their resumes.”</Memory>
         </Aside>
         <p>Beyond direct legal/administrative bankruptcy costs, financial distress imposes strategic/indirect costs through relationships with non-financial stakeholders: suppliers tighten credit terms, customers avoid a firm that might not honor warranties, key employees leave, competitors prey on a weakened rival. These costs can be large even without an actual filing — simply from the increased risk of distress.</p>
-        <Section wide chapter={C[10]} title="Worked Example — HW3 Q8 / G&T 17.5">
-          <WorkedExample
-            chapter={C[10]}
-            title="Weighing a Tax Shield Against a Relationship Cost"
-            setup="BCD repurchases 40% of stock funded by $1B new debt @ 12%, T_C = 40%. Suppliers threaten to revoke net-30 credit terms, costing 2% on $1.5B inventory."
-            steps={[{ label: 'Tax shield gained', lines: ['$1,000M × 12% × 40% = $48M'] }, { label: 'Strategic/indirect cost', lines: ['2% × $1,500M = $30M (lost favorable trade credit)'] }, { label: 'Net benefit', lines: ['$48M − $30M = +$18M → proceed with the repurchase'] }]}
-            answer={{ value: '+$18M', label: 'Net benefit — proceed' }}
-            soWhat="A complete capital-structure analysis weighs the tax benefit against ALL costs of leverage — the $30M strategic cost may even understate the true relationship risk, since it’s harder to quantify precisely than the tax savings."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[10]}
+          title="Weighing a Tax Shield Against a Relationship Cost"
+          setup="BCD repurchases 40% of stock funded by $1B new debt @ 12%, T_C = 40%. Suppliers threaten to revoke net-30 credit terms, costing 2% on $1.5B inventory."
+          steps={[{ label: 'Tax shield gained', lines: ['$1,000M × 12% × 40% = $48M'] }, { label: 'Strategic/indirect cost', lines: ['2% × $1,500M = $30M (lost favorable trade credit)'] }, { label: 'Net benefit', lines: ['$48M − $30M = +$18M → proceed with the repurchase'] }]}
+          answer={{ value: '+$18M', label: 'Net benefit — proceed' }}
+          soWhat="A complete capital-structure analysis weighs the tax benefit against ALL costs of leverage — the $30M strategic cost may even understate the true relationship risk, since it’s harder to quantify precisely than the tax savings."
+        />
       </NotesPage>
 
       {/* ───────────── 11 ───────────── */}
@@ -315,16 +299,14 @@ export default function FinalExamReview() {
         <Section wide chapter={C[13]} title="Direction of the Wealth Transfer">
           <Matrix chapter={C[13]} rowLabels={['Issue price = true value', 'Issue price > true value', 'Issue price < true value']} colLabels={['Existing shareholders’ $ value']} cells={[['Unchanged — ownership % falls, $ value doesn’t'], ['Gain — new buyers overpay'], ['Lose — new buyers get a bargain (what asymmetric info makes more likely)']]} />
         </Section>
-        <Section wide chapter={C[13]} title="Worked Example — HW4 Q5A">
-          <WorkedExample
-            chapter={C[13]}
-            title="A Repurchase at the Wrong Price Transfers Wealth"
-            setup="400,000 shares, true value $40/share. Firm repurchases 100,000 shares at $50, $40, or $30."
-            table={{ columns: ['Repurchase price', 'Final price/share', 'Who gains'], rows: [['$50 (above true value)', '$36.67', 'Sellers — at remaining holders’ expense'], ['$40 (= true value)', '$40.00', 'No transfer'], ['$30 (below true value)', '$43.33', 'Those who stay — at sellers’ expense']] }}
-            answer={{ value: 'Wealth moves toward the better-priced side', label: 'Direction of transfer' }}
-            soWhat="Mirror-image logic applies to new issuance (HW4 Q5b): issuing ABOVE true value benefits existing holders; issuing BELOW true value costs them. The transfer always runs toward whichever side got the better price relative to true value."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[13]}
+          title="A Repurchase at the Wrong Price Transfers Wealth"
+          setup="400,000 shares, true value $40/share. Firm repurchases 100,000 shares at $50, $40, or $30."
+          table={{ columns: ['Repurchase price', 'Final price/share', 'Who gains'], rows: [['$50 (above true value)', '$36.67', 'Sellers — at remaining holders’ expense'], ['$40 (= true value)', '$40.00', 'No transfer'], ['$30 (below true value)', '$43.33', 'Those who stay — at sellers’ expense']] }}
+          answer={{ value: 'Wealth moves toward the better-priced side', label: 'Direction of transfer' }}
+          soWhat="Mirror-image logic applies to new issuance (HW4 Q5b): issuing ABOVE true value benefits existing holders; issuing BELOW true value costs them. The transfer always runs toward whichever side got the better price relative to true value."
+        />
       </NotesPage>
 
       {/* ───────────── 14 ───────────── */}
@@ -335,17 +317,15 @@ export default function FinalExamReview() {
           <Trap chapter={C[14]}><strong className="trap">Don’t assume a firm always takes a positive-NPV project</strong> if it can “technically afford it” via equity — Myers-Majluf shows a firm can rationally walk away from a genuinely good project because the only financing route (underpriced equity) would cost existing shareholders more than the project is worth to them.</Trap>
         </Aside>
         <p>When managers know more about firm value than outside investors, the market can’t tell a high-value firm’s equity issuance apart from a low-value firm’s, and prices any issuance at a pooled (average) value. A high-value firm that issues at this pooled price gives away too much to new investors, so it may rationally refuse to issue even to fund a genuinely positive-NPV project — the underinvestment / lemons result. This underlies the pecking order: retained earnings first, then debt, equity only as a last resort.</p>
-        <Section wide chapter={C[14]} title="Worked Example — HW4 Q3">
-          <WorkedExample
-            chapter={C[14]}
-            title="A Separating Equilibrium: Low Type Issues Equity, High Type Issues Debt"
-            setup="Company X, all-equity. Assets-in-place: $12,000 (low type) or $16,000 (high type), each p=1/2, insiders know which. Growth opportunity costs $8,000, PV=$12,000 (NPV=+$4,000). Market assumes any equity issuer is the low type."
-            table={{ columns: ['Choice', 'Low type keeps', 'High type keeps'], rows: [['Do nothing', '$12,000', '$16,000 (forgoes +$4,000 NPV)'], ['Issue debt (flat −$1,000 cost)', '$15,000', '$19,000'], ['Issue equity (priced as pooled low type)', '$16,000', '$18,667']] }}
-            steps={[{ label: 'Low type ranks', lines: ['equity $16,000 > debt $15,000 > nothing $12,000 → CHOOSES EQUITY'] }, { label: 'High type ranks', lines: ['debt $19,000 > equity $18,667 > nothing $16,000 → CHOOSES DEBT'] }]}
-            answer={{ value: 'Separating equilibrium', label: 'Low → equity, high → debt — self-fulfilling' }}
-            soWhat="This exactly matches the market’s assumption that equity issuers are the low type. If the market instead prices equity at the pooled average (HW4 Q3b), both types prefer equity and the separating equilibrium collapses into a pooling equilibrium — know both versions."
-          />
-        </Section>
+                <WorkedExample
+          chapter={C[14]}
+          title="A Separating Equilibrium: Low Type Issues Equity, High Type Issues Debt"
+          setup="Company X, all-equity. Assets-in-place: $12,000 (low type) or $16,000 (high type), each p=1/2, insiders know which. Growth opportunity costs $8,000, PV=$12,000 (NPV=+$4,000). Market assumes any equity issuer is the low type."
+          table={{ columns: ['Choice', 'Low type keeps', 'High type keeps'], rows: [['Do nothing', '$12,000', '$16,000 (forgoes +$4,000 NPV)'], ['Issue debt (flat −$1,000 cost)', '$15,000', '$19,000'], ['Issue equity (priced as pooled low type)', '$16,000', '$18,667']] }}
+          steps={[{ label: 'Low type ranks', lines: ['equity $16,000 > debt $15,000 > nothing $12,000 → CHOOSES EQUITY'] }, { label: 'High type ranks', lines: ['debt $19,000 > equity $18,667 > nothing $16,000 → CHOOSES DEBT'] }]}
+          answer={{ value: 'Separating equilibrium', label: 'Low → equity, high → debt — self-fulfilling' }}
+          soWhat="This exactly matches the market’s assumption that equity issuers are the low type. If the market instead prices equity at the pooled average (HW4 Q3b), both types prefer equity and the separating equilibrium collapses into a pooling equilibrium — know both versions."
+        />
       </NotesPage>
 
       {/* ───────────── 15 ───────────── */}

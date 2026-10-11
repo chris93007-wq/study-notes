@@ -49,9 +49,7 @@ export default function Notes() {
         </Aside>
         <p>TODO dense notes paragraph.</p>
         <ConceptCard chapter={C.topicA} term="TODO term" definition="TODO" formulas={['a = \\dfrac{b}{c}']} why="TODO" />
-        <Section wide chapter={C.topicA} title="Worked Example">
-          <WorkedExample chapter={C.topicA} title="TODO" setup="TODO" steps={[{ label: 'TODO', lines: ['TODO'] }]} answer={{ value: 'TODO', label: 'TODO' }} soWhat="TODO" />
-        </Section>
+                <WorkedExample chapter={C.topicA} title="TODO" setup="TODO" steps={[{ label: 'TODO', lines: ['TODO'] }]} answer={{ value: 'TODO', label: 'TODO' }} soWhat="TODO" />
       </NotesPage>
 
       <NotesPage toc={{ title: 'Topic B', chapter: C.topicB }}>
