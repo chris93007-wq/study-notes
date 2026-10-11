@@ -52,7 +52,7 @@ npm run typecheck
 npm run pdf -- week-NN
 ```
 
-Read the output: `✓ <name>.pdf — N pages` is success. Fix every `⚠ … overflows` warning and every `✗` error, then re-run. Spot-check by rasterizing a few pages (`pdftoppm -r 50 -png out/<name>.pdf pg`) and looking at them if the tools allow it.
+Read the output: `✓ <name>.pdf — N pages` is success. Lines starting `↳ fitted —` are layout fixes the generator already applied (margin notes moved into the text, spacing tightened). Lines starting `⚠ whitespace:` come from an audit of the finished PDF and name sheets that are partly empty or topics that spill a small tail onto a second sheet: fix those following the "Whitespace" section of `AUTHORING.md` (move or shorten a margin note, `wide={false}` on a short example, trim words), then re-render, up to three rounds, and tell the user about any that remain. Fix every `⚠ … overflows` warning and every `✗` error, then re-run. Spot-check by rasterizing a few pages (`pdftoppm -r 50 -png out/<name>.pdf pg`) and looking at them if the tools allow it.
 
 ## 4. Deliver
 

@@ -104,3 +104,7 @@ h1,h2,h3,h4{break-after:avoid}
 }
 .page[data-join] .page-badge{display:none}
 @media screen{.page[data-join]{outline:2px dashed var(--chapter-1-300)}}
+
+/* Last-resort compaction (set by fitNotePages when a topic overflows a sheet by a small tail): tighter gaps, same type sizes. */
+.page[data-compact]{--space-2:5px;--space-3:7.5px;--space-4:10px;--space-5:13px;--space-6:16px;--space-7:20px}
+.page[data-compact="2"]{--box-gap:6px;--box-pad:10px;--space-1:2px;--space-2:4px;--space-3:6px;--space-4:8px;--space-5:11px}

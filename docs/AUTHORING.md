@@ -178,6 +178,17 @@ import profileCard from './assets/profile-card.png';
 <Image chapter={13} src={profileCard} alt="Conjoint profile card" caption="Fig. 1 — …" ratio="4/3" fit="contain" />
 ```
 
+## Whitespace: automatic fitting, then a post-render audit
+
+`npm run pdf` runs a **whitespace fitter** before printing and an **audit** of the finished PDF.
+- **Fitter (automatic).** For each notes page it simulates the page breaks. A margin note taller than the text beside it leaves a blank hole in the main column (the next full-width block must clear it), so the fitter tries moving margin notes, last first, to the end of the topic and keeps a move when it saves a sheet or 40 px. If a topic still spills only a small tail (< 40% of a sheet) onto a second sheet it tightens the gaps (never the type size, which stays ≥ 9 pt) in two levels. Everything it did is printed as `↳ fitted — …`.
+- **Audit (read it, then fix).** It measures how full each printed sheet is and prints `⚠ whitespace: …` when (a) a sheet is ≥ 20% empty because the next block jumped to the following sheet, (b) a topic spills a small tail onto a second sheet, or (c) a short topic leaves most of a sheet empty. Fix what it names, then re-run until only unavoidable warnings are left:
+  1. move a margin note out of the `<Aside>` into the text yourself, or shorten it (margin notes are bullets: one idea each);
+  2. set a short example to `wide={false}` so it sits in the main column beside the notes;
+  3. trim words or split a long example;
+  4. leave a short topic's `join` on so it can share the previous sheet.
+  Don't shrink type below 9 pt or the paragraph gap to chase whitespace.
+
 ## Checks `npm run pdf` does for you
 - Warns when something is wider than the printable area and would be clipped. It names the page and the text.
 - Fails on React/runtime errors.

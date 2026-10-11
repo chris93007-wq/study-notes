@@ -99,6 +99,50 @@ async function readMarkers(pdf: Buffer) {
   return { pages, numPages };
 }
 
+/**
+ * Whitespace audit of the finished PDF. Per sheet: how much of the printable area is filled (lowest text above the
+ * footer). Flags (1) a sheet left partly empty because the next block jumped to the following sheet, and (2) a topic
+ * that spans two sheets whose content would fit on one — the cases the authoring rules tell you to fix by moving a
+ * margin note into the text, switching an example to wide={false}, or trimming content.
+ */
+async function auditWhitespace(pdf: Buffer): Promise<string[]> {
+  const doc = await pdfjs.getDocument({ data: new Uint8Array(pdf), useSystemFonts: false }).promise;
+  const fills: number[] = [];
+  const starts: boolean[] = [];
+  const bare: boolean[] = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const pg = await doc.getPage(i);
+    const H = pg.getViewport({ scale: 1 }).height;
+    const items = (await pg.getTextContent()).items.filter((it) => 'str' in it && it.str.trim()) as Array<{ str: string; transform: number[]; height: number }>;
+    let lowest = 36;
+    let marker = false;
+    for (const it of items) {
+      if (/TOCMARK-/.test(it.str)) { marker = true; continue; }
+      const top = H - it.transform[5] + 2; // baseline → just below the text
+      if (top < H - 40) lowest = Math.max(lowest, top);
+    }
+    fills.push(Math.min(1, (lowest - 36) / (H - 72)));
+    starts.push(marker);
+    bare.push(items.length === 0 || i === 1);
+  }
+  await doc.cleanup();
+  const out: string[] = [];
+  for (let i = 0; i < fills.length - 1; i++) {
+    if (bare[i] || starts[0] === undefined) continue;
+    const cont = !starts[i + 1];
+    const blank = 1 - fills[i];
+    if (cont && blank >= 0.2) {
+      const combined = fills[i] + fills[i + 1];
+      out.push(`whitespace: page ${i + 1} is ${Math.round(blank * 100)}% empty at the bottom because the next block moved to page ${i + 2}` + (combined <= 0.96 ? ` — these two pages hold ${Math.round(combined * 100)}% of one sheet; fit them on one` : ''));
+    } else if (cont && fills[i + 1] > 0 && fills[i + 1] < 0.25 && starts[i] !== undefined && (i + 2 >= fills.length || starts[i + 2])) {
+      out.push(`whitespace: only a ${Math.round(fills[i + 1] * 100)}% tail spills onto page ${i + 2} — trim about ${Math.round(fills[i + 1] * 900)}px from the topic (shorter margin note, wide={false} example, or fewer words) to keep it on one sheet`);
+    } else if (!cont && blank >= 0.6 && fills[i] > 0.02) {
+      out.push(`whitespace: page ${i + 1} is only ${Math.round(fills[i] * 100)}% full (a short topic; consider letting it share a sheet)`);
+    }
+  }
+  return out;
+}
+
 async function main() {
   const filters = process.argv.slice(2);
   if (!existsSync(join(root, 'dist', 'index.html'))) throw new Error('dist/ is missing — run `npm run pdf` (which builds first) or `npm run build`.');
@@ -143,6 +187,8 @@ async function main() {
       const file = join(outDir, `${slug}.pdf`);
       writeFileSync(file, pdf);
       console.log(`✓ ${slug}.pdf — ${numPages} pages`);
+      for (const l of (await page.evaluate(() => window.__FIT_LOG__ ?? []))) console.log(`  ↳ fitted — ${l}`);
+      overflow.push(...(await auditWhitespace(pdf)));
       for (const w of overflow) console.warn(`  ⚠ ${w}`);
       for (const e of errors) console.error(`  ✗ ${e}`);
       if (errors.length) failed = true;

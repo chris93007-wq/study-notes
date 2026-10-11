@@ -1,7 +1,7 @@
 import { Children, isValidElement, useEffect, useMemo, type ReactElement, type ReactNode } from 'react';
 import type { Chapter } from '../components/types';
 import { allSettled } from './pending';
-import { joinShortPages } from './joinPages';
+import { fitNotePages, joinShortPages } from './joinPages';
 import { DocumentContext, PageSlotContext, type DocumentMeta, type PageSlotValue, type TocEntry } from './context';
 
 declare global {
@@ -10,6 +10,8 @@ declare global {
     __TOC_PAGES__?: Record<number, number>;
     /** Set once fonts are loaded and the document has rendered; scripts/pdf.ts waits for it. */
     __NOTES_READY__?: boolean;
+    /** What the whitespace fitter changed (read by scripts/pdf.ts). */
+    __FIT_LOG__?: string[];
   }
 }
 
@@ -57,7 +59,7 @@ export function NotesDocument({ meta, children }: NotesDocumentProps) {
     document.title = meta.week ? `${meta.title} — ${meta.week}` : meta.title;
     let cancelled = false;
     document.fonts.ready.then(allSettled).then(() => document.fonts.ready).then(() => {
-      if (!cancelled) joinShortPages();
+      if (!cancelled) { window.__FIT_LOG__ = fitNotePages(); joinShortPages(); }
       if (!cancelled) window.__NOTES_READY__ = true;
     });
     return () => {
