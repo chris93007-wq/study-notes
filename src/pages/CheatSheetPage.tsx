@@ -43,7 +43,7 @@ export function CheatSheetPage({ toc, columns, orientation = 'portrait', perRow 
                   {c.bullets.map((t, j) => (
                     <p key={j} style={bullet}><span style={{ position: 'absolute', left: 0, color: ch(c.chapter, 500) }}>•</span>{math(t)}</p>
                   ))}
-                  {c.formula && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: ch(c.chapter, 900), background: ch(c.chapter, 100), borderRadius: 'var(--radius-sm)', padding: 'var(--space-2) var(--space-3)', lineHeight: 'var(--leading-compact)', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{c.formula}</div>}
+                  {c.formula && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: ch(c.chapter, 900), background: ch(c.chapter, 100), borderRadius: 'var(--radius-sm)', padding: 'var(--space-2) var(--space-3)', lineHeight: 'var(--leading-compact)', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{math(c.formula)}</div>}
                 </div>
               )}
             </div>

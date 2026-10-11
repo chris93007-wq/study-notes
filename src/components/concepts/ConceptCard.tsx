@@ -65,7 +65,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
   );
   const whyPart = <Part title="Why It Works"><p style={text}>{math(why)}</p></Part>;
   return (
-    <div data-box data-wide={spanAll || undefined} className={box.className} style={{ ...box.vars, ...wrap }}>
+    <div data-box data-movable={spanAll ? undefined : true} data-wide={spanAll || undefined} className={box.className} style={{ ...box.vars, ...wrap }}>
       <div style={body}>
         <div style={head}><span style={badge}>Concept</span><h3 style={termStyle}>{term}</h3></div>
         {longFormula ? (

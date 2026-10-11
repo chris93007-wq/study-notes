@@ -144,13 +144,13 @@ export default function FinalExamReview() {
           <Trap chapter={C[6]}>A REIT ($$T_C = 0$$) <strong className="trap">is not automatically g = 0</strong> — it still has personal taxes on both sides. Plug $$T_C = 0$$ into $$g$$ and it collapses toward <Tex tex="\dfrac{T_D - T_E}{1 - T_D}" />, which is near zero or slightly negative when $$T_E \approx T_D$$, not automatically zero.</Trap>
         </Aside>
         <p>Adding personal taxes on interest income (<Tex tex="T_D" />) and equity income (<Tex tex="T_E" />) alongside the corporate tax (<Tex tex="T_C" />) shrinks debt’s net tax advantage to a single number, <em>g</em> — which can even turn negative.</p>
-          <ConceptCard chapter={C[6]} term="Miller’s g" definition="The net value a dollar of debt adds to the firm after all three taxes — corporate, personal debt, and personal equity — are netted out." formulas={['g = 1 - \\dfrac{(1-T_C)(1-T_E)}{1-T_D}', 'V_L = V_U + g \\times D']} why="If T_D is high relative to T_C and T_E (interest taxed more heavily at the personal level), g shrinks — debt’s corporate-level advantage is partly or fully offset by investors demanding higher pre-tax yields on taxable bonds." />
+          <ConceptCard chapter={C[6]} term="Miller’s g" definition="The net value a dollar of debt adds to the firm after all three taxes — corporate, personal debt, and personal equity — are netted out." formulas={['g = 1 - \\dfrac{(1-T_C)(1-T_E)}{1-T_D}', 'V_L = V_U + g \\times D']} why="If $$T_D$$ is high relative to $$T_C$$ and $$T_E$$ (interest taxed more heavily at the personal level), g shrinks — debt’s corporate-level advantage is partly or fully offset by investors demanding higher pre-tax yields on taxable bonds." />
                 <WorkedExample
           chapter={C[6]}
           title="Reducing Debt When g Is Positive"
           setup="E0 = $500M, D0 = $500M, 10M shares. Firm issues $250M new equity, uses proceeds to repurchase $250M debt. $$T_C = 35\%$$, $$T_E = 10\%$$, $$T_D = 20\%$$."
           steps={[
-            { label: 'Compute g', lines: ['<Tex tex="g = 1 - \dfrac{(0.65)(0.90)}{0.80} = 1 - 0.73125 =" /> 26.875%'] },
+            { label: 'Compute g', lines: ['g = 1 − (0.65)(0.90)/(0.80) = 1 − 0.73125 = 26.875%'] },
             { label: 'Value impact of reducing debt', lines: ['ΔV = g × ΔD = 0.26875 × (−$250M) = −$67.1875M'] },
             { label: 'New equity value & price', lines: ['Equity = $500M − $67.1875M = $432.8125M', 'Price/share = $432.8125M / 10M = $43.28 (down from $50)'] },
             { label: 'Check at execution', lines: ['New shares issued ≈ 5,776,173', 'After execution: $682.8125M / 15,776,173 shares ≈ $43.28/share — UNCHANGED'] },
@@ -352,9 +352,9 @@ export default function FinalExamReview() {
           { chapter: C[1], title: '1 · M-M & Arbitrage', bullets: ['No taxes/distress/info frictions → capital structure irrelevant', 'Mispricing → riskless arbitrage via long/short', 'Always add V(debt)+V(equity), never just equity'], formula: 'V = V(debt) + V(equity)' },
           { chapter: C[2], title: '2 · Undoing Actions', bullets: ['Investors replicate any capital-structure change themselves', 'Home-made leverage: borrow/lend on personal account', 'Specify exact shares & $ amount, not just “it can be done”'] },
           { chapter: C[3], title: '3 · Risky Debt', bullets: ['Value claims at expected payoff, never face value', 'New senior debt w/o covenants transfers wealth from old debt to equity', 'Total firm value still unchanged (M-M check digit)'] },
-          { chapter: C[4], title: '4 · Corporate Taxes', bullets: ['Interest tax-deductible → real, permanent cash flow', 'Investors CANNOT personally replicate a corporate tax shield'], formula: 'V_L = V_U + T_C × D' },
-          { chapter: C[5], title: '5 · Who Gets the Benefit', bullets: ['Holders at ANNOUNCEMENT capture the gain', 'Execution just completes the paperwork, no new value'], formula: 'ΔV = T_C × ΔD' },
-          { chapter: C[6], title: '6 · Miller Model', bullets: ['Personal taxes shrink or reverse debt’s advantage', 'REIT (T_C=0) still has personal tax effects — g ≠ 0 automatically'], formula: 'g = 1 − (1−T_C)(1−T_E)/(1−T_D)' },
+          { chapter: C[4], title: '4 · Corporate Taxes', bullets: ['Interest tax-deductible → real, permanent cash flow', 'Investors CANNOT personally replicate a corporate tax shield'], formula: '$$V_L = V_U + T_C \\times D$$' },
+          { chapter: C[5], title: '5 · Who Gets the Benefit', bullets: ['Holders at ANNOUNCEMENT capture the gain', 'Execution just completes the paperwork, no new value'], formula: '$$\\Delta V = T_C \\times \\Delta D$$' },
+          { chapter: C[6], title: '6 · Miller Model', bullets: ['Personal taxes shrink or reverse debt’s advantage', 'REIT ($$T_C=0$$) still has personal tax effects — g ≠ 0 automatically'], formula: '$$g = 1 - \\dfrac{(1-T_C)(1-T_E)}{1-T_D}$$' },
           { chapter: C[7], title: '7 · Bankruptcy Costs', bullets: ['Debt bears costs directly, in the default state', 'Equity bears them ex ante, via yields priced in at issuance', 'Distress costs → totals don’t match before/after'] },
           { chapter: C[8], title: '8 · Debt Overhang', bullets: ['Existing senior debt eats new money’s upside for free', 'Positive-NPV project can still be unfinanceable', 'Equal-seniority debt at high F is sometimes the only way in'] },
           { chapter: C[9], title: '9 · Asset Substitution', bullets: ['Equity switches to riskier/worse project post-financing', 'Choice between 2 projects = substitution; can money be raised at all = overhang'] },
