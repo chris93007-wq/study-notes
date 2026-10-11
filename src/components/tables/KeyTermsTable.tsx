@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
 
 /** Glossary recap table (Term / Simple Explanation / Why It Matters / Example) for a topic's key terms. The Example column is dropped when no row has one. */
@@ -28,8 +29,8 @@ export function KeyTermsTable({ terms, chapter }: KeyTermsTableProps) {
           {terms.map((t, i) => (
             <tr key={i} style={i % 2 ? trAlt : undefined}>
               <td style={{ ...td, fontWeight: 700 }}>{t.term}</td>
-              <td style={td}>{t.explanation}</td>
-              <td style={td}>{t.why}</td>
+              <td style={td}>{math(t.explanation)}</td>
+              <td style={td}>{math(t.why)}</td>
               {hasExamples && <td style={td}>{t.example}</td>}
             </tr>
           ))}

@@ -20,7 +20,7 @@ export function PageBadge({ label, week, chapter }: PageBadgeProps) {
   const doc = useDocument();
   const wk = week ?? doc?.meta.week;
   const c = chapter ?? doc?.meta.brandChapter ?? 1;
-  const row: CSSProperties = { columnSpan: 'all', display: 'flex', alignItems: 'center', gap: 10.3, marginBottom: 'var(--space-2)' };
+  const row: CSSProperties = { columnSpan: 'all', display: 'flex', alignItems: 'center', gap: 10.3, marginBottom: 3.3 };
   const pill: CSSProperties = { background: ch(c, 100), color: ch(c, 900), fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', padding: '4.4px 12.1px', borderRadius: 'var(--radius-pill)', textTransform: 'uppercase', flexShrink: 0 };
   const mono: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)', color: 'var(--ink-500)', letterSpacing: '0.04em', textTransform: 'uppercase' };
   return (

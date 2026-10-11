@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { math } from '../components/math/Tex';
 import { Page } from '../document/Page';
 import type { TocSpec } from '../document/NotesDocument';
 import { ch, type Chapter } from '../components/types';
@@ -40,7 +41,7 @@ export function CheatSheetPage({ toc, columns, orientation = 'portrait', perRow 
                 <div style={{ borderTop: `4px solid ${ch(c.chapter, 500)}`, paddingTop: 'var(--space-3)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-base)', lineHeight: 'var(--leading-tight)', color: ch(c.chapter, 900), margin: 0 }}>{c.title}</h3>
                   {c.bullets.map((t, j) => (
-                    <p key={j} style={bullet}><span style={{ position: 'absolute', left: 0, color: ch(c.chapter, 500) }}>•</span>{t}</p>
+                    <p key={j} style={bullet}><span style={{ position: 'absolute', left: 0, color: ch(c.chapter, 500) }}>•</span>{math(t)}</p>
                   ))}
                   {c.formula && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: ch(c.chapter, 900), background: ch(c.chapter, 100), borderRadius: 'var(--radius-sm)', padding: 'var(--space-2) var(--space-3)', lineHeight: 'var(--leading-compact)', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{c.formula}</div>}
                 </div>

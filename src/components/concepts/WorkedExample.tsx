@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
 
 /**
@@ -14,6 +15,8 @@ export interface WorkedExampleProps {
   /** Full page width on a margin-layout page (default). Pass false to keep it in the main column. */
   wide?: boolean;
   title: string;
+  /** Badge text: 'Worked Example' (default) for numeric walk-throughs, or 'Example' for any other example (a scenario, a diagram, a comparison). Every example goes in this card. */
+  label?: string;
   /** One sentence describing the scenario, shown after a bold "Setup:" label */
   setup?: ReactNode;
   /** A supporting diagram/figure shown beside the setup text — any ReactNode you provide */
@@ -32,7 +35,7 @@ export interface WorkedExampleProps {
 
 const GRID = 'repeat(auto-fit, minmax(250px, 1fr))';
 
-export function WorkedExample({ title, setup, context, table, steps = [], answer, soWhat, chapter, wide }: WorkedExampleProps) {
+export function WorkedExample({ title, label = 'Worked Example', setup, context, table, steps = [], answer, soWhat, chapter, wide }: WorkedExampleProps) {
   const accent = ch(chapter, 500);
   const ink = ch(chapter, 900);
   const card: CSSProperties = { columnSpan: 'all', border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
@@ -58,7 +61,7 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
 
   const setupBlock = (setup || context) && (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', minWidth: 0 }}>
-      {setup && <p style={setupStyle}><span style={{ fontWeight: 700 }}>Setup: </span>{setup}</p>}
+      {setup && <p style={setupStyle}><span style={{ fontWeight: 700 }}>Setup: </span>{math(setup)}</p>}
       {context}
     </div>
   );
@@ -82,7 +85,7 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
     </div>
   );
   const answerBlock = answer && <div style={answerBox}><span style={answerValue}>{answer.value}</span><span style={answerLabel}>{answer.label}</span></div>;
-  const soWhatBlock = soWhat && <div style={soWhatBox}><span style={{ fontWeight: 700 }}>So what: </span>{soWhat}</div>;
+  const soWhatBlock = soWhat && <div style={soWhatBox}><span style={{ fontWeight: 700 }}>So what: </span>{math(soWhat)}</div>;
   const stack = (answerBlock || soWhatBlock) && (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', minWidth: 0 }}>{answerBlock}{soWhatBlock}</div>
   );
@@ -90,10 +93,18 @@ export function WorkedExample({ title, setup, context, table, steps = [], answer
   return (
     <div data-wide={wide === false ? undefined : true} style={{ ...card, breakInside: 'avoid' }}>
       <div style={wrap}>
-        <div style={head}><span style={badge}>Worked Example</span><h3 style={titleStyle}>{title}</h3></div>
+        <div style={head}><span style={badge}>{label}</span><h3 style={titleStyle}>{title}</h3></div>
         {/* setup beside the data table; the work beside the answer and the so-what */}
-        {(setupBlock || tableBlock) && <div style={row}>{setupBlock}{tableBlock}</div>}
-        {(stepsBlock || stack) && (
+        {/* no steps: the answer and so-what move up under the setup, filling the space beside a tall table */}
+        {!stepsBlock && tableBlock && (setupBlock || stack) ? (
+          <div style={row}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--box-gap)', minWidth: 0 }}>{setupBlock}{stack}</div>
+            {tableBlock}
+          </div>
+        ) : (
+          (setupBlock || tableBlock) && <div style={row}>{setupBlock}{tableBlock}</div>
+        )}
+        {(stepsBlock || (stack && !(tableBlock && !stepsBlock && (setupBlock || stack)))) && (
           <div style={row}>
             {stepsBlock}
             {stack ?? null}

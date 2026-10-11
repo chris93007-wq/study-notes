@@ -124,6 +124,7 @@ async function main() {
 
       await page.goto(url);
       await waitReady(page);
+      if (process.env.PAGE_HEIGHTS) console.log(await page.evaluate(() => [...document.querySelectorAll('section.page')].map((pg, i) => { const b = pg.querySelector('.page-body')!; const t = b.getBoundingClientRect().top; let m = t; b.querySelectorAll(':scope > *').forEach((c) => { m = Math.max(m, c.getBoundingClientRect().bottom); }); return `${i + 1}:${Math.round(m - t)}${pg.hasAttribute('data-join') ? 'J' : ''}`; }).join(' ')));
       const overflow = await findOverflow(page);
 
       let pdf = await printPdf(page);

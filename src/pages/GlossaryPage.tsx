@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { math } from '../components/math/Tex';
 import { Page } from '../document/Page';
 import { useDocument } from '../document/context';
 import type { TocSpec } from '../document/NotesDocument';
@@ -37,8 +38,8 @@ export function GlossaryPage({ toc, title = 'Glossary', entries, chapter }: Glos
             <div style={letterHead}>{letter}</div>
             {items.map((it, i) => (
               <div key={i} style={entry}>
-                <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)', display: 'block' }}>{it.term}</span>
-                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-700)', lineHeight: 'var(--leading-compact)' }}>{it.def}</span>
+                <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)', display: 'block' }}>{math(it.term)}</span>
+                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-700)', lineHeight: 'var(--leading-compact)' }}>{math(it.def)}</span>
               </div>
             ))}
           </div>

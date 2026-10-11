@@ -1,4 +1,5 @@
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
+import { math } from '../math/Tex';
 import { Tex } from '../math/Tex';
 import { FormulaTree, type FormulaTreeNode } from '../diagrams/FormulaTree';
 import { ch, type Chapter } from '../types';
@@ -58,7 +59,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
       </div>
     </Part>
   );
-  const whyPart = <Part title="Why It Works"><p style={text}>{why}</p></Part>;
+  const whyPart = <Part title="Why It Works"><p style={text}>{math(why)}</p></Part>;
   return (
     <div data-wide={spanAll || undefined} style={wrap}>
       <div style={body}>
@@ -67,7 +68,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
           <>
             {/* definition beside the why, then the long formula across the full card */}
             <div style={grid}>
-              <Part title="Definition"><p style={text}>{definition}</p></Part>
+              <Part title="Definition"><p style={text}>{math(definition)}</p></Part>
               {whyPart}
             </div>
             {formula}
@@ -76,7 +77,7 @@ export function ConceptCard({ term, definition, formulas = [], breakdown, why, c
           <>
             {/* definition beside the formula (or beside the why when there is no formula) */}
             <div style={grid}>
-              <Part title="Definition"><p style={text}>{definition}</p></Part>
+              <Part title="Definition"><p style={text}>{math(definition)}</p></Part>
               {hasFormula ? formula : whyPart}
             </div>
             {breakdown && <FormulaTree root={breakdown} chapter={chapter} />}

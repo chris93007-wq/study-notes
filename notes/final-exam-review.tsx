@@ -140,17 +140,17 @@ export default function FinalExamReview() {
       <NotesPage toc={{ title: '6 · Personal Taxes (Miller)', chapter: C[6] }}>
         <TopicHeader topicNumber={6} title="Personal Taxes and Capital Structure (Miller Model)" kicker="L2 Slides 18-20 · HW2 Q2 — the most-tested formula" />
         <Aside>
-          <Memory chapter={C[6]}>Say g out loud: “1 minus the two-tax product over the one-tax survivor.” (1−T_C)(1−T_E), all over (1−T_D).</Memory>
-          <Trap chapter={C[6]}>A REIT (T_C = 0) <strong className="trap">is not automatically g = 0</strong> — it still has personal taxes on both sides. Plug T_C = 0 into g and it collapses toward (T_D − T_E)/(1−T_D), which is near zero or slightly negative when T_E ≈ T_D, not automatically zero.</Trap>
+          <Memory chapter={C[6]}>Say g out loud: “1 minus the two-tax product over the one-tax survivor.” $$(1-T_C)(1-T_E)$$, all over $$(1-T_D)$$.</Memory>
+          <Trap chapter={C[6]}>A REIT ($$T_C = 0$$) <strong className="trap">is not automatically g = 0</strong> — it still has personal taxes on both sides. Plug $$T_C = 0$$ into $$g$$ and it collapses toward <Tex tex="\dfrac{T_D - T_E}{1 - T_D}" />, which is near zero or slightly negative when $$T_E \approx T_D$$, not automatically zero.</Trap>
         </Aside>
         <p>Adding personal taxes on interest income (<Tex tex="T_D" />) and equity income (<Tex tex="T_E" />) alongside the corporate tax (<Tex tex="T_C" />) shrinks debt’s net tax advantage to a single number, <em>g</em> — which can even turn negative.</p>
           <ConceptCard chapter={C[6]} term="Miller’s g" definition="The net value a dollar of debt adds to the firm after all three taxes — corporate, personal debt, and personal equity — are netted out." formulas={['g = 1 - \\dfrac{(1-T_C)(1-T_E)}{1-T_D}', 'V_L = V_U + g \\times D']} why="If T_D is high relative to T_C and T_E (interest taxed more heavily at the personal level), g shrinks — debt’s corporate-level advantage is partly or fully offset by investors demanding higher pre-tax yields on taxable bonds." />
                 <WorkedExample
           chapter={C[6]}
           title="Reducing Debt When g Is Positive"
-          setup="E0 = $500M, D0 = $500M, 10M shares. Firm issues $250M new equity, uses proceeds to repurchase $250M debt. T_C = 35%, T_E = 10%, T_D = 20%."
+          setup="E0 = $500M, D0 = $500M, 10M shares. Firm issues $250M new equity, uses proceeds to repurchase $250M debt. $$T_C = 35\%$$, $$T_E = 10\%$$, $$T_D = 20\%$$."
           steps={[
-            { label: 'Compute g', lines: ['g = 1 − [(0.65)(0.90)/(0.80)] = 1 − 0.73125 = 26.875%'] },
+            { label: 'Compute g', lines: ['<Tex tex="g = 1 - \dfrac{(0.65)(0.90)}{0.80} = 1 - 0.73125 =" /> 26.875%'] },
             { label: 'Value impact of reducing debt', lines: ['ΔV = g × ΔD = 0.26875 × (−$250M) = −$67.1875M'] },
             { label: 'New equity value & price', lines: ['Equity = $500M − $67.1875M = $432.8125M', 'Price/share = $432.8125M / 10M = $43.28 (down from $50)'] },
             { label: 'Check at execution', lines: ['New shares issued ≈ 5,776,173', 'After execution: $682.8125M / 15,776,173 shares ≈ $43.28/share — UNCHANGED'] },
@@ -235,7 +235,7 @@ export default function FinalExamReview() {
                 <WorkedExample
           chapter={C[10]}
           title="Weighing a Tax Shield Against a Relationship Cost"
-          setup="BCD repurchases 40% of stock funded by $1B new debt @ 12%, T_C = 40%. Suppliers threaten to revoke net-30 credit terms, costing 2% on $1.5B inventory."
+          setup="BCD repurchases 40% of stock funded by $1B new debt @ 12%, $$T_C = 40\%$$. Suppliers threaten to revoke net-30 credit terms, costing 2% on $1.5B inventory."
           steps={[{ label: 'Tax shield gained', lines: ['$1,000M × 12% × 40% = $48M'] }, { label: 'Strategic/indirect cost', lines: ['2% × $1,500M = $30M (lost favorable trade credit)'] }, { label: 'Net benefit', lines: ['$48M − $30M = +$18M → proceed with the repurchase'] }]}
           answer={{ value: '+$18M', label: 'Net benefit — proceed' }}
           soWhat="A complete capital-structure analysis weighs the tax benefit against ALL costs of leverage — the $30M strategic cost may even understate the true relationship risk, since it’s harder to quantify precisely than the tax savings."
@@ -255,7 +255,7 @@ export default function FinalExamReview() {
           <KeyTermsTable chapter={C[11]} terms={[
             { term: 'Governance engineering', explanation: 'Concentrated ownership, management equity stakes', why: 'Sharper incentives than diffuse public ownership' },
             { term: 'Operational engineering', explanation: 'Cost cuts, efficiency improvements', why: 'Real cash-flow gains, not financial engineering' },
-            { term: 'Financial/tax engineering', explanation: 'The debt tax shield, ~10–20% of EV', why: 'Same T_C × D logic as Topic 4' },
+            { term: 'Financial/tax engineering', explanation: 'The debt tax shield, ~10–20% of EV', why: 'Same $$T_C \times D$$ logic as Topic 4' },
             { term: 'Deal-making / timing', explanation: 'Buying and selling at the right market moments', why: 'Skill in identifying mispriced opportunities' },
           ]} />
         </Section>
@@ -274,15 +274,19 @@ export default function FinalExamReview() {
           <Callout chapter={C[12]} label="KEY INSIGHT">Short-termism is bad when it sacrifices real long-run value for an easily-verified near-term number; it can be rational when near-term performance is a genuinely useful (if imperfect) signal of execution quality.</Callout>
         </Aside>
         <p>Managers (or the market) over-weight near-term earnings/cash flows relative to longer-term value, sometimes rejecting projects with a worse near-term profile but a much better long-term payoff. Whether this is “bad” depends on why it happens.</p>
-        <Section wide chapter={C[12]} title="Project A vs. Project B (class example)">
-          <Flowchart chapter={C[12]} root={{
+        <WorkedExample
+          chapter={C[12]}
+          label="Example"
+          title="Project A vs. Project B (class example)"
+          setup="Two projects: B shows a strong near-term number, A has equal or better eventual value. Which does the market reward, and does it matter whether the market can verify the long run?"
+          context={<Flowchart chapter={C[12]} root={{
             label: 'Can the market eventually verify true long-run value?', shape: 'diamond',
             children: [
               { label: 'No', to: { label: 'Short-term signal (B’s strong near-term number) can rationally win, even if A has equal/better eventual value' } },
               { label: 'Yes', to: { label: 'Excessive short-termism destroys value by picking the inferior long-run project to look good today' } },
             ],
-          }} />
-        </Section>
+          }} />}
+        />
         <Section chapter={C[12]} title="Exam Approach">
           <p className="prose-sm">Usually tested as a conceptual short-answer (“is short-termism good or bad, explain”) rather than a numeric problem — be ready to argue both directions and identify the condition (<strong>verifiability of long-run value</strong>) that decides which way it goes.</p>
         </Section>
@@ -391,7 +395,7 @@ export default function FinalExamReview() {
           { q: 'Why might a genuinely high-value firm refuse to issue equity to fund a positive-NPV project?', a: <><strong>Myers-Majluf:</strong> the market can’t distinguish a high-value issuer from a low-value one, so it prices any issuance at the pooled average. A truly high-value firm would be selling undervalued shares, which can cost existing shareholders more than the project is worth — so it rationally passes.</> },
           { q: 'Why do convertible bonds get called “backdoor equity”?', a: <>Conversion only happens in good states, so a convertible behaves like debt when things go badly (protecting under-informed investors) and like equity when things go well (sharing the upside) — effectively a delayed, state-contingent equity sale that defers the lemons-problem discount.</> },
           { q: 'Numerical: Debt promises $100 at t=1. Firm value will be $200, $100, or $50, each with probability 1/3. What is this debt actually worth today (ignore discounting)?', a: <>(1/3)(100) + (1/3)(100) + (1/3)(50) = <strong>$83.33</strong> — the $100 promise is only fully paid in the two states where firm value ≥ $100; in the $50 state, debt gets only $50.</> },
-          { q: 'Numerical: T_C = 35%, T_E = 10%, T_D = 20%. What is Miller’s g, and does debt still add value to the firm?', a: <>g = 1 − [(0.65)(0.90)/(0.80)] = 1 − 0.73125 = <strong>26.875%</strong>. Since g &gt; 0, debt still adds value — Value gained = g × D for any increase in debt.</> },
+          { q: 'Numerical: $$T_C = 35\\%$$, $$T_E = 10\\%$$, $$T_D = 20\\%$$. What is Miller’s $$g$$, and does debt still add value to the firm?', a: <><Tex tex="g = 1 - \dfrac{(0.65)(0.90)}{0.80} = 1 - 0.73125 =" /> <strong>26.875%</strong>. Since g &gt; 0, debt still adds value — Value gained = <Tex tex="g \times D" /> for any increase in debt.</> },
           { q: 'Numerical: A firm has $70M senior debt. A new project costs $100M and pays $90M or $210M (each p=.5), NPV=+$50M. Can new equity alone raise the $100M?', a: <><strong>No.</strong> Max raisable via new equity = E[max(CF−70,0)] = 0.5(20)+0.5(140) = $80M, which is less than the $100M needed — classic debt overhang.</> },
           { q: 'Numerical: 400,000 shares outstanding, true value $40/share. The firm repurchases 100,000 shares at $50. What happens to the remaining shareholders’ per-share value?', a: <>It falls to about <strong>$36.67/share</strong>. Buying back overvalued shares (above true value) transfers wealth away from the shareholders who remain.</> },
         ]}
@@ -413,7 +417,7 @@ export default function FinalExamReview() {
           { term: 'Separating Equilibrium', def: 'An equilibrium where different firm types choose different, self-revealing actions (e.g. low type issues equity, high type issues debt).' },
           { term: 'Short-Termism', def: 'Over-weighting near-term performance relative to long-run value — rational when near-term results are a verifiable signal, destructive otherwise.' },
           { term: 'Strategic Costs of Distress', def: 'Indirect costs from stakeholder reactions to financial distress risk — supplier terms, customer loyalty, employee retention — distinct from direct legal bankruptcy costs.' },
-          { term: 'Tax Shield (T_C × D)', def: 'The corporate tax saving from deductible interest payments, captured by security holders at the moment a capital-structure change is announced.' },
+          { term: 'Tax Shield ($$T_C \times D$$)', def: 'The corporate tax saving from deductible interest payments, captured by security holders at the moment a capital-structure change is announced.' },
           { term: 'Value Dilution vs. Ownership Dilution', def: 'Ownership dilution is a smaller % stake; value dilution is a smaller $ stake. A fair-priced issuance causes the former but never the latter.' },
         ]}
       />

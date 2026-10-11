@@ -1,4 +1,5 @@
 import { Children, Fragment, isValidElement, type CSSProperties, type ReactNode } from 'react';
+import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
 
 /**
@@ -26,7 +27,7 @@ export function toBullets(children: ReactNode): ReactNode[][] {
         const parts = String(c).split(/(?<=[.?!][”"’)]?)\s+/);
         parts.forEach((p, i) => {
           if (i > 0) bullets.push([]);
-          if (p) push(p);
+          if (p) push(math(p));
         });
       } else if (isValidElement(c) && c.type === Fragment) {
         walk((c.props as { children?: ReactNode }).children);
@@ -45,7 +46,7 @@ export function Callout({ chapter, label, items, children }: CalloutProps) {
   const head: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', margin: '0 0 var(--space-2)' };
   const list: CSSProperties = { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' };
   const li: CSSProperties = { position: 'relative', paddingLeft: 14, fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--leading-compact)', color: 'var(--ink-900)' };
-  const rows = items ? items.map((i) => [i]) : toBullets(children);
+  const rows = items ? items.map((i) => [math(i)]) : toBullets(children);
   return (
     <div style={wrap}>
       {label && (

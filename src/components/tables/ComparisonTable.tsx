@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
 
 /** Generic data table (bundle comparisons, design-choice grids, solution tables): chapter-tinted header row, alternate rows in a lighter tint of the same color, visible column lines. */
@@ -24,7 +25,7 @@ export function ComparisonTable({ columns, rows, chapter, dense = false }: Compa
         <tbody>
           {rows.map((r, i) => (
             <tr key={i} style={i % 2 ? trAlt : undefined}>
-              {columns.map((c, j) => <td key={j} style={{ ...td, textAlign: c.align ?? 'left' }}>{r[c.key]}</td>)}
+              {columns.map((c, j) => <td key={j} style={{ ...td, textAlign: c.align ?? 'left' }}>{math(r[c.key] as never)}</td>)}
             </tr>
           ))}
         </tbody>

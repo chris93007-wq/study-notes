@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
 
 /** Small top-bordered mini explainer for one concept — definition, optional formula in words, and the why. A compact preview before the full ConceptCard treatment. */
@@ -25,9 +26,9 @@ export function FlashCard({ number, title, definition, formula, why, chapter }: 
   return (
     <div style={card}>
       <span style={titleStyle}>{number != null ? `${String(number).padStart(2, '0')} · ${title}` : title}</span>
-      <div style={section}><span style={label}>Definition</span><span style={body}>{definition}</span></div>
+      <div style={section}><span style={label}>Definition</span><span style={body}>{math(definition)}</span></div>
       {formula && <div style={section}><span style={label}>Formula, in words</span><div style={formulaBox}>{formula}</div></div>}
-      <div style={section}><span style={label}>Why</span><span style={body}>{why}</span></div>
+      <div style={section}><span style={label}>Why</span><span style={body}>{math(why)}</span></div>
     </div>
   );
 }

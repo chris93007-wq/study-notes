@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { math } from '../components/math/Tex';
 import { Page } from '../document/Page';
 import type { TocSpec } from '../document/NotesDocument';
 import { TopicHeader } from '../components/structure/TopicHeader';
@@ -33,8 +34,8 @@ export function QuizPage({ toc, chapter, title = 'Practice Questions', kicker, t
       <div style={{ height: 17, columnSpan: 'all' }} />
       {questions.map((it, i) => (
         <div key={i} style={{ marginBottom: 'var(--para-gap)', breakInside: 'avoid' }}>
-          <p style={q}><span style={qNum}>Q{i + 1}</span>{it.q}</p>
-          <div style={strip}><span style={aLabel}>A{i + 1}.</span><span style={aText}>{it.a}</span></div>
+          <p style={q}><span style={qNum}>Q{i + 1}</span>{math(it.q)}</p>
+          <div style={strip}><span style={aLabel}>A{i + 1}.</span><span style={aText}>{math(it.a)}</span></div>
         </div>
       ))}
     </Page>
