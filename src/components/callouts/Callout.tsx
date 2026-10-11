@@ -1,6 +1,7 @@
 import { Children, Fragment, isValidElement, type CSSProperties, type ReactNode } from 'react';
 import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
+import { boxScale } from '../boxScale';
 
 /**
  * Margin note: a chapter-colored title over a short bullet list — no box, no fill. Four kinds exist in notes —
@@ -14,6 +15,8 @@ export interface CalloutProps {
   label?: string;
   /** Explicit bullets (each may contain inline markup). Overrides children. */
   items?: ReactNode[];
+  /** Scale this note between 0.8 and 1 (default 1): type, spacing and line thickness shrink together. */
+  scale?: number;
   children?: ReactNode;
 }
 
@@ -38,9 +41,10 @@ export function toBullets(children: ReactNode): ReactNode[][] {
   return bullets.filter((b) => b.some((x) => typeof x !== 'string' || x.trim()));
 }
 
-export function Callout({ chapter, label, items, children }: CalloutProps) {
+export function Callout({ chapter, label, items, scale, children }: CalloutProps) {
+  const box = boxScale(scale);
   const dark = ch(chapter, 900);
-  const wrap: CSSProperties = { breakInside: 'avoid' };
+  const wrap: CSSProperties = { breakInside: 'avoid', ...box.vars };
   const rule: CSSProperties = { height: 2, background: ch(chapter, 500), borderRadius: 1 };
   const title: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color: dark, whiteSpace: 'nowrap' };
   const head: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', margin: '0 0 var(--space-2)' };
@@ -48,7 +52,7 @@ export function Callout({ chapter, label, items, children }: CalloutProps) {
   const li: CSSProperties = { position: 'relative', paddingLeft: 14, fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--leading-compact)', color: 'var(--ink-900)' };
   const rows = items ? items.map((i) => [math(i)]) : toBullets(children);
   return (
-    <div style={wrap}>
+    <div className={box.className} style={wrap}>
       {label && (
         <div style={head}>
           <span style={{ ...rule, width: 12 }} />

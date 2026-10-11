@@ -26,3 +26,20 @@
 --box-radius:var(--radius-md);
 --box-inner-radius:var(--radius-sm);
 }
+
+/*
+ * Box scale. A box (ConceptCard, WorkedExample, Callout, FlashCard) renders at 100% by default and can be scaled down to
+ * 80% for tight spots with its `scale` prop (or page-wide by the whitespace fitter via --bs-page). Everything inside
+ * scales together: type, spacing, border and accent thickness. Labels never go below the 9pt floor. Tokens are
+ * re-declared per box from the base scale (--t-* and --s-*), so the scale is applied once, never compounded.
+ */
+.box-scale{
+--bsx:var(--bs,var(--bs-page,1));
+--space-1:calc(var(--s-1)*var(--bsx));--space-2:calc(var(--s-2)*var(--bsx));--space-3:calc(var(--s-3)*var(--bsx));
+--space-4:calc(var(--s-4)*var(--bsx));--space-5:calc(var(--s-5)*var(--bsx));--space-6:calc(var(--s-6)*var(--bsx));
+--text-xs:max(9pt,calc(var(--t-xs)*var(--bsx)));--text-sm:calc(var(--t-sm)*var(--bsx));--text-base:calc(var(--t-base)*var(--bsx));
+--text-lg:calc(var(--t-lg)*var(--bsx));--text-xl:calc(var(--t-xl)*var(--bsx));
+--box-text:var(--text-sm);--box-label:var(--text-xs);--box-title:var(--text-lg);
+--box-pad:var(--space-4);--box-gap:var(--space-3);--box-inner-pad:var(--space-3) var(--space-4);
+--box-border:calc(1.5px*var(--bsx));--box-accent:calc(4px*var(--bsx));
+}

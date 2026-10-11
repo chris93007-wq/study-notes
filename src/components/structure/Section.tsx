@@ -14,10 +14,10 @@ export interface SectionProps {
 }
 
 export function Section({ chapter, title, wide, children }: SectionProps) {
-  const wrap: CSSProperties = { margin: 'var(--space-4) 0' };
+  const wrap: CSSProperties = {};
   const content: CSSProperties = { marginTop: 'var(--space-3)' };
   return (
-    <div data-wide={wide || undefined} style={wrap}>
+    <div className="section" data-wide={wide || undefined} style={wrap}>
       <SectionTitle chapter={chapter}>{title}</SectionTitle>
       <div className="stack-3" style={content}>{children}</div>
     </div>

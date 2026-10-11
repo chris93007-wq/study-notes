@@ -95,8 +95,11 @@ h1,h2,h3,h4{break-after:avoid}
 .page[data-layout="margin"] .page-body > .aside{float:right;clear:right;width:var(--aside-w)}
 .page[data-layout="margin"] .page-body > .aside > * + *{margin-top:var(--aside-gap)}
 .aside > * + *{margin-top:var(--aside-gap)}
-.page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--space-4)}
-.page[data-layout="margin"] .page-body > :not(p):not(.aside) + p{margin-top:var(--space-4)}
+/* One rhythm in the main column: the same gap (= the paragraph gap, 2× the font size) between paragraph and box and between two boxes. */
+.page[data-layout="margin"] .page-body > * + *:not(p):not(.aside){margin-top:var(--para-gap)}
+.page[data-layout="margin"] .page-body > :not(p):not(.aside) + p{margin-top:var(--para-gap)}
+.page[data-layout="margin"] .page-body > .section{margin-top:0;margin-bottom:0}
+.page[data-layout="margin"] .page-body > .section + *:not(.aside){margin-top:var(--para-gap)}
 
 /* A topic that fits in the rest of the previous sheet continues on it (set by joinShortPages in NotesDocument). */
 @media print{

@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
+import { boxScale, SCALE_DOC } from '../boxScale';
 
 /**
  * Full worked-example walkthrough in a card: "Worked Example" badge + title, a Setup sentence (with an
@@ -14,6 +15,8 @@ export interface WorkedExampleStep {
 export interface WorkedExampleProps {
   /** Full page width on a margin-layout page (default). Pass `wide={false}` to set the card in the main column (≈62%) beside the margin notes, which suits short examples with no big table. */
   wide?: boolean;
+  /** Scale this box between 0.8 and 1 (default 1): type, spacing and line thickness shrink together. */
+  scale?: number;
   title: string;
   /** Badge text: 'Worked Example' (default) for numeric walk-throughs, or 'Example' for any other example (a scenario, a diagram, a comparison). Every example goes in this card. */
   label?: string;
@@ -35,7 +38,8 @@ export interface WorkedExampleProps {
 
 const GRID = 'repeat(auto-fit, minmax(250px, 1fr))';
 
-export function WorkedExample({ title, label = 'Worked Example', setup, context, table, steps = [], answer, soWhat, chapter, wide }: WorkedExampleProps) {
+export function WorkedExample({ title, label = 'Worked Example', setup, context, table, steps = [], answer, soWhat, chapter, wide, scale }: WorkedExampleProps) {
+  const box = boxScale(scale);
   const accent = ch(chapter, 500);
   const ink = ch(chapter, 900);
   const card: CSSProperties = { columnSpan: 'all', border: `var(--box-border) solid ${accent}`, borderTop: `var(--box-accent) solid ${accent}`, borderRadius: 'var(--box-radius)', background: 'var(--surface-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--box-pad)' };
@@ -91,7 +95,7 @@ export function WorkedExample({ title, label = 'Worked Example', setup, context,
   );
 
   return (
-    <div data-wide={wide === false ? undefined : true} style={{ ...card, breakInside: 'avoid' }}>
+    <div data-box data-wide={wide === false ? undefined : true} className={box.className} style={{ ...box.vars, ...card, breakInside: 'avoid' }}>
       <div style={wrap}>
         <div style={head}><span style={badge}>{label}</span><h3 style={titleStyle}>{title}</h3></div>
         {/* setup beside the data table; the work beside the answer and the so-what */}

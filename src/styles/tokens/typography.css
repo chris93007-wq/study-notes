@@ -7,7 +7,8 @@
 --font-display:'Merriweather Variable','Merriweather',Georgia,'Segoe UI',serif;
 --font-body:'Lexend Variable','Lexend',-apple-system,'Segoe UI',sans-serif;
 --font-mono:'Fira Code Variable','Fira Code',ui-monospace,'SFMono-Regular',monospace;
---text-xs:9pt;--text-sm:9.9pt;--text-base:11pt;--text-lg:13.2pt;--text-xl:16.5pt;--text-2xl:22pt;--text-3xl:28.6pt;
+--t-xs:9pt;--t-sm:9.9pt;--t-base:11pt;--t-lg:13.2pt;--t-xl:16.5pt;
+--text-xs:var(--t-xs);--text-sm:var(--t-sm);--text-base:var(--t-base);--text-lg:var(--t-lg);--text-xl:var(--t-xl);--text-2xl:22pt;--text-3xl:28.6pt;
 --leading-tight:1.2;--leading-body:1.5;--leading-compact:1.35;--para-gap:22pt;
 --weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;
 }

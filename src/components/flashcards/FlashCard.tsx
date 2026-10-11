@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { math } from '../math/Tex';
 import { ch, type Chapter } from '../types';
+import { boxScale } from '../boxScale';
 
 /** Small top-bordered mini explainer for one concept — definition, optional formula in words, and the why. A compact preview before the full ConceptCard treatment. */
 export interface FlashCardProps {
@@ -14,9 +15,12 @@ export interface FlashCardProps {
   why: string;
   /** Which chapter color (1-13) tints the top border, title, and formula box */
   chapter: Chapter;
+  /** Scale this card between 0.8 and 1 (default 1). */
+  scale?: number;
 }
 
-export function FlashCard({ number, title, definition, formula, why, chapter }: FlashCardProps) {
+export function FlashCard({ number, title, definition, formula, why, chapter, scale }: FlashCardProps) {
+  const box = boxScale(scale);
   const card: CSSProperties = { border: '1px solid var(--line)', borderTop: `3px solid ${ch(chapter, 500)}`, borderRadius: 'var(--radius-md)', background: 'var(--surface-card)', padding: 'var(--space-4) var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', breakInside: 'avoid' };
   const titleStyle: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-sm)', color: ch(chapter, 900) };
   const label: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-500)' };
@@ -24,7 +28,7 @@ export function FlashCard({ number, title, definition, formula, why, chapter }: 
   const formulaBox: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: ch(chapter, 900), background: ch(chapter, 100), borderRadius: 'var(--radius-sm)', padding: '6.9px 8.8px', whiteSpace: 'pre-wrap', lineHeight: 'var(--leading-compact)' };
   const section: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 2.6 };
   return (
-    <div style={card}>
+    <div className={box.className} style={{ ...box.vars, ...card }}>
       <span style={titleStyle}>{number != null && !/^\d/.test(title) ? `${number} · ${title}` : title}</span>
       <div style={section}><span style={label}>Definition</span><span style={body}>{math(definition)}</span></div>
       {formula && <div style={section}><span style={label}>Formula, in words</span><div style={formulaBox}>{formula}</div></div>}

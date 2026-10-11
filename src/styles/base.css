@@ -44,3 +44,5 @@ strong.tip{color:var(--highlighter-tip-ink);font-weight:700}
 
 /* vertical rhythm inside a Section without making it a flex/grid container (those would stop column-span:all) */
 .stack-3 > * + *{margin-top:var(--space-3)}
+
+.section{margin:var(--space-4) 0}
