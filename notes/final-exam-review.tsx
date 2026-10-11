@@ -277,6 +277,7 @@ export default function FinalExamReview() {
         <WorkedExample
           chapter={C[12]}
           label="Example"
+          wide={false}
           title="Project A vs. Project B (class example)"
           setup="Two projects: B shows a strong near-term number, A has equal or better eventual value. Which does the market reward, and does it matter whether the market can verify the long run?"
           context={<Flowchart chapter={C[12]} root={{
@@ -305,6 +306,7 @@ export default function FinalExamReview() {
         </Section>
                 <WorkedExample
           chapter={C[13]}
+          wide={false}
           title="A Repurchase at the Wrong Price Transfers Wealth"
           setup="400,000 shares, true value $40/share. Firm repurchases 100,000 shares at $50, $40, or $30."
           table={{ columns: ['Repurchase price', 'Final price/share', 'Who gains'], rows: [['$50 (above true value)', '$36.67', 'Sellers — at remaining holders’ expense'], ['$40 (= true value)', '$40.00', 'No transfer'], ['$30 (below true value)', '$43.33', 'Those who stay — at sellers’ expense']] }}

@@ -12,7 +12,7 @@ export interface WorkedExampleStep {
   lines?: string[];
 }
 export interface WorkedExampleProps {
-  /** Full page width on a margin-layout page (default). Pass false to keep it in the main column. */
+  /** Full page width on a margin-layout page (default). Pass `wide={false}` to set the card in the main column (≈62%) beside the margin notes, which suits short examples with no big table. */
   wide?: boolean;
   title: string;
   /** Badge text: 'Worked Example' (default) for numeric walk-throughs, or 'Example' for any other example (a scenario, a diagram, a comparison). Every example goes in this card. */
