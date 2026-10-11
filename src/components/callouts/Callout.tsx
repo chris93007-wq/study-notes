@@ -39,14 +39,22 @@ export function toBullets(children: ReactNode): ReactNode[][] {
 
 export function Callout({ chapter, label, items, children }: CalloutProps) {
   const dark = ch(chapter, 900);
-  const wrap: CSSProperties = { borderTop: label ? `3px solid ${ch(chapter, 500)}` : undefined, paddingTop: label ? 'var(--space-2)' : undefined, breakInside: 'avoid' };
-  const title: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color: dark, margin: '0 0 var(--space-2)' };
+  const wrap: CSSProperties = { breakInside: 'avoid' };
+  const rule: CSSProperties = { height: 2, background: ch(chapter, 500), borderRadius: 1 };
+  const title: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color: dark, whiteSpace: 'nowrap' };
+  const head: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', margin: '0 0 var(--space-2)' };
   const list: CSSProperties = { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' };
   const li: CSSProperties = { position: 'relative', paddingLeft: 14, fontFamily: 'var(--font-body)', fontSize: 'var(--box-text)', lineHeight: 'var(--leading-compact)', color: 'var(--ink-900)' };
   const rows = items ? items.map((i) => [i]) : toBullets(children);
   return (
     <div style={wrap}>
-      {label && <div style={title}>{label}</div>}
+      {label && (
+        <div style={head}>
+          <span style={{ ...rule, width: 12 }} />
+          <span style={title}>{label}</span>
+          <span style={{ ...rule, flex: 1 }} />
+        </div>
+      )}
       <ul style={list}>
         {rows.map((b, i) => (
           <li key={i} style={li}><span aria-hidden style={{ position: 'absolute', left: 0, color: ch(chapter, 500) }}>•</span>{b}</li>
