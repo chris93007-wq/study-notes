@@ -1,6 +1,6 @@
 ---
-name: christines-notes
-description: Turn slides, readings or lecture notes into an ADHD-friendly, printable PDF study packet (notes pages, plus whichever optional supplements add value: cover, contents, a map of a topic overview or a process, cheat sheet, formula sheet, practice questions, glossary, appendix) in Christine's design system — bright Material chapter colors, definition / formula / why for every concept, US Letter with narrow margins. Use when asked to make study notes, a study guide, a cheat sheet, a formula sheet or practice questions for a class week, or to re-render an existing packet. Builds the PDF by running the bundled generator (`npm run pdf`).
+name: "christines-notes"
+description: "Turn slides, readings or lecture notes into an ADHD-friendly, printable PDF study packet in Christine's design system."
 ---
 
 # Christine's Notes — PDF study-packet generator
@@ -34,9 +34,33 @@ cd christines-notes-work && npm install
 
 1. Read `AUTHORING.md` (in this skill folder) and skim `generator/notes/week-03-preference-measurement.tsx`, the reference packet (it shows every page type; its page list is not a template).
 2. Collect what the user gave you: slides, readings, notes, topics. If the course, week, topics, what the notes are for (exam review, case prep, one reading, quick reference) or the wanted page types are unclear, ask first.
+
+   **Standing rule — answer every prep question, don't just list it.** Actively search
+   every source for this week (slides, a "Case Preparation Questions" file, discussion
+   questions embedded in or appended to a case/reading, review/study questions at the
+   end of a chapter) for assigned questions — not just topics. ANY case-prep question
+   or slide-embedded question tied to this week's material must be answered with real
+   content in the notes, grounded in the actual source text (the case, article, or
+   slide content it's based on) — never just reprinted as a prompt for the student to
+   answer later, and never silently dropped because it reads like "discussion prep"
+   rather than "tested content." If a case-prep file exists for the week's case(s) and
+   wasn't already in the source list the user gave you, go find it and read it before
+   writing the packet — do not wait to be told it exists.
+
+   Give these answered questions their own place in the packet (a dedicated subsection
+   on that case's topic page, or a short "Case Discussion Prep" page if there are many
+   across several cases) rather than folding them silently into general topic notes,
+   so they're easy to find before class. If a question is genuinely open-ended/
+   opinion-based with no single right answer (e.g. "evaluate this founder's
+   performance"), still write out a real, well-reasoned answer grounded in specific
+   facts from the source — a worked example of how to answer it — not a restatement
+   of the question or a vague "consider X, Y, Z" placeholder.
+
 3. **Decide what the packet contains. Only the Notes pages are core.** Cover, Contents, Map, Cheat Sheet, Formula Sheet, Practice Questions, Glossary and Appendix are optional supplements: include one only when it adds value to what *these* notes are for, and leave it out otherwise (`AUTHORING.md` → "What to include" has the value test for each page and typical recipes). For example:
    - a single topic → Notes only (no Map, no Contents); a case → Notes, and no Formula Sheet unless the analysis is quantitative; a multi-topic exam review → Cover, Contents, Map, Notes, Cheat Sheet, Formula Sheet if quantitative, Practice Questions, Glossary if term-heavy.
    - A **Map** is for 3+ topics whose order or relationship helps (`TopicMapPage`), or for any structured process, ladder, framework or timeline (`MapPage`, or a `ProcessMap` inside a notes page; `flow="arrows"` for a sequence). Its rows, columns and card density flex to fit one sheet on their own. A small process goes inside the notes page it explains, not on a page of its own.
+   - An **Appendix** only when there is real reference material (a big data table, a full derivation) that would clutter the topic pages.
+   - Answered case-prep questions (standing rule above) are content, not a supplement: they go on the notes page of the case they belong to, as their own titled section. When several cases in the same week each have a substantial set, a dedicated "Case Discussion Prep" notes page (a `SectionTitle` per case, each question answered; `toc.sub` pages only if it runs over a sheet) is also earned. Don't force all of it onto the topic pages if it would crowd them.
    - Say in your hand-off what you left out and why, and offer to add it. Never add a page, appendix or map just to fill out the packet.
 
    Then `npm run new -- week-NN-topic "Title" --with <only the pages you chose>` (for example `--with cover,contents,map,cheat`; `--with all` for every page; without `--with` you get the Notes pages only) creates `notes/week-NN-topic.tsx` from the template. Replace every TODO.
@@ -45,6 +69,23 @@ cd christines-notes-work && npm install
 Spacing is one even rhythm (paragraph = box = box gaps) and two boxes should be separated by a margin note moved into the text; cards (concept, example) have a density — comfortable 100%, cozy 90%, compact 80%, everything inside shrinking together — which the generator picks automatically (pin it with `density` only if you must), and card width (margin / main / full) and margin-note placement are chosen automatically too (see `AUTHORING.md`).
 
 Layout is fixed by the rules in `AUTHORING.md`: notes pages use the margin layout (main column ≈68 characters), reference pages use 2 equal columns, the cheat sheet has at most 3 columns and a 9 pt minimum, labels are never below 9 pt, reading text has 1.5 leading and 2× paragraph spacing. Don't override these to squeeze pages.
+
+### When the material comes from NotebookLM
+
+NotebookLM files (report .md, flashcards, quizzes, JSON tree) are inputs, not finished content. Before authoring, verify them against the original sources:
+
+- Check every number, and spot-check quotes and examples, against text extracted from the slides and readings. Read slide images (charts, diagrams) yourself, since text extraction misses them.
+- Every example keeps its source tag. Drop anything not in the course sources (outside facts, added dates, invented case details) instead of keeping it with a label.
+- Never copy infographic text. Use its layout only.
+- Where slides only pose a case's questions (no facts), answer them with the course frameworks, say plainly that the sources give no case facts, and add none.
+- Keep the Gemini short paragraphs (case write-ups, how-it-is-tested notes) as the narrative, and use tables, cards and diagrams around them.
+
+### Layout lessons
+
+- Break paragraphs with visual elements: no more than one or two short paragraphs in a row, then a table, WorkedExample, ConceptCard, Split, Chain or StepPipeline.
+- Put exam cues, traps and memory aids in margin callouts inside Aside. This fills the margin; paragraphs stacked in the main column leave it empty and fail the whitespace rule.
+- Adding one paragraph can push a whole block onto a near-empty extra sheet. After each addition, re-render and check the page count; trim rather than pile on.
+- Pages that rely on a big Flowchart waste space; prefer a Chain when the diagram is a simple sort.
 
 ### Charts, diagrams and images
 
