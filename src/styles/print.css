@@ -101,6 +101,8 @@ h1,h2,h3,h4{break-after:avoid}
 /* A margin note (a float, not in the flow) between a box and the paragraph it annotates must not close that gap. */
 .page[data-layout="margin"] .page-body > :not(p):not(.aside):not([data-topic-header]):not([data-chapter-header]) + .aside + p,
 .page[data-layout="margin"] .page-body > :not(p):not(.aside):not([data-topic-header]):not([data-chapter-header]) + .aside + .aside + p{margin-top:var(--block-gap)}
+/* Marginalia: a paragraph in the margin column is a textbook side note — one step down from body text. */
+.page[data-layout="margin"] .page-body .aside p{font-size:var(--text-sm);line-height:var(--leading-body);color:var(--ink-900)}
 /* A margin note and the section title that follows it start level. */
 .page[data-layout="margin"] .page-body > .aside + .section-title{margin-top:0}
 .page[data-layout="margin"] .page-body > .section{margin-top:0;margin-bottom:0}

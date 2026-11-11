@@ -30,6 +30,7 @@ export default function SchurFlexibles() {
           <Callout chapter={C.case} label="EXAM TRAP">
             The criminal probe covers <strong className="trap">alleged</strong> misdeeds. Write “alleged”, and state no outcome the sources do not give.
           </Callout>
+          <p>The seller’s side: Lindsay Goldberg says the accounting was proper and PwC audited it, and disputes B&amp;C’s account.</p>
         </Aside>
         <p>
           The 2021 buyout of Schur Flexibles, an Austrian packaging manufacturer, is a cautionary tale about trusting <strong>engineered EBITDA</strong>.

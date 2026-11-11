@@ -6,10 +6,12 @@ export interface StepPipelineProps {
   steps: Array<{ label: string; body?: string }>;
   /** Which chapter color (1-13) fills the number badges, matching the surrounding section */
   chapter: Chapter;
+  /** Span the full page width on a margin-layout page (default). false keeps it in the current column — the main column, or the margin when it sits inside an <Aside>. */
+  wide?: boolean;
 }
 
-export function StepPipeline({ steps, chapter }: StepPipelineProps) {
-  const wrap: CSSProperties = { columnSpan: 'all', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', gap: 'var(--space-3)', breakInside: 'avoid' };
+export function StepPipeline({ steps, chapter, wide = true }: StepPipelineProps) {
+  const wrap: CSSProperties = { columnSpan: wide ? 'all' : undefined, display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', gap: 'var(--space-3)', breakInside: 'avoid' };
   const stepBox: CSSProperties = { flex: '1 1 160px', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', background: 'var(--surface-card)', border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', padding: 'var(--space-4)' };
   const headRow: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' };
   const num: CSSProperties = { width: 31, height: 31, flexShrink: 0, borderRadius: '50%', background: ch(chapter, 500), color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' };
@@ -26,5 +28,5 @@ export function StepPipeline({ steps, chapter }: StepPipelineProps) {
     );
     if (i < steps.length - 1) nodes.push(<div key={`a${i}`} style={arrow}>→</div>);
   });
-  return <div data-wide data-steps style={wrap}>{nodes}</div>;
+  return <div data-wide={wide || undefined} data-steps style={wrap}>{nodes}</div>;
 }

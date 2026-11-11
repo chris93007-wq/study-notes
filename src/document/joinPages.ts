@@ -246,7 +246,8 @@ const less = (a: number[], b: number[]) => { for (let i = 0; i < a.length; i++) 
 function optionsFor(it: Item, st: FitState): Pos[] {
   const home: Pos = { t: 'home' };
   const anchors: Pos[] = Array.from({ length: Math.min(5, st.blocks + 1) }, (_, a) => ({ t: 'margin', a }));
-  if (it.kind === 'note') return [home, ...anchors, { t: 'between' }, { t: 'end' }, { t: 'endwide' }];
+  // a marginalia paragraph may move like any margin note, but never spans the full width (the measure rule)
+  if (it.kind === 'note') return it.el.tagName === 'P' ? [home, ...anchors, { t: 'between' }, { t: 'end' }] : [home, ...anchors, { t: 'between' }, { t: 'end' }, { t: 'endwide' }];
   if (!it.auto) return [home];
   const flip: Pos = { t: 'flow', wide: !it.homeWide };
   return it.concept ? [home, flip, ...anchors] : [home, flip];

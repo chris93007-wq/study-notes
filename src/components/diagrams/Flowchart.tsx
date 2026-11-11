@@ -14,6 +14,8 @@ export interface FlowchartProps {
   root: FlowchartNode;
   /** Which chapter color (1-13) tints the nodes */
   chapter: Chapter;
+  /** Span the full page width on a margin-layout page (default). false keeps it in the current column — the main column, or the margin when it sits inside an <Aside>. */
+  wide?: boolean;
 }
 
 function Shape({ node, chapter }: { node: FlowchartNode; chapter: Chapter }) {
@@ -76,7 +78,7 @@ function FlowNode({ node, chapter }: { node: FlowchartNode; chapter: Chapter }) 
   );
 }
 
-export function Flowchart({ root, chapter }: FlowchartProps) {
-  const wrap: CSSProperties = { columnSpan: 'all', display: 'flex', justifyContent: 'center', padding: 'var(--space-4) 0', breakInside: 'avoid' };
-  return <div data-wide style={wrap}><FlowNode node={root} chapter={chapter} /></div>;
+export function Flowchart({ root, chapter, wide = true }: FlowchartProps) {
+  const wrap: CSSProperties = { columnSpan: wide ? 'all' : undefined, display: 'flex', justifyContent: 'center', padding: 'var(--space-4) 0', breakInside: 'avoid' };
+  return <div data-wide={wide || undefined} style={wrap}><FlowNode node={root} chapter={chapter} /></div>;
 }

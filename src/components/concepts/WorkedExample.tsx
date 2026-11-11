@@ -57,9 +57,10 @@ export function WorkedExample({ title, label = 'Worked Example', setup, context,
   const stepLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-text)', color: ink };
   const lines: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 'var(--box-label)', color: 'var(--ink-900)', lineHeight: 'var(--box-leading)', marginTop: 1.8, overflowWrap: 'anywhere' };
   const step: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 1.8 };
-  const answerBox: CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 2, padding: 'var(--space-3)', borderRadius: 'var(--box-inner-radius)', background: ink, color: '#fff', breakInside: 'avoid' };
-  const answerValue: CSSProperties = { fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--text-xl)', lineHeight: 1.2 };
-  const answerLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', opacity: 0.85 };
+  // The answer is a slim result strip, not a slab: a left accent in the chapter ink, the value and its label on one wrapping baseline row.
+  const answerBox: CSSProperties = { display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 'var(--space-3)', rowGap: 2, padding: 'var(--space-2) var(--space-3)', borderLeft: `4px solid ${ink}`, borderRadius: '0 var(--box-inner-radius) var(--box-inner-radius) 0', background: ch(chapter, 100), breakInside: 'avoid' };
+  const answerValue: CSSProperties = { fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--box-title)', color: ink, lineHeight: 1.25 };
+  const answerLabel: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--box-label)', letterSpacing: '0.06em', textTransform: 'uppercase', color: ch(chapter, 700) };
   const soWhatBox: CSSProperties = { borderLeft: `3px solid ${accent}`, paddingLeft: 'var(--space-3)', fontSize: 'var(--box-text)', lineHeight: 'var(--box-prose-leading)', color: 'var(--ink-900)', breakInside: 'avoid' };
 
   const setupBlock = (setup || context) && (

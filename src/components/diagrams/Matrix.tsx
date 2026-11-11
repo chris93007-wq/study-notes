@@ -9,15 +9,17 @@ export interface MatrixProps {
   cells: ReactNode[][];
   /** Which chapter color (1-13) tints the headers */
   chapter: Chapter;
+  /** Span the full page width on a margin-layout page (default). false keeps it in the current column — the main column, or the margin when it sits inside an <Aside>. */
+  wide?: boolean;
 }
 
-export function Matrix({ rowLabels, colLabels, cells, chapter }: MatrixProps) {
-  const wrap: CSSProperties = { columnSpan: 'all', display: 'grid', width: 'fit-content', maxWidth: '100%', gridTemplateColumns: `140px repeat(${colLabels.length}, 1fr)`, border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
+export function Matrix({ rowLabels, colLabels, cells, chapter, wide = true }: MatrixProps) {
+  const wrap: CSSProperties = { columnSpan: wide ? 'all' : undefined, display: 'grid', width: 'fit-content', maxWidth: '100%', gridTemplateColumns: `140px repeat(${colLabels.length}, 1fr)`, border: '1px solid var(--line)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)', breakInside: 'avoid' };
   const corner: CSSProperties = { background: 'var(--paper-100)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' };
   const head: CSSProperties = { background: ch(chapter, 100), color: ch(chapter, 900), fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.04em', textTransform: 'uppercase', padding: 'var(--space-3)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)' };
   const cell: CSSProperties = { padding: 'var(--space-3)', fontSize: 'var(--text-sm)', color: 'var(--ink-900)', borderRight: '1px solid var(--line)', borderBottom: '1px solid var(--line)', textAlign: 'center' };
   return (
-    <div data-wide style={wrap}>
+    <div data-wide={wide || undefined} style={wrap}>
       <div style={corner} />
       {colLabels.map((c, i) => <div key={`c${i}`} style={{ ...head, textAlign: 'center' }}>{c}</div>)}
       {rowLabels.map((r, ri) => (

@@ -7,17 +7,19 @@ export interface KeyTermsTableProps {
   terms: Array<{ term: ReactNode; explanation: ReactNode; why: ReactNode; example?: ReactNode }>;
   /** Which chapter color (1-13) tints the header row and alternate rows */
   chapter: Chapter;
+  /** Span the full page width on a margin-layout page (default). false keeps it in the current column — the main column, or the margin when it sits inside an <Aside>. */
+  wide?: boolean;
 }
 
-export function KeyTermsTable({ terms, chapter }: KeyTermsTableProps) {
-  const wrap: CSSProperties = { columnSpan: 'all', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)' };
+export function KeyTermsTable({ terms, chapter, wide = true }: KeyTermsTableProps) {
+  const wrap: CSSProperties = { columnSpan: wide ? 'all' : undefined, border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', overflow: 'hidden', fontFamily: 'var(--font-body)' };
   const table: CSSProperties = { width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' };
   const th: CSSProperties = { textAlign: 'left', padding: 'var(--space-3) var(--space-4)', background: ch(chapter, 100), color: ch(chapter, 900), fontFamily: 'var(--font-display)', fontSize: 'var(--text-xs)', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600, borderRight: '1px solid var(--border-default)', verticalAlign: 'bottom' };
   const td: CSSProperties = { padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-xs)', lineHeight: 'var(--leading-compact)', color: 'var(--ink-900)', borderTop: '1px solid var(--border-default)', borderRight: '1px solid var(--border-default)', verticalAlign: 'top', overflowWrap: 'break-word' };
   const trAlt: CSSProperties = { background: `color-mix(in srgb, ${ch(chapter, 100)} 45%, var(--surface-card))` };
   const hasExamples = terms.some((t) => t.example);
   return (
-    <div data-wide style={wrap}>
+    <div data-wide={wide || undefined} style={wrap}>
       <table style={table}>
         <thead><tr>
           <th style={{ ...th, width: '20%' }}>Term</th>
