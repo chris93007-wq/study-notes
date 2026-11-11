@@ -15,7 +15,7 @@ export function SectionTitle({ chapter, children }: SectionTitleProps) {
   const label: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color, whiteSpace: 'nowrap' };
   const line: CSSProperties = { flex: 1, height: 1, background: color };
   return (
-    <div style={wrap}>
+    <div data-section-title style={wrap}>
       <span style={dash} />
       <span style={label}>{children}</span>
       <span style={line} />

@@ -29,7 +29,7 @@ async function launchBrowser(): Promise<Browser> {
   const pwRoot = process.env.PLAYWRIGHT_BROWSERS_PATH ?? '/opt/pw-browsers';
   if (existsSync(pwRoot)) {
     for (const d of readdirSync(pwRoot).filter((d) => /^chromium-\d+$/.test(d)).sort().reverse()) {
-      for (const rel of ['chrome-linux/chrome', 'chrome-mac/Chromium.app/Contents/MacOS/Chromium', 'chrome-win/chrome.exe']) {
+      for (const rel of ['chrome-linux64/chrome', 'chrome-linux/chrome', 'chrome-mac-arm64/Chromium.app/Contents/MacOS/Chromium', 'chrome-mac/Chromium.app/Contents/MacOS/Chromium', 'chrome-win/chrome.exe']) {
         const p = join(pwRoot, d, rel);
         if (existsSync(p)) candidates.push(p);
       }
@@ -277,6 +277,7 @@ async function main() {
       const ws = await measureWhitespace(browser, pdf);
       if (process.env.WS_DEBUG) console.log(ws.map((v, i) => `${i + 1}:${Math.round(v * 100)}`).join(' '));
       overflow.push(...(await auditWhitespace(pdf)));
+      overflow.push(...(await page.evaluate(() => window.__RHYTHM__ ?? [])).map((l) => `rhythm: ${l}`));
       errors.push(...enforceWhitespace(ws, tocPages, numPages));
       for (const w of overflow) console.warn(`  ⚠ ${w}`);
       for (const e of errors) console.error(`  ✗ ${e}`);

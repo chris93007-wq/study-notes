@@ -74,7 +74,9 @@ function simulate(page: HTMLElement): { height: number; sheets: number } {
     }
     end = Math.max(end, a.getBoundingClientRect().bottom - top + offset + (parseFloat(getComputedStyle(a).marginBottom) || 0));
   });
-  return { height: end, sheets: end <= sheet - biasOf(page) ? 1 : Math.max(2, Math.ceil(end / sheet)) };
+  // The safety margin applies at every sheet boundary, not only the first: a real print wastes a line or two at each break
+  // (orphan/widow control, a float that moves on), so a topic ending just inside its last sheet is predicted one sheet longer.
+  return { height: end, sheets: Math.max(1, Math.ceil((end + biasOf(page)) / sheet)) };
 }
 
 /** Fraction of a one-sheet topic's printable area (24px grid) that no block covers — empty margin and empty foot of the sheet. */

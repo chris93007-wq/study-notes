@@ -19,5 +19,5 @@ export function Chain({ items, chapter, connector = '→' }: ChainProps) {
     nodes.push(<span key={`b${i}`} style={box}>{it}</span>);
     if (i < items.length - 1) nodes.push(<span key={`c${i}`} style={glyph}>{connector}</span>);
   });
-  return <div style={wrap}>{nodes}</div>;
+  return <div data-chain style={wrap}>{nodes}</div>;
 }

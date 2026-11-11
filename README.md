@@ -50,12 +50,13 @@ npm run skill:zip      # → skill-dist/christines-notes.zip
 | Path | |
 |---|---|
 | `notes/week-03-preference-measurement.tsx` | Sample packet with all 9 page types: Cover, Contents, Topic Map, 4 Notes pages, Cheat Sheet, Formula Sheet, Practice Questions, Appendix, Glossary |
+| `notes/case-schur-flexibles.tsx` | Reference for notes on one case, in textbook rhythm: a narrative write-up turned into short paragraph blocks alternating with a table, example, steps and concept card (Notes only: no Cover, Contents, Map or Cheat Sheet) |
 | `notes/design-system.tsx` | The design system as a printable spec: palette, type, spacing, brand, layout, every component |
 | `notes/_template.tsx` | Starter packet used by `npm run new`: the Notes pages, plus optional blocks (cover, contents, map, cheat, formulas, quiz, glossary, appendix) kept only when you ask for them with `--with` |
 | `src/styles/` | Tokens (Material palette, chapter aliases, type, spacing, radius/shadow), base + highlighter/badge CSS, print geometry |
 | `src/components/` | The design-system components, typed: callouts, cards, tables, diagrams, charts, Mermaid, media |
 | `src/pages/` | Page templates |
-| `src/document/` | `NotesDocument` (meta, Contents, footer) and `Page` |
+| `src/document/` | `NotesDocument` (meta, Contents, footer), `Page`, the layout fitter (`joinPages.ts`) and the textbook-rhythm audit (`rhythm.ts`) |
 | `src/layout/` | 12-column `Grid`/`Span`, `Columns`, `Full`, `Stack` |
 | `scripts/pdf.ts` | Renderer: two-pass PDF with Contents page numbers, overflow check, bookmarks |
 | `docs/AUTHORING.md` | **How to write notes, and the design rules** |

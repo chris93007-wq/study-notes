@@ -8,6 +8,7 @@ import {
  *
  * Only the Notes pages are core. Every other page is a supplement that is kept only when it adds value to what these notes are
  * for; `npm run new` strips the optional blocks you don't ask for. Rules of the system: docs/AUTHORING.md.
+ * Every topic reads like a textbook page: short paragraph blocks alternating with cards, tables and diagrams (see Topic A).
  *
  *   cover     a packet that will be printed or shared (about 4+ sheets)           skip for a short note
  *   contents  4+ sheets or 3+ topics, so a reader can jump                        skip for 1–3 sheets
@@ -67,9 +68,12 @@ export default function Notes() {
           <Callout chapter={C.topicA} label="MEMORY AID">TODO</Callout>
           <Callout chapter={C.topicA} label="EXAM TRAP">TODO</Callout>
         </Aside>
-        <p>TODO dense notes paragraph.</p>
+        {/* Textbook rhythm: a short paragraph block (1–2 paragraphs, about 60 words each), then an element, then a block, then an element. */}
+        <p>TODO lead-in: what this topic is and why it matters.</p>
         <ConceptCard chapter={C.topicA} term="TODO term" definition="TODO" formulas={['a = \\dfrac{b}{c}']} why="TODO" />
+        <p>TODO bridge: what to notice in the example below.</p>
         <WorkedExample chapter={C.topicA} title="TODO" setup="TODO" steps={[{ label: 'TODO', lines: ['TODO'] }]} answer={{ value: 'TODO', label: 'TODO' }} soWhat="TODO" />
+        <p>TODO takeaway, one sentence. <mark>The one thing to remember.</mark></p>
       </NotesPage>
 
       <NotesPage toc={{ title: 'Topic B', chapter: C.topicB }}>

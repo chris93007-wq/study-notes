@@ -13,7 +13,8 @@
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 body{margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--leading-body);-webkit-font-smoothing:antialiased}
-p{margin:0;orphans:3;widows:3}
+/* 2/2, not 3/3: with 3 and 3 a paragraph under 6 lines cannot satisfy both, so Chromium drops the rule and leaves a one-line widow. */
+p{margin:0;orphans:2;widows:2}
 
 mark{background:var(--highlighter);color:var(--ink-900);padding:1px 5px;border-radius:var(--radius-sm);font-weight:700;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 strong.trap{color:var(--highlighter-trap-ink);font-weight:700}

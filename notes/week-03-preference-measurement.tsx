@@ -1,5 +1,5 @@
 import {
-  Aside, Callout, Chain, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage,
+  Aside, Callout, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage,
   FormulaSheetPage, Flowchart, GlossaryPage, Image, KeyTermsTable, Matrix, NotesDocument, NotesPage, QuizPage,
   Section, SectionTitle, Split, Stack, StepPipeline, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
 } from '@notes';
@@ -154,6 +154,9 @@ export default function Week03() {
       <NotesPage toc={{ title: 'MaxDiff → TURF Pipeline', chapter: C.pipeline }}>
         <TopicHeader title="The MaxDiff → TURF Pipeline" kicker="A single pipeline, run in sequence" />
         <div style={{ height: 20 }} />
+        <p>
+          MaxDiff and TURF are two stages of one pipeline: MaxDiff ranks the perks, then TURF picks the bundle that reaches the most people under the budget.
+        </p>
         <StepPipeline
           chapter={C.pipeline}
           steps={[
@@ -162,9 +165,9 @@ export default function Week03() {
             { label: 'Optimal bundle', body: 'Run TURF on that binary data to find the mix with the widest reach' },
           ]}
         />
-        <Section wide chapter={C.pipeline} title="In One Line">
-          <Chain chapter={C.pipeline} items={['MaxDiff scores', 'Binary top-choice data', 'TURF bundle']} connector="→" />
-        </Section>
+        <p>
+          Which tool to use depends on the question being asked.
+        </p>
         <Section wide chapter={C.pipeline} title="Which Tool?">
           <Flowchart
             chapter={C.pipeline}
@@ -185,6 +188,9 @@ export default function Week03() {
             cells={[['✓', '–', '–'], ['–', '✓', '–'], ['–', '–', '✓']]}
           />
         </Section>
+        <p>
+          Each tool answers exactly one of the three questions, so <mark>a bundle needs a ranking first</mark>: run MaxDiff, then TURF.
+        </p>
       </NotesPage>
 
       {/* ───────────── Topic 5 · Conjoint ───────────── */}
@@ -219,7 +225,10 @@ export default function Week03() {
             formulas={['WTP_i = \\dfrac{u_i}{\\beta_{price}}']}
             why={<>Price is the only attribute measured in <mark>real dollars</mark>. Dividing the upgrade’s utility by the price part-worth’s slope converts utils back into dollars.</>}
           />
-                <WorkedExample
+        <p>
+          Utility adds up the part-worths; willingness to pay converts one of them into dollars. The example below runs that conversion on a four-attribute product.
+        </p>
+        <WorkedExample
           chapter={C.conjoint}
           title="Converting Utility Into Willingness to Pay"
           setup="Four binary attributes — Accuracy (5ft vs. 50ft), Battery (12hr vs. 32hr), Display (LCD vs. OLED), Price ($199 vs. $249) — fit with OLS regression on 300 ranked profiles."

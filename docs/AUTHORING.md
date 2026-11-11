@@ -50,6 +50,7 @@ These are the design decisions settled in the design sessions. Keep to them.
 
 **Reading layout** (ADHD-friendly, textbook-informed; settled with Christine):
 - **Measure:** reading text is 50–70 characters per line. Notes pages use the **margin layout** (the `NotesPage` default): a main column about 62% wide (≈60 characters at 11 pt) and a margin about 34% wide. Reference pages (`QuizPage`, `GlossaryPage`, or `<NotesPage layout="columns">`) use 2 equal columns (≈60 characters). Use `layout="single"` only for exceptions.
+- **Text and elements alternate** (textbook rhythm): short paragraph blocks of 1–2 paragraphs between the cards, tables and diagrams, never 3 elements or 3 paragraphs in a row. See "Textbook rhythm" below.
 - **Margin notes are a title and bullets, not cards.** `Callout` renders a colored title, with a rule running through its middle like a section title (only when it has a title), over a short bullet list, one bullet per sentence (or pass `items`). **Callouts live in the margin.** All four kinds (Key Insight, Notes, Memory Aid, Exam Trap) go inside `<Aside>`, placed just *before* the paragraph, card or section they annotate, so the main column stays continuous prose. Several callouts in one `<Aside>` stack.
 - **Balance the two columns.** Decide per page what sits in the margin so both columns end at about the same height: usually the callouts in the margin and the concept card in the main column under the intro; move the card into the `<Aside>` only when the intro prose is long. An empty margin or an empty main column beside a tall neighbour is wasted space.
 - **Every example goes in the example card** (`WorkedExample`), worked or not: use the default "Worked Example" badge for numeric walk-throughs and `label="Example"` for any other example (a scenario, a diagram, a comparison). Put a diagram in its `context`. Never present an example as a plain `Section`.
@@ -109,6 +110,31 @@ Never stack styles (no bold red inside a highlight, no highlighted green). Colou
 - Every concept gets a plain-language definition, the formula (KaTeX in `ConceptCard`, *in words* in
   `FlashCard`), and the **why**: the logic that makes the formula make sense.
 
+## Textbook rhythm: short paragraph blocks between the elements
+
+A notes topic reads like a textbook page: **short paragraph blocks alternating with elements**. It is not one block of prose followed by a stack of boxes, and not a page of boxes with no prose between them. The cards, tables and diagrams are the exhibits; the paragraphs are what carries the reader from one to the next.
+
+- **A block is 1–2 paragraphs, and each paragraph is short**: about 60 words (5–6 lines of the main column), never over 75. Three paragraphs or lists in a row is a wall of text: put an element between them.
+- **Elements** are concept cards, example cards, tables, diagrams, charts, steps, chains and maps. **No more than 2 elements in a row** without a paragraph between them. Margin notes (`<Aside>`) are neither text nor elements: they annotate the text beside them, so they never stand in for a paragraph.
+- **Every topic has running text**, in the pattern block → element → block → element. A block does one of two jobs: a *lead-in* (what the next element is and what to look for) or a *takeaway* (one sentence on what to remember, where the one `<mark>` goes). Even a page that is mostly one big table or example gets a lead-in and a takeaway.
+- **A paragraph says something the element does not.** Don't restate a table in prose: the lead-in names what the table shows, the takeaway draws the conclusion. A fact lives in the paragraph or in the element, not in both.
+- A topic that is all prose is broken up by the element that makes its main point concrete (a table, a Chain, a small diagram, an example).
+
+**Turning a narrative source into notes** (a NotebookLM or Gemini case write-up, a textbook section, a long reading). The source's sections already have this shape. Keep its paragraphs as the paragraph blocks (shortened, in your own words) and make the rest of each section the element that follows:
+
+| In the source | In the notes |
+|---|---|
+| The opening sentence or two (what it is, why it matters) | The first paragraph block of the topic |
+| A section with a lead sentence and bullet facts (parties, numbers, dates) | A short paragraph, then a table (facts) or steps (events in order) |
+| A numbered list of mechanisms, causes or methods | A short paragraph, then a table (what / how / effect) or a Chain |
+| A mechanism that needs numbers to land | A short paragraph, then a worked example (label invented numbers "illustrative") |
+| The closing "so what" sentence | The last paragraph, with the one `<mark>`; then a concept card if it defines a term |
+| "Would you like me to…?", emoji, "Here is a summary…" | Dropped |
+
+The worked reference is `notes/case-schur-flexibles.tsx`, a case write-up turned into notes: two short paragraphs → deal table → paragraph → findings table → paragraph → worked example → paragraph → steps → takeaway → concept card.
+
+`npm run pdf` checks the rhythm from the authored order and prints `⚠ rhythm: …` for a topic that has 3+ elements in a row, 3+ paragraphs or lists in a row, a paragraph over 75 words, or 2+ elements and no paragraph. Fix each by adding a lead-in or a takeaway, splitting a long paragraph around an element, or putting an element into a wall of text; re-render (up to two rounds) and say in your hand-off about any that remain.
+
 ## What to include
 
 **Only the Notes pages are core.** Every other page is a supplement that is kept only when it adds value to what these notes are *for*. There is no standard packet to fill. If the goal isn't clear from the request, ask: exam review of a week of lectures, preparing a case, notes on one reading, a quick reference? Then decide each supplement with the table below. `npm run new -- <name> "Title" --with …` creates a file with only the pages you list, so leaving something out costs nothing.
@@ -141,7 +167,7 @@ In the hand-off, say what you left out and why, and offer to add any of it. Neve
 | `ContentsPage` | portrait | Contents | — | optional. built from every page's `toc`; page numbers filled by `npm run pdf` |
 | `MapPage` | portrait | ChapterHeader | ✓ | optional. A map of any structured process, ladder, framework or timeline: header, introduction, then a `ProcessMap`; rows × columns and density flex to one sheet. `flow="arrows"` numbers the cards and points to the next one |
 | `TopicMapPage` | portrait | ChapterHeader | ✓ | optional. A `MapPage` whose cards are the packet's topics (definition / formula in words / why each) |
-| `NotesPage` | portrait* | Notes Page | ✓ | **core.** margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style; callouts in `<Aside>` |
+| `NotesPage` | portrait* | Notes Page | ✓ | **core.** margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style (short paragraph blocks between the elements); callouts in `<Aside>` |
 | `CheatSheetPage` | portrait | Cheat Sheet | ✓ | optional. one column per topic: bullets + formula in words. At most 3 columns with dividers, ≥ 9 pt, may run to two sheets |
 | `FormulaSheetPage` | portrait | Formula Sheet | ✓ | optional. Concept / Decomposition / KaTeX formula, chapter bands |
 | `QuizPage` | portrait | — | — | optional. 2 equal columns; one chapter color; light-green answer strip |
@@ -232,6 +258,7 @@ import profileCard from './assets/profile-card.png';
 
 ## Checks `npm run pdf` does for you
 - Warns when something is wider than the printable area and would be clipped. It names the page and the text.
+- Warns when a topic's paragraphs and elements do not alternate (`⚠ rhythm: …`, see "Textbook rhythm").
 - Fails on React/runtime errors.
 - Fills in the Contents page numbers in a second pass and warns if they shift.
 
