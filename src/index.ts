@@ -14,6 +14,7 @@ export { BarChart, type BarDatum } from './components/charts/BarChart';
 export { LineChart, type LineSeries } from './components/charts/LineChart';
 export { ScatterPlot, type ScatterPoint } from './components/charts/ScatterPlot';
 export { Split } from './components/diagrams/Split';
+export { Tree, type TreeNode } from './components/diagrams/Tree';
 export { FlashCard, FlashcardGrid } from './components/flashcards/FlashCard';
 export { ProcessMap, type MapNode } from './components/map/ProcessMap';
 export { StepPipeline } from './components/flow/StepPipeline';

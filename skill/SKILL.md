@@ -33,7 +33,7 @@ cd christines-notes-work && npm install
 ## 2. Learn the rules, then write the packet
 
 1. Read `AUTHORING.md` (in this skill folder) and skim `generator/notes/week-03-preference-measurement.tsx`, the reference packet (it shows every page type; its page list is not a template), and `generator/notes/case-schur-flexibles.tsx`, notes on a single case in textbook rhythm (a narrative write-up turned into short paragraphs between elements).
-2. Collect what the user gave you: slides, readings, notes, topics. If the course, week, topics, what the notes are for (exam review, case prep, one reading, quick reference) or the wanted page types are unclear, ask first.
+2. Collect what the user gave you: slides, readings, notes, topics. **Open every tab of every workbook** (reference tabs such as "Ratio Descriptions", and the ratio block on each company sheet), because the course's own metric list lives there and defines what the packet must cover. Never mark a source unavailable until you have checked the uploads copy of each file. Before delivering, list every metric and term in those reference tabs and confirm each is in the packet or deliberately left out and said so in the hand-off. If the course, week, topics, what the notes are for (exam review, case prep, one reading, quick reference) or the wanted page types are unclear, ask first.
 
    **Standing rule — answer every prep question, don't just list it.** Actively search
    every source for this week (slides, a "Case Preparation Questions" file, discussion
@@ -94,6 +94,17 @@ NotebookLM files (report .md, flashcards, quizzes, JSON tree) are inputs, not fi
 
 - Numbers → `BarChart` / `LineChart` / `ScatterPlot`. Simple trees → `Flowchart` / `FormulaTree`. Merging/looping diagrams, sequences, Gantt → `Mermaid` (text in, themed SVG out). See `AUTHORING.md`.
 - Images: if Canva tools are available (`generate-image`), you may generate a flat pastel illustration for a topic. Canva only returns a link, a media ID and a small preview, which is NOT print quality. Tell the user to open the link, download the full-size image and save it to `notes/assets/`, then reference it with `<Image src={…}>`. Never embed the thumbnail as if it were final. If Canva isn't available, use an `<Image>` placeholder frame (no `src`) with a clear alt text, or draw the idea with Mermaid/SVG components.
+
+## 2b. Packet rules learned from Session 4 (apply every time)
+
+- **Topic Map = the content tree, not a chain.** Build the source's Pyramid-Principle tree first (use the `pyramid-structure` skill when listed), then draw it with the `tree` prop of `TopicMapPage` (no `cards`): shapes for the root and the branches, bulleted lists for the leaves, in the design system's own boxes and colors. Pass the Pyramid tree's JSON as the `TreeNode` (strings are leaves; a node with `children` becomes a smaller shape with its own bullets) and give each top-level branch the `chapter` color of the topic it belongs to. `heading="How Session N is structured"` puts a section title above it. Only reach for `Mermaid` when the structure merges or loops; its `{{ch:N:S}}` tokens resolve to chapter colors (e.g. `classDef bmi fill:{{ch:9:100}},stroke:{{ch:9:500}},color:{{ch:9:900}}`).
+- **Every topic page opens with an Introduction.** After `TopicHeader` and the `<Aside>` margin note, put `<SectionTitle chapter={C.topic}>Introduction</SectionTitle>` and then the first paragraph. Never a blank spacer div: the paragraph must be top-aligned with the margin note.
+- **Margin note first.** When a `SectionTitle` follows an `<Aside>`, both headers sit level (built into print.css). The title rule stops at the 62% main column.
+- **No Source key / legend table.** No inline source citations in the text (no [Slides], [VI], [CNMS] tags, including ones NotebookLM adds): strip them. Sources appear only in the TopicHeader kicker / page footer.
+- **Highlights on every short paragraph.** Each paragraph carries one `<mark>` fact (≤12 words); use `tip` (green) for what to do and `trap` (red) for what not to do.
+- **Break paragraphs with visuals.** Paragraph, element, paragraph, element. Gemini/NotebookLM short paragraphs are kept (shortened) as the paragraph blocks.
+- **Answer boxes must state a real result.** No two-number boxes like "50% / +40%" without a label saying what each is; one value with a plain label.
+- **Only facts in the sources.** Drop details NotebookLM added that the slides/readings do not contain; answer case-prep questions with frameworks only when the sources hold no case facts, and say so.
 
 ## 3. Render
 

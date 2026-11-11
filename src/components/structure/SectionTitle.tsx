@@ -10,12 +10,12 @@ export interface SectionTitleProps {
 
 export function SectionTitle({ chapter, children }: SectionTitleProps) {
   const color = ch(chapter, 500);
-  const wrap: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', width: '100%', breakAfter: 'avoid' };
+  const wrap: CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', breakAfter: 'avoid' };
   const dash: CSSProperties = { width: 14, height: 2, background: color, flexShrink: 0 };
   const label: CSSProperties = { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color, whiteSpace: 'nowrap' };
   const line: CSSProperties = { flex: 1, height: 1, background: color };
   return (
-    <div data-section-title style={wrap}>
+    <div className="section-title" data-section-title style={wrap}>
       <span style={dash} />
       <span style={label}>{children}</span>
       <span style={line} />

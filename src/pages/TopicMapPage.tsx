@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { TocSpec } from '../document/NotesDocument';
 import type { MapNode } from '../components/map/ProcessMap';
+import type { TreeNode } from '../components/diagrams/Tree';
 import type { Chapter } from '../components/types';
 import { MapPage } from './MapPage';
 
@@ -13,8 +14,15 @@ export interface TopicMapPageProps {
   subtitle?: string;
   /** Week-badge color; defaults to the brand chapter */
   chapterNumber?: Chapter;
-  /** One card per topic in the packet */
-  cards: MapNode[];
+  /** One card per topic in the packet. Leave out when the map is a `tree`. */
+  cards?: MapNode[];
+  /**
+   * The packet's content tree (Pyramid-Principle), drawn as shapes for the root and branches and bullets for the leaves.
+   * Give each top-level branch its topic's `chapter`. Use it instead of `cards` when the topics have a structure worth showing.
+   */
+  tree?: TreeNode;
+  /** Optional heading above the tree or the cards, e.g. "How Session 4 is structured" */
+  heading?: string;
   /** Pin the cards per row. Default: the page picks the rows × columns that fit one sheet. */
   cardColumns?: number;
   /**
@@ -31,9 +39,9 @@ export interface TopicMapPageProps {
  * sheet. Optional: a single topic, or topics with no relationship worth drawing, don't need one. For any other structured
  * process (steps, a ladder, a framework) use MapPage directly.
  */
-export function TopicMapPage({ toc, label = 'Overview', title, subtitle, chapterNumber, cards, cardColumns, cardPlacement = 'auto', children }: TopicMapPageProps) {
+export function TopicMapPage({ toc, label = 'Overview', title, subtitle, chapterNumber, cards = [], tree, heading, cardColumns, cardPlacement = 'auto', children }: TopicMapPageProps) {
   return (
-    <MapPage toc={toc} label={label} title={title} subtitle={subtitle} chapterNumber={chapterNumber} nodes={cards} flow="none" columns={cardColumns ?? 'auto'} placement={cardPlacement}>
+    <MapPage toc={toc} label={label} title={title} subtitle={subtitle} chapterNumber={chapterNumber} nodes={cards} tree={tree} heading={heading} flow="none" columns={cardColumns ?? 'auto'} placement={cardPlacement}>
       {children}
     </MapPage>
   );

@@ -9,7 +9,10 @@ import { trackPending } from '../../document/pending';
  * loops, swimlanes or other layouts. Rendered to static SVG, so it prints sharply.
  */
 export interface MermaidProps {
-  /** Mermaid source, e.g. "flowchart LR\n  A[Score] --> B[Convert] --> C[TURF]" */
+  /**
+   * Mermaid source, e.g. "flowchart LR\n  A[Score] --> B[Convert] --> C[TURF]". The token {{ch:N:S}} becomes the hex of chapter N,
+   * shade S (50–900), so a node class can take its topic's color: classDef a fill:{{ch:9:100}},stroke:{{ch:9:500}},color:{{ch:9:900}}
+   */
   code: string;
   /** Which chapter color (1-13) tints the nodes */
   chapter: Chapter;
@@ -95,7 +98,13 @@ async function renderMermaid(id: string, code: string, chapter: Chapter): Promis
         doneTaskBorderColor: c(500),
       },
     });
-    const { svg } = await mermaid.render(id, code);
+    // {{ch:N:S}} → the hex of chapter N, shade S (50–900), so a branch or class can take its topic's color
+    const hex = (n: number, step: number) => {
+      const [r, g, b] = (cssVar(`--chapter-${n}-${step}`).match(/\d+/g) ?? ['0', '0', '0']).map(Number);
+      return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+    };
+    const resolved = code.replace(/\{\{ch:(\d+):(\d+)\}\}/g, (_m, n: string, st: string) => hex(Number(n), Number(st)));
+    const { svg } = await mermaid.render(id, resolved);
     return svg;
   };
   const result = queue.then(run, run);

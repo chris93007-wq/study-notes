@@ -66,6 +66,7 @@ function describe(b: Block): string {
   const kind = el.matches('[data-concept]') || el.querySelector('[data-concept]') ? 'concept card'
     : el.matches('[data-box]') || el.querySelector('[data-box]') ? 'example card'
     : el.matches('[data-map]') || el.querySelector('[data-map]') ? 'map'
+    : el.matches('[data-tree]') || el.querySelector('[data-tree]') ? 'tree'
     : el.matches('[data-steps]') || el.querySelector('[data-steps]') ? 'steps'
     : el.matches('[data-chain]') || el.querySelector('[data-chain]') ? 'chain'
     : el.matches('table') || el.querySelector('table') ? 'table'

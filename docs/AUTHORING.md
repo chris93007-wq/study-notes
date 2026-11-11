@@ -62,7 +62,7 @@ These are the design decisions settled in the design sessions. Keep to them.
 - **A worked example is not wrapped in a `Section`**: its card is already labelled, so a second title line would repeat it.
 - **Short topics share a sheet.** A `NotesPage` that fits in what is left of the previous sheet (plus a 24 pt gap) continues there instead of starting a new one (`join={false}` to opt out). Topics that don't fit start a new sheet.
 - **Maps flex to one sheet.** `MapPage` / `TopicMapPage` choose the rows × columns and the card density that fit header, introduction and map on one sheet (the lightest density first, the most readable shape first; margin notes only as a last resort for an unordered map). Don't hand-pick `columns` unless the structure needs it. If a map still can't fit, it breaks between rows rather than moving whole.
-- **Where a map goes.** A small process (about 6 steps or fewer) belongs inside the notes page it explains, as a `<ProcessMap>`: on a page of its own it would leave most of the sheet empty (the whitespace rule below). Give a map its own `MapPage` when it is the heart of the packet (a topic overview, or a process with enough per-step detail to fill a sheet).
+- **Where a map goes.** A small process (about 6 steps or fewer) belongs inside the notes page it explains, as a `<ProcessMap>`: on a page of its own it would leave most of the sheet empty (the whitespace rule below). Give a map its own `MapPage` when it is the heart of the packet (a topic overview, or a process with enough per-step detail to fill a sheet). When the topics hang together as one hierarchy, draw the Topic Map as that tree (`TopicMapPage tree={…}`, built from the session's Pyramid-Principle tree) instead of a row of cards.
 - **Wide blocks span the page:** worked examples, tables, Matrix, Split, headers and any `<Section wide>` / `<Wide>`. They clear the margin notes above them, so put the `<Aside>` above the text it belongs with, not above a wide block.
 - **Leading:** 1.5 for reading text (prose, definition and why text in cards, callouts); 1.35 for compact items (table cells, formula rows, steps, glossary entries, cheat-sheet bullets); headings 1.2.
 - **Paragraph spacing:** a full 2× the font size (`--para-gap`, 22 pt) between paragraphs of running prose. Bullets, table cells and glossary entries stay tight.
@@ -165,8 +165,8 @@ In the hand-off, say what you left out and why, and offer to add any of it. Neve
 |---|---|---|---|---|
 | `CoverPage` | portrait | — | — | optional. title/eyebrow from `meta`; `dots` = topic chapters |
 | `ContentsPage` | portrait | Contents | — | optional. built from every page's `toc`; page numbers filled by `npm run pdf` |
-| `MapPage` | portrait | ChapterHeader | ✓ | optional. A map of any structured process, ladder, framework or timeline: header, introduction, then a `ProcessMap`; rows × columns and density flex to one sheet. `flow="arrows"` numbers the cards and points to the next one |
-| `TopicMapPage` | portrait | ChapterHeader | ✓ | optional. A `MapPage` whose cards are the packet's topics (definition / formula in words / why each) |
+| `MapPage` | portrait | ChapterHeader | ✓ | optional. A map of any structured process, ladder, framework or timeline: header, introduction, then a `ProcessMap` (rows × columns and density flex to one sheet; `flow="arrows"` numbers the cards) or a `tree` |
+| `TopicMapPage` | portrait | ChapterHeader | ✓ | optional. A `MapPage` for the packet's topics: `cards` (definition / formula in words / why each) or, when the topics have a structure worth showing, `tree` — the session's content tree as shapes + bulleted lists, one branch color per topic; `heading` puts a section title above it |
 | `NotesPage` | portrait* | Notes Page | ✓ | **core.** margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style (short paragraph blocks between the elements); callouts in `<Aside>` |
 | `CheatSheetPage` | portrait | Cheat Sheet | ✓ | optional. one column per topic: bullets + formula in words. At most 3 columns with dividers, ≥ 9 pt, may run to two sheets |
 | `FormulaSheetPage` | portrait | Formula Sheet | ✓ | optional. Concept / Decomposition / KaTeX formula, chapter bands |
@@ -193,6 +193,7 @@ Any template takes `toc={{ title, chapter }}` to appear on the Contents page.
 | `Split` | two-sided comparison |
 | `Matrix` | row × column framework grid |
 | `Flowchart` | decision tree with box/diamond nodes |
+| `Tree` | content tree mixing shapes with bulleted lists: a dark root box, a chapter-colored box per branch (equal heights, lists starting level), bullets for the leaves, a smaller box with its own bullets for a sub-branch. Takes a Pyramid-Principle JSON tree (`{ name, children }`) as it is; each branch takes its topic's `chapter`. The Topic Map drawn from the content tree (`TopicMapPage tree={…}`) |
 | `StepPipeline` | numbered process steps with arrows |
 | `KeyTermsTable` | Term / Simple Explanation / Why It Matters / Example |
 | `ComparisonTable` | any data table (`columns[].align`, `columns[].width`) |
@@ -212,7 +213,7 @@ Prop types are in each component's source file (`src/components/**`), with JSDoc
 
 - Data → `BarChart` / `LineChart` / `ScatterPlot` (SVG, chapter colors, values printed — nothing relies on hover).
   Give them a `caption` ("Fig. 2 — …"); size with `width`/`height` (a half-width column is about 340 px).
-- Simple top-down trees and decisions → `Flowchart` / `FormulaTree`. Anything that merges, loops or needs swimlanes → `Mermaid`:
+- A content hierarchy (the session's Pyramid-Principle tree, an issue tree, a framework's parts) → `Tree`, which mixes shapes with bulleted lists in the system's own boxes and colors. Simple top-down decisions → `Flowchart` / `FormulaTree`. Anything that merges, loops or needs swimlanes → `Mermaid` (the token `{{ch:N:S}}` in its code becomes the hex of chapter N, shade S, so `classDef` lines can take topic colors):
 
 ```tsx
 <Mermaid chapter={4} caption="Fig. 3 — Survey loop" code={`flowchart TD

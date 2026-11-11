@@ -11,6 +11,7 @@ import type { TocSpec } from '../document/NotesDocument';
 import { ChapterHeader } from '../components/structure/ChapterHeader';
 import { SectionTitle } from '../components/structure/SectionTitle';
 import { ProcessMap, type MapNode } from '../components/map/ProcessMap';
+import { Tree, type TreeNode } from '../components/diagrams/Tree';
 import type { Chapter } from '../components/types';
 
 export interface MapPageProps {
@@ -22,8 +23,13 @@ export interface MapPageProps {
   subtitle?: string;
   /** Badge color; defaults to the brand chapter */
   chapterNumber?: Chapter;
-  /** The nodes of the map: topics, steps, stages, parts of a framework … */
-  nodes: MapNode[];
+  /** The nodes of the map: topics, steps, stages, parts of a framework … Leave out when the map is a `tree`. */
+  nodes?: MapNode[];
+  /**
+   * The map as a content tree instead of cards: shapes for the root and the branches, bulleted lists for the leaves (see
+   * Tree). A Pyramid-Principle tree of the session is the natural Topic Map. Drawn under the introduction.
+   */
+  tree?: TreeNode;
   /** 'none' (default): independent cards. 'arrows': a sequence — numbered cards with arrows between neighbours in a row. */
   flow?: 'none' | 'arrows';
   /** Cards per row. 'auto' (default): the page picks the rows × columns that fit one sheet. A number pins it. */
@@ -65,7 +71,7 @@ type Cfg = { d: number; c: number | 'margin' };
  * card density flex until it all fits one sheet (the lightest density first, the most readable shape first); a topic overview
  * can fall back to margin notes. Set `flow="arrows"` for a sequence.
  */
-export function MapPage({ toc, label = 'Map', title, subtitle, chapterNumber, nodes, flow = 'none', columns = 'auto', density, heading, chapter, placement = 'auto', children }: MapPageProps) {
+export function MapPage({ toc, label = 'Map', title, subtitle, chapterNumber, nodes = [], tree, flow = 'none', columns = 'auto', density, heading, chapter, placement = 'auto', children }: MapPageProps) {
   const doc = useDocument();
   const ref = useRef<HTMLSpanElement>(null);
   const pinnedD = densityValue(density);
@@ -75,7 +81,7 @@ export function MapPage({ toc, label = 'Map', title, subtitle, chapterNumber, no
   const [cfg, setCfg] = useState<Cfg>({ d: pinnedD ?? 1, c: placement === 'margin' && marginOk ? 'margin' : shapes[0] });
 
   useEffect(() => {
-    if (placement === 'margin' || (pinnedD != null && pinnedC != null)) return;
+    if (nodes.length === 0 || placement === 'margin' || (pinnedD != null && pinnedC != null)) return; // a tree has no cards to flex
     trackPending((async () => {
       await document.fonts.ready;
       const page = ref.current?.closest('section.page');
@@ -120,7 +126,8 @@ export function MapPage({ toc, label = 'Map', title, subtitle, chapterNumber, no
       <ChapterHeader compact chapterNumber={color} week={doc?.meta.week} chapter={label} title={title ?? doc?.meta.title ?? ''} subtitle={subtitle} />
       {children}
       {heading && <div data-wide style={{ marginTop: 'var(--space-3)' }}><SectionTitle chapter={color}>{heading}</SectionTitle></div>}
-      {cfg.c === 'margin' ? (
+      {tree && <Tree root={tree} chapter={color} />}
+      {nodes.length === 0 ? null : cfg.c === 'margin' ? (
         <Aside>
           {nodes.map((node, i) => (
             <Callout key={i} chapter={node.chapter ?? chapter ?? (((i % 5) + 1) as Chapter)} label={/^\d/.test(node.title) ? node.title : `${node.number ?? i + 1} · ${node.title}`} items={[node.definition, node.formula, node.why].filter((x) => x != null)} />

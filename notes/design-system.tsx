@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import {
   Callout, Chain, ChapterHeader, ComparisonTable, ConceptCard, ContentsPage, CoverPage, FlashcardGrid, Flowchart,
   FormulaTree, Image, KeyTermsTable, Matrix, NotesDocument, Page, PageBadge, PageFooter, Section, SectionTitle,
-  ProcessMap, Split, StepPipeline, Tex, TopicHeader, WorkedExample, type Chapter,
+  ProcessMap, Split, StepPipeline, Tex, TopicHeader, Tree, WorkedExample, type Chapter,
 } from '@notes';
 
 /**
@@ -316,6 +316,19 @@ export default function DesignSystem() {
             { label: 'Convert to binary', body: 'Turn scores into top-choice binary data' },
             { label: 'Optimal bundle', body: 'Run TURF to find the widest-reach mix' },
           ]} />
+        </Specimen>
+        <Specimen name="Content Tree" subtitle="Tree — shapes mixed with bulleted lists: dark root, one chapter-colored box per branch, bullets for leaves; a sub-branch becomes a smaller box with its own bullets. The Topic Map drawn from a Pyramid-Principle tree (TopicMapPage tree={…})">
+          <Tree
+            root={{
+              label: 'Acquire?',
+              children: [
+                { label: 'Strategic Rationale', chapter: 13, children: ['New capabilities', 'New cust./geography', 'Eliminate competitor', { label: "Target's market", tag: 'new' }] },
+                { label: 'Deal Economics', chapter: 2, children: ['Priced right', 'Synergies: cost & rev.'] },
+                { label: 'Financing & Capital Str.', chapter: 6, tag: 'new', children: ['Leverage/debt capacity', 'Dilution', 'Funding source'] },
+                { label: 'Integration Risk', chapter: 4, children: ['Culture clash', 'Operational complexity', 'Regulatory approval', 'Key-person risk'] },
+              ],
+            }}
+          />
         </Specimen>
         <Specimen name="Process Map" subtitle="ProcessMap — cards in a grid whose rows and columns flex to the room; flow='arrows' numbers them and points to the next. A Topic Map is the same map of a packet's topics, on a page of its own">
           <ProcessMap flow="arrows" chapter={4} nodes={[
