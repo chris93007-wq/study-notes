@@ -13,7 +13,7 @@ npm run dev                        # live preview at http://localhost:5173 (pick
 npm run pdf                        # build + render every notes/*.tsx → out/*.pdf
 npm run pdf -- week-03             # just the matching document(s)
 npm run skill:zip                  # build the Claude desktop-app skill zip
-npm run new -- week-04-segmentation "Segmentation"   # start a new packet from the template
+npm run new -- week-04-segmentation "Segmentation" --with cover,contents,map,cheat   # start a packet; only the Notes pages are core, the rest is chosen with --with
 npm run typecheck
 ```
 
@@ -51,7 +51,7 @@ npm run skill:zip      # → skill-dist/christines-notes.zip
 |---|---|
 | `notes/week-03-preference-measurement.tsx` | Sample packet with all 9 page types: Cover, Contents, Topic Map, 4 Notes pages, Cheat Sheet, Formula Sheet, Practice Questions, Appendix, Glossary |
 | `notes/design-system.tsx` | The design system as a printable spec: palette, type, spacing, brand, layout, every component |
-| `notes/_template.tsx` | Starter packet used by `npm run new` |
+| `notes/_template.tsx` | Starter packet used by `npm run new`: the Notes pages, plus optional blocks (cover, contents, map, cheat, formulas, quiz, glossary, appendix) kept only when you ask for them with `--with` |
 | `src/styles/` | Tokens (Material palette, chapter aliases, type, spacing, radius/shadow), base + highlighter/badge CSS, print geometry |
 | `src/components/` | The design-system components, typed: callouts, cards, tables, diagrams, charts, Mermaid, media |
 | `src/pages/` | Page templates |

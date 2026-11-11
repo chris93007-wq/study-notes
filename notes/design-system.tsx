@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import {
   Callout, Chain, ChapterHeader, ComparisonTable, ConceptCard, ContentsPage, CoverPage, FlashcardGrid, Flowchart,
   FormulaTree, Image, KeyTermsTable, Matrix, NotesDocument, Page, PageBadge, PageFooter, Section, SectionTitle,
-  Split, StepPipeline, Tex, TopicHeader, WorkedExample, type Chapter,
+  ProcessMap, Split, StepPipeline, Tex, TopicHeader, WorkedExample, type Chapter,
 } from '@notes';
 
 /**
@@ -315,6 +315,14 @@ export default function DesignSystem() {
             { label: 'Score & rank', body: 'Run a MaxDiff study to score the full item list' },
             { label: 'Convert to binary', body: 'Turn scores into top-choice binary data' },
             { label: 'Optimal bundle', body: 'Run TURF to find the widest-reach mix' },
+          ]} />
+        </Specimen>
+        <Specimen name="Process Map" subtitle="ProcessMap — cards in a grid whose rows and columns flex to the room; flow='arrows' numbers them and points to the next. A Topic Map is the same map of a packet's topics, on a page of its own">
+          <ProcessMap flow="arrows" chapter={4} nodes={[
+            { title: 'Net income', definition: 'What is left for owners after every expense, interest and tax.' },
+            { title: 'Add back taxes', definition: 'Taxes depend on jurisdiction, not operations.', formula: 'EBT = Net income + Taxes' },
+            { title: 'Add back interest', definition: 'Interest reflects financing, not operations.', formula: 'EBIT = EBT + Interest' },
+            { title: 'Add back D&A', definition: 'Non-cash charges spread over time.', formula: 'EBITDA = EBIT + D&A' },
           ]} />
         </Specimen>
         <Specimen name="Tables" subtitle="KeyTermsTable + ComparisonTable — chapter header, lighter alternate rows, visible column lines">

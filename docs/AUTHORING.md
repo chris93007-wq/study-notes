@@ -9,10 +9,10 @@ import { NotesDocument, CoverPage, ContentsPage, NotesPage, TopicHeader, Callout
 export default function Week04() {
   return (
     <NotesDocument meta={{ title: 'Segmentation', subtitle: '…', course: 'MKT 282 · Marketing Analytics', week: 'Week 4', author: 'Christine John' }}>
-      <CoverPage />
-      <ContentsPage />
-      <NotesPage toc={{ title: 'Cluster Analysis', chapter: 7 }}>
-        <TopicHeader topicNumber={2} title="Cluster Analysis" />
+      <CoverPage />      {/* optional */}
+      <ContentsPage />   {/* optional */}
+      <NotesPage toc={{ title: 'Cluster Analysis', chapter: 7 }}>   {/* the only core page */}
+        <TopicHeader title="Cluster Analysis" />   {/* the topic number is automatic */}
         <p>…</p>
       </NotesPage>
     </NotesDocument>
@@ -20,7 +20,7 @@ export default function Week04() {
 }
 ```
 
-Start from the template with `npm run new -- week-04-segmentation "Segmentation"`, preview with `npm run dev`,
+Start from the template with `npm run new -- week-04-segmentation "Segmentation" --with cover,contents,map` (only the Notes pages are core; list just the optional pages that add value, see "What to include"), preview with `npm run dev`,
 and print with `npm run pdf -- week-04`.
 
 ## The rules
@@ -60,7 +60,8 @@ These are the design decisions settled in the design sessions. Keep to them.
 - **Split (two-sided comparison)** sits in the main column by default so margin notes stay beside it; pass `wide` to span the page.
 - **A worked example is not wrapped in a `Section`**: its card is already labelled, so a second title line would repeat it.
 - **Short topics share a sheet.** A `NotesPage` that fits in what is left of the previous sheet (plus a 24 pt gap) continues there instead of starting a new one (`join={false}` to opt out). Topics that don't fit start a new sheet.
-- **Topic Map cards:** `TopicMapPage` tries margin notes beside the introduction, then a 2-column grid, then a 4-column grid, and keeps the first that fits on one sheet.
+- **Maps flex to one sheet.** `MapPage` / `TopicMapPage` choose the rows × columns and the card density that fit header, introduction and map on one sheet (the lightest density first, the most readable shape first; margin notes only as a last resort for an unordered map). Don't hand-pick `columns` unless the structure needs it. If a map still can't fit, it breaks between rows rather than moving whole.
+- **Where a map goes.** A small process (about 6 steps or fewer) belongs inside the notes page it explains, as a `<ProcessMap>`: on a page of its own it would leave most of the sheet empty (the whitespace rule below). Give a map its own `MapPage` when it is the heart of the packet (a topic overview, or a process with enough per-step detail to fill a sheet).
 - **Wide blocks span the page:** worked examples, tables, Matrix, Split, headers and any `<Section wide>` / `<Wide>`. They clear the margin notes above them, so put the `<Aside>` above the text it belongs with, not above a wide block.
 - **Leading:** 1.5 for reading text (prose, definition and why text in cards, callouts); 1.35 for compact items (table cells, formula rows, steps, glossary entries, cheat-sheet bullets); headings 1.2.
 - **Paragraph spacing:** a full 2× the font size (`--para-gap`, 22 pt) between paragraphs of running prose. Bullets, table cells and glossary entries stay tight.
@@ -102,27 +103,50 @@ Never stack styles (no bold red inside a highlight, no highlighted green). Colou
 **Numbering** (one rule everywhere)
 - Every topic has **one single number** (1, 2, 3 …). It is assigned automatically to each `NotesPage` in order, and the same number appears on the Contents badge, the page pill and the TopicHeader, so they can never disagree. Don't type numbers into `toc` titles or `TopicHeader` (`toc={{ title: 'Corporate Taxes', chapter: 4 }}`, no "4 ·").
 - Only **subsections** may use a dotted number (3.1, 3.2). Give a sub-page `toc={{ title: 'Miller extension', chapter: 4, sub: true }}` and it becomes 3.1 under the topic before it, indented in the Contents. No deeper levels and no other numbering schemes.
-- Unnumbered pages (Topic Map, Cheat Sheet, Formula Sheet, Practice Questions, Glossary) show a blank colored chip in the Contents. Override a number with `toc.number` only if you must.
+- Unnumbered pages (Map / Topic Map, Cheat Sheet, Formula Sheet, Practice Questions, Glossary) show a blank colored chip in the Contents. Override a number with `toc.number` only if you must.
 
 **Concepts**
 - Every concept gets a plain-language definition, the formula (KaTeX in `ConceptCard`, *in words* in
   `FlashCard`), and the **why**: the logic that makes the formula make sense.
 
-## Page templates
+## What to include
 
-Not every packet needs every page. The Appendix in particular is optional: add one only when there is reference material that would clutter the topic pages, never just to fill the packet.
+**Only the Notes pages are core.** Every other page is a supplement that is kept only when it adds value to what these notes are *for*. There is no standard packet to fill. If the goal isn't clear from the request, ask: exam review of a week of lectures, preparing a case, notes on one reading, a quick reference? Then decide each supplement with the table below. `npm run new -- <name> "Title" --with …` creates a file with only the pages you list, so leaving something out costs nothing.
+
+| Supplement | Add it when | Leave it out when |
+|---|---|---|
+| Cover | the packet will be printed, shared or bound (about 4+ sheets) | a short note (1–3 sheets) |
+| Contents | 4+ sheets or 3+ topics, so a reader needs to jump around | 1–3 sheets |
+| Map (`TopicMapPage`, `MapPage`, or a `ProcessMap` inside a notes page) | 3+ topics whose order or relationship helps; **or** the material describes a structured process, ladder, framework or timeline worth seeing at a glance | a single topic; topics with no relationship worth drawing |
+| Cheat Sheet | exam prep or quick recall across 2+ topics | a single topic or a case; notes already 1–2 sheets |
+| Formula Sheet | 3+ formulas the reader must recall or apply | qualitative or case notes; one or two formulas (keep them in the notes) |
+| Practice Questions | the source supplies questions, or the goal is self-testing | plain reading or case notes (discussion questions can be a section of the notes) |
+| Glossary | about 8+ new terms of jargon | fewer terms (define them where they appear) |
+| Appendix | reference data or a derivation that would clutter the topic pages | otherwise |
+
+Typical recipes (adjust to the request, don't copy blindly):
+- **Exam review, several topics:** Cover, Contents, Map, Notes × N, Cheat Sheet, Formula Sheet if quantitative, Practice Questions, Glossary if term-heavy.
+- **One topic:** Notes only (plus a Cheat Sheet if it is for exam recall). No Map, no Contents.
+- **A case:** Notes (situation, issues, analysis, takeaways). A Map only if the case has a process, timeline or decision structure; a Formula Sheet only if the analysis is quantitative.
+- **A reading or lecture:** Notes; a Glossary if jargon-heavy.
+- **Quick reference:** Cheat Sheet and/or Formula Sheet only.
+
+In the hand-off, say what you left out and why, and offer to add any of it. Never add a page, or a map, just to fill out a packet.
+
+## Page templates
 
 | Template | Orientation | Badge | Footer | Notes |
 |---|---|---|---|---|
-| `CoverPage` | portrait | — | — | title/eyebrow from `meta`; `dots` = topic chapters |
-| `ContentsPage` | portrait | Contents | — | built from every page's `toc`; page numbers filled by `npm run pdf` |
-| `TopicMapPage` | portrait | ChapterHeader | ✓ | flashcard per topic + 2-col intro (`<Full>` spans both columns) |
-| `NotesPage` | portrait* | Notes Page | ✓ | margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style; callouts in `<Aside>` |
-| `CheatSheetPage` | portrait | Cheat Sheet | ✓ | one column per topic: bullets + formula in words. At most 3 columns with dividers, ≥ 9 pt, may run to two sheets |
-| `FormulaSheetPage` | portrait | Formula Sheet | ✓ | Concept / Decomposition / KaTeX formula, chapter bands |
-| `QuizPage` | portrait | — | — | 2 equal columns; one chapter color; light-green answer strip |
-| `AppendixPage` | landscape* | Appendix | ✓ | **Optional.** Only for real reference material that would clutter the topic pages (big data tables, derivations). label badge, TopicHeader, intro, then a wide table |
-| `GlossaryPage` | portrait | Glossary | ✓ | auto-sorted 2-column dictionary |
+| `CoverPage` | portrait | — | — | optional. title/eyebrow from `meta`; `dots` = topic chapters |
+| `ContentsPage` | portrait | Contents | — | optional. built from every page's `toc`; page numbers filled by `npm run pdf` |
+| `MapPage` | portrait | ChapterHeader | ✓ | optional. A map of any structured process, ladder, framework or timeline: header, introduction, then a `ProcessMap`; rows × columns and density flex to one sheet. `flow="arrows"` numbers the cards and points to the next one |
+| `TopicMapPage` | portrait | ChapterHeader | ✓ | optional. A `MapPage` whose cards are the packet's topics (definition / formula in words / why each) |
+| `NotesPage` | portrait* | Notes Page | ✓ | **core.** margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style; callouts in `<Aside>` |
+| `CheatSheetPage` | portrait | Cheat Sheet | ✓ | optional. one column per topic: bullets + formula in words. At most 3 columns with dividers, ≥ 9 pt, may run to two sheets |
+| `FormulaSheetPage` | portrait | Formula Sheet | ✓ | optional. Concept / Decomposition / KaTeX formula, chapter bands |
+| `QuizPage` | portrait | — | — | optional. 2 equal columns; one chapter color; light-green answer strip |
+| `AppendixPage` | landscape* | Appendix | ✓ | optional. Only for real reference material that would clutter the topic pages (big data tables, derivations). label badge, TopicHeader, intro, then a wide table |
+| `GlossaryPage` | portrait | Glossary | ✓ | optional. auto-sorted 2-column dictionary |
 | `Page` | either | optional | optional | build any custom page |
 
 \* `orientation` prop to change.
@@ -136,7 +160,8 @@ Any template takes `toc={{ title, chapter }}` to appear on the Contents page.
 | `Callout` | Key Insight / Notes / Memory Aid / Exam Trap box; label sits in the border notch |
 | `ConceptCard` | definition + KaTeX formulas + optional `breakdown` tree + why |
 | `WorkedExample` | setup (+ `context` figure), data table, show-the-work steps, highlighted answer, so-what |
-| `FlashCard`, `FlashcardGrid` | mini definition / formula in words / why |
+| `ProcessMap` | map of a structured thing: nodes as cards in a grid whose rows and columns flex; `flow="arrows"` adds step numbers and arrows (a process, a ladder, a timeline); no flow = a framework or overview. Usable in any notes page; the basis of `MapPage` |
+| `FlashCard`, `FlashcardGrid` | a map node: title + optional definition / formula in words / why / free content (`step` adds an order badge) |
 | `FormulaTree` | calculation broken down into connected value boxes |
 | `Chain` | `A → B → C` or `A = B + C` pills |
 | `Split` | two-sided comparison |

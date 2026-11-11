@@ -17,6 +17,9 @@ const SAFETY_DEFAULT = 16; // a topic counts as one sheet only if it fits with t
 const WASTE_LIMIT = 0.3;
 const COMBO_LIMIT = 300; // exhaustive search up to this many layouts per density level, coordinate descent beyond
 
+/** Lines logged by components that fit themselves (MapPage) before the notes pages are fitted; scripts/pdf.ts prints them with the rest. */
+export const earlyLog: string[] = [];
+
 const debug = () => !!(window as unknown as { __FIT_DEBUG__?: boolean }).__FIT_DEBUG__;
 
 /** Height of the laid-out content (including floated margin notes), ignoring the min-height of a screen sheet. */

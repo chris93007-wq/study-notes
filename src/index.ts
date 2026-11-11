@@ -15,6 +15,7 @@ export { LineChart, type LineSeries } from './components/charts/LineChart';
 export { ScatterPlot, type ScatterPoint } from './components/charts/ScatterPlot';
 export { Split } from './components/diagrams/Split';
 export { FlashCard, FlashcardGrid } from './components/flashcards/FlashCard';
+export { ProcessMap, type MapNode } from './components/map/ProcessMap';
 export { StepPipeline } from './components/flow/StepPipeline';
 export { Image } from './components/media/Image';
 export { Tex } from './components/math/Tex';
@@ -36,6 +37,7 @@ export type { DocumentMeta } from './document/context';
 
 export { CoverPage } from './pages/CoverPage';
 export { ContentsPage } from './pages/ContentsPage';
+export { MapPage } from './pages/MapPage';
 export { TopicMapPage } from './pages/TopicMapPage';
 export { NotesPage } from './pages/NotesPage';
 export { CheatSheetPage } from './pages/CheatSheetPage';

@@ -1,7 +1,7 @@
 import { Children, isValidElement, useEffect, useMemo, type ReactElement, type ReactNode } from 'react';
 import type { Chapter } from '../components/types';
 import { allSettled } from './pending';
-import { finalizeFits, fitNotePages, hideKickers, packPages, predictedSheets, sourcesToFooter } from './joinPages';
+import { earlyLog, finalizeFits, fitNotePages, hideKickers, packPages, predictedSheets, sourcesToFooter } from './joinPages';
 import { DocumentContext, PageSlotContext, type DocumentMeta, type PageSlotValue, type TocEntry } from './context';
 
 declare global {
@@ -81,7 +81,7 @@ export function NotesDocument({ meta, children }: NotesDocumentProps) {
     document.title = meta.week ? `${meta.title} — ${meta.week}` : meta.title;
     let cancelled = false;
     document.fonts.ready.then(allSettled).then(() => document.fonts.ready).then(() => {
-      if (!cancelled) { hideKickers(); window.__FIT_LOG__ = [...fitNotePages(), ...packPages()]; window.__FIT_PRED__ = predictedSheets(); window.__FIT_LOG__.push(...finalizeFits()); sourcesToFooter(); }
+      if (!cancelled) { hideKickers(); window.__FIT_LOG__ = [...earlyLog, ...fitNotePages(), ...packPages()]; window.__FIT_PRED__ = predictedSheets(); window.__FIT_LOG__.push(...finalizeFits()); sourcesToFooter(); }
       if (!cancelled) window.__NOTES_READY__ = true;
     });
     return () => {
