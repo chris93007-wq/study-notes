@@ -14,6 +14,8 @@ export interface CalloutProps {
   label?: string;
   /** Explicit bullets (each may contain inline markup). Overrides children. */
   items?: ReactNode[];
+  /** Back-reference for a REMINDER: where this was explained, e.g. "Topic 3 · Debt Overhang" or "Week 3, Formula Sheet" — rendered as "→ Topic 3 · Debt Overhang" under the bullets. */
+  see?: string;
   children?: ReactNode;
 }
 
@@ -38,7 +40,7 @@ export function toBullets(children: ReactNode): ReactNode[][] {
   return bullets.filter((b) => b.some((x) => typeof x !== 'string' || x.trim()));
 }
 
-export function Callout({ chapter, label, items, children }: CalloutProps) {
+export function Callout({ chapter, label, items, see, children }: CalloutProps) {
   const dark = ch(chapter, 900);
   const wrap: CSSProperties = { breakInside: 'avoid' };
   const rule: CSSProperties = { height: 2, background: ch(chapter, 500), borderRadius: 1 };
@@ -61,6 +63,7 @@ export function Callout({ chapter, label, items, children }: CalloutProps) {
           <li key={i} style={li}><span aria-hidden style={{ position: 'absolute', left: 0, color: ch(chapter, 500) }}>•</span>{b}</li>
         ))}
       </ul>
+      {see && <div style={{ marginTop: 'var(--space-2)', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 'var(--text-xs)', letterSpacing: '0.02em', color: ch(chapter, 700) }}>→ {see}</div>}
     </div>
   );
 }

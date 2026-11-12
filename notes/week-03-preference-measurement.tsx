@@ -1,6 +1,6 @@
 import {
   Aside, Callout, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage,
-  FormulaSheetPage, Flowchart, GlossaryPage, Image, KeyTermsTable, Matrix, NotesDocument, NotesPage, QuizPage,
+  Fig, Figure, FormulaSheetPage, Flowchart, GlossaryPage, Image, KeyTermsTable, Matrix, NotesDocument, NotesPage, QuizPage,
   Section, SectionTitle, Split, Stack, StepPipeline, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
 } from '@notes';
 
@@ -203,9 +203,9 @@ export default function Week03() {
         </Aside>
         <div style={{ margin: '13.8px 0' }}><span className={`badge ch-${C.conjoint}`}>Ratings-based conjoint</span></div>
           <p className="prose-sm">
-            Conjoint analysis shows respondents full product profiles — several attributes bundled together, like a camera with a resolution, battery life, and price — and asks them to rate or choose between profiles. Because every attribute moves at once, the trade-offs respondents are forced to make reveal how much each attribute level is actually worth, rather than how important they say it is.
+            Conjoint analysis shows respondents full product profiles (<Fig id="profile" />) — several attributes bundled together, like a camera with a resolution, battery life, and price — and asks them to rate or choose between profiles. Because every attribute moves at once, the trade-offs respondents are forced to make reveal how much each attribute level is actually worth, rather than how important they say it is.
           </p>
-          <Image chapter={C.conjoint} ratio="4/3" alt="Conjoint profile card example" caption="Fig. 1 — A full product profile shown to respondents." />
+          <Figure id="profile" wide={false} caption="A full product profile shown to respondents."><Image chapter={C.conjoint} ratio="4/3" alt="Conjoint profile card example" /></Figure>
         <Section chapter={C.conjoint} title="Part-Worths & Utility">
           <p className="prose-sm">
             Each attribute level (e.g. “50ft range” vs. “5ft range”) gets its own part-worth — a number representing how much that level alone contributes to a respondent’s overall liking. A profile’s total utility is just the sum of the part-worths for its levels.

@@ -88,9 +88,15 @@ and one ring only (1.5 px border plus a 4 px accent on top; inner tinted boxes g
 
 Never stack styles (no bold red inside a highlight, no highlighted green). Colour is never the only signal: red and green phrases always sit in a sentence that says "don't …" or "always …", so the page still reads in black and white.
 
-**Callouts**
-- There are four: `KEY INSIGHT`, `NOTES`, `MEMORY AID` and `EXAM TRAP`. All four go in the margin (`<Aside>`). A worked example or other
-  content is a regular `<Section>` or a dedicated component.
+**Callouts** — a controlled vocabulary, each label with one job. All go in the margin (`<Aside>`); the per-page cap stays (≈3 margin items a page). A worked example or other content is a regular `<Section>` or a dedicated component.
+- `KEY INSIGHT` — the idea the page exists for.
+- `NOTES` — course logistics tied to this content (what's due, what's assessed).
+- `MEMORY AID` — a mnemonic or recall hook.
+- `EXAM TRAP` — the mistake graders see (pairs with bold-red `trap`).
+- `HINT` — exam tactic or reassurance (“you don't have to memorise these”).
+- `REMINDER` — a fact defined earlier that this passage needs; always give `see="Topic 3 · Debt Overhang"` so the reader can jump back without searching.
+- `DID YOU KNOW` — one interesting fact for wider understanding; at most one per packet.
+- `LOOKING AHEAD` — what builds on this later in the course.
 
 **Pages**
 - US Letter with 0.5in margins on every page. Content flows onto extra sheets automatically, and each
@@ -135,9 +141,20 @@ The worked reference is `notes/case-schur-flexibles.tsx`, a case write-up turned
 
 `npm run pdf` checks the rhythm from the authored order and prints `⚠ rhythm: …` for a topic that has 3+ elements in a row, 3+ paragraphs or lists in a row, a paragraph over 75 words, or 2+ elements and no paragraph. Fix each by adding a lead-in or a takeaway, splitting a long paragraph around an element, or putting an element into a wall of text; re-render (up to two rounds) and say in your hand-off about any that remain.
 
+**Topic shape (teach it the way a textbook chapter does).** Within the rhythm, order a topic:
+1. **Hook** — one or two concrete, surprising facts or a question from the reader's world (“You can't walk through a brick wall, but you can move through water”), not a definition.
+2. **Mechanism** — short paragraph blocks that explain, with the margin carrying hints and traps.
+3. **Formal definition last** — the `ConceptCard` comes after the intuition it formalises, never first.
+4. **Method by `MiniExample`s** — several small run-in examples that each do one calculation, then
+5. **one exam-style `WorkedExample`** that puts the method together.
+On a notes page the `Objectives` panel sits directly under the `TopicHeader`, before the first `<Aside>` (it is a wide block, and wide blocks clear the margin notes above them). A dependency on an earlier topic gets a `REMINDER` callout with `see`, so nobody pages back searching. Content beyond the exam goes inside `<Scope>` bands (or an `{ extension: true }` objective) rather than being silently dropped or silently included.
+
+**Figures are exhibits, not decoration.** Wrap a chart, diagram or image in `<Figure id caption>`: it is numbered “Fig. N” in reading order, and the prose that explains it names it (`<Fig id/>` or typed “Fig. N”). `npm run pdf` prints `⚠ figures: …` for a duplicate or unknown id and for a figure no sentence names.
+
+
 ## What to include
 
-**Only the Notes pages are core.** Every other page is a supplement that is kept only when it adds value to what these notes are *for*. There is no standard packet to fill. If the goal isn't clear from the request, ask: exam review of a week of lectures, preparing a case, notes on one reading, a quick reference? Then decide each supplement with the table below. `npm run new -- <name> "Title" --with …` creates a file with only the pages you list, so leaving something out costs nothing.
+**Only the Notes pages are core.** An `Objectives` panel (can-do sentences from the content tree's node questions) opens the packet — on the Topic Map page when there is one, else on the first notes page. Every other page is a supplement that is kept only when it adds value to what these notes are *for*. There is no standard packet to fill. If the goal isn't clear from the request, ask: exam review of a week of lectures, preparing a case, notes on one reading, a quick reference? Then decide each supplement with the table below. `npm run new -- <name> "Title" --with …` creates a file with only the pages you list, so leaving something out costs nothing.
 
 | Supplement | Add it when | Leave it out when |
 |---|---|---|
@@ -170,7 +187,7 @@ In the hand-off, say what you left out and why, and offer to add any of it. Neve
 | `NotesPage` | portrait* | Notes Page | ✓ | **core.** margin layout by default (`layout` = margin / columns / single); plain `<p>` gets notes body style (short paragraph blocks between the elements); callouts in `<Aside>` |
 | `CheatSheetPage` | portrait | Cheat Sheet | ✓ | optional. one column per topic: bullets + formula in words. At most 3 columns with dividers, ≥ 9 pt, may run to two sheets |
 | `FormulaSheetPage` | portrait | Formula Sheet | ✓ | optional. Concept / Decomposition / KaTeX formula, chapter bands |
-| `QuizPage` | portrait | — | — | optional. 2 equal columns; one chapter color; light-green answer strip |
+| `QuizPage` | portrait | — | — | optional. 2 equal columns; one chapter color; light-green answer strip. Questions may carry `skill`, `level` (1–5 pips), `marks`, `parts` (a/b/c with own answers and marks) and `bank` (word bank for fill-in-the-blank). Order easy → hard |
 | `AppendixPage` | landscape* | Appendix | ✓ | optional. Only for real reference material that would clutter the topic pages (big data tables, derivations). label badge, TopicHeader, intro, then a wide table |
 | `GlossaryPage` | portrait | Glossary | ✓ | optional. auto-sorted 2-column dictionary |
 | `Page` | either | optional | optional | build any custom page |
@@ -183,9 +200,12 @@ Any template takes `toc={{ title, chapter }}` to appear on the Contents page.
 
 | Component | Use |
 |---|---|
-| `Callout` | Key Insight / Notes / Memory Aid / Exam Trap box; label sits in the border notch |
+| `Callout` | margin note: title + bullets in the chapter color; `see` adds a “→ Topic 3 · …” back-reference line (for REMINDER). Labels: see “Callouts” below |
+| `Objectives` | chapter-opener panel of can-do sentences (two columns); `{ text, extension: true }` items carry an EXT chip. Built from the content tree's node questions |
+| `Scope` | “EXTENSION — NOT EXAMINED … END” banners around a range of content (red, the reserved warning color); the content between stays ordinary siblings, so margin notes and the fitter keep working |
 | `ConceptCard` | definition + KaTeX formulas + optional `breakdown` tree + why |
-| `WorkedExample` | setup (+ `context` figure), data table, show-the-work steps, answer strip (left accent, value + label on one line), so-what |
+| `WorkedExample` | setup (+ `context` figure), data table, show-the-work steps, answer strip (left accent, value + label on one line), so-what — the one exam-style walkthrough of a topic |
+| `MiniExample` | run-in worked lines like a textbook's calculation chapters: bold one-line title, 2–5 lines of working on a thin rule, optional italic note. Use several in a row to teach a method; no card chrome |
 | `ProcessMap` | map of a structured thing: nodes as cards in a grid whose rows and columns flex; `flow="arrows"` adds step numbers and arrows (a process, a ladder, a timeline); no flow = a framework or overview. Usable in any notes page; the basis of `MapPage` |
 | `FlashCard`, `FlashcardGrid` | a map node: title + optional definition / formula in words / why / free content (`step` adds an order badge) |
 | `FormulaTree` | calculation broken down into connected value boxes |
@@ -197,7 +217,8 @@ Any template takes `toc={{ title, chapter }}` to appear on the Contents page.
 | `StepPipeline` | numbered process steps with arrows |
 | `KeyTermsTable` | Term / Simple Explanation / Why It Matters / Example |
 | `ComparisonTable` | any data table (`columns[].align`, `columns[].width`) |
-| `Image` | figure + caption; placeholder frame until `src` is set (import images from `notes/assets/`) |
+| `Image` | image frame; placeholder until `src` is set (import images from `notes/assets/`) |
+| `Figure`, `Fig` | numbered figure: wrap any visual, give a `caption` and an `id`; “Fig. N” is assigned in reading order and `<Fig id>` in prose renders the number. `npm run pdf` warns about a figure no sentence names |
 | `ChapterHeader`, `TopicHeader`, `Section`, `SectionTitle`, `PageBadge`, `PageFooter` | structure |
 | `BarChart` | ranked/compared values; horizontal (long labels, negatives) or vertical; values printed on bars |
 | `LineChart` | 1–4 series; direct end-of-line labels + dash/marker shapes so it reads in black-and-white |

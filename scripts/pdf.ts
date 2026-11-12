@@ -278,6 +278,7 @@ async function main() {
       if (process.env.WS_DEBUG) console.log(ws.map((v, i) => `${i + 1}:${Math.round(v * 100)}`).join(' '));
       overflow.push(...(await auditWhitespace(pdf)));
       overflow.push(...(await page.evaluate(() => window.__RHYTHM__ ?? [])).map((l) => `rhythm: ${l}`));
+      overflow.push(...(await page.evaluate(() => window.__FIGS__ ?? [])).map((l) => `figures: ${l}`));
       errors.push(...enforceWhitespace(ws, tocPages, numPages));
       for (const w of overflow) console.warn(`  ⚠ ${w}`);
       for (const e of errors) console.error(`  ✗ ${e}`);

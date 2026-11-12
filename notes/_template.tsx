@@ -1,6 +1,6 @@
 import {
   Aside, AppendixPage, Callout, CheatSheetPage, ComparisonTable, ConceptCard, ContentsPage, CoverPage, FormulaSheetPage, GlossaryPage,
-  NotesDocument, NotesPage, QuizPage, SectionTitle, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
+  NotesDocument, NotesPage, Objectives, QuizPage, SectionTitle, TopicHeader, TopicMapPage, WorkedExample, type Chapter,
 } from '@notes';
 
 /**
@@ -57,6 +57,8 @@ export default function Notes() {
         <SectionTitle chapter={C.overview}>Introduction</SectionTitle>
         <Aside><Callout chapter={C.overview} label="KEY INSIGHT">TODO</Callout></Aside>
         <p>TODO intro paragraph. <mark>The one sentence to remember.</mark></p>
+        {/* Can-do sentences from the content tree's node questions; mark beyond-exam items { text, extension: true }. */}
+        <Objectives chapter={C.overview} items={['TODO can-do sentence.', 'TODO can-do sentence.']} />
       </TopicMapPage>
       {/* For a process, ladder or framework instead of a topic overview: <MapPage flow="arrows" nodes={[…]} /> (a page) or <ProcessMap …/> (inside a notes page). */}
       {/* @end map */}
@@ -97,7 +99,11 @@ export default function Notes() {
       />
       {/* @end formulas */}
       {/* @optional quiz */}
-      <QuizPage toc={{ title: 'Practice Questions', chapter: C.practice }} chapter={C.practice} kicker="TODO one line" questions={[{ q: 'TODO question?', a: 'TODO answer.' }]} />
+      {/* Order easy → hard; tag skill/level/marks; use parts for a/b/c, bank for fill-in-the-blank. */}
+      <QuizPage toc={{ title: 'Practice Questions', chapter: C.practice }} chapter={C.practice} kicker="TODO one line" questions={[
+        { q: 'TODO recall question?', a: 'TODO answer.', skill: 'recall', level: 1 },
+        { q: 'TODO applied question', skill: 'analysis', level: 3, parts: [{ q: 'TODO part a?', a: 'TODO.', marks: 2 }, { q: 'TODO part b?', a: 'TODO.', marks: 4 }] },
+      ]} />
       {/* @end quiz */}
       {/* @optional glossary */}
       <GlossaryPage toc={{ title: 'Glossary', chapter: C.glossary }} chapter={C.glossary} entries={[{ term: 'TODO', def: 'TODO' }]} />

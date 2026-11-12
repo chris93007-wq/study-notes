@@ -24,7 +24,7 @@ const VISUAL = '[data-box],[data-map],table,svg,figure,img,canvas';
 
 /** Not part of the reading flow: hidden nodes, margin notes, dividers, headings and page furniture. */
 const neutral = (el: HTMLElement) =>
-  el.hidden || el.style.display === 'none' || el.tagName === 'ASIDE' || /^H[1-6]$/.test(el.tagName) ||
+  el.hidden || el.style.display === 'none' || el.tagName === 'ASIDE' || /^H[1-6]$/.test(el.tagName) || el.hasAttribute('data-scope-band') ||
   el.classList.contains('aside') || el.classList.contains('box-divider') || el.classList.contains('page-badge') || el.classList.contains('toc-marker') ||
   el.hasAttribute('data-topic-header') || el.hasAttribute('data-section-title');
 
@@ -67,6 +67,8 @@ function describe(b: Block): string {
     : el.matches('[data-box]') || el.querySelector('[data-box]') ? 'example card'
     : el.matches('[data-map]') || el.querySelector('[data-map]') ? 'map'
     : el.matches('[data-tree]') || el.querySelector('[data-tree]') ? 'tree'
+    : el.matches('[data-mini]') || el.querySelector('[data-mini]') ? 'mini-example'
+    : el.matches('[data-objectives]') || el.querySelector('[data-objectives]') ? 'objectives'
     : el.matches('[data-steps]') || el.querySelector('[data-steps]') ? 'steps'
     : el.matches('[data-chain]') || el.querySelector('[data-chain]') ? 'chain'
     : el.matches('table') || el.querySelector('table') ? 'table'

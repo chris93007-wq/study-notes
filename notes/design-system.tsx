@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import {
   Callout, Chain, ChapterHeader, ComparisonTable, ConceptCard, ContentsPage, CoverPage, FlashcardGrid, Flowchart,
   FormulaTree, Image, KeyTermsTable, Matrix, NotesDocument, Page, PageBadge, PageFooter, Section, SectionTitle,
-  ProcessMap, Split, StepPipeline, Tex, TopicHeader, Tree, WorkedExample, type Chapter,
+  Fig, Figure, MiniExample, Objectives, ProcessMap, Scope, Split, StepPipeline, Tex, TopicHeader, Tree, WorkedExample, type Chapter,
 } from '@notes';
 
 /**
@@ -316,6 +316,40 @@ export default function DesignSystem() {
             { label: 'Convert to binary', body: 'Turn scores into top-choice binary data' },
             { label: 'Optimal bundle', body: 'Run TURF to find the widest-reach mix' },
           ]} />
+        </Specimen>
+        <Specimen name="Objectives" subtitle="Objectives — chapter-opener panel of can-do sentences (from the content tree's node questions); items beyond the exam scope carry an EXT chip">
+          <Objectives
+            chapter={11}
+            items={[
+              'Walk the earnings ladder from Net Income to EBITDA and say what each rung ignores.',
+              'Calculate EBITDA from EBIT and D&A.',
+              'Explain why two firms with equal EBITDA can have very different free cash flow.',
+              { text: 'Reconcile EBITDA to Unlevered FCF through all five steps.', extension: true },
+            ]}
+          />
+        </Specimen>
+        <Specimen name="Scope & Mini Example" subtitle="Scope — banners marking a range as beyond the exam; MiniExample — a run-in worked line like a textbook's calculation chapters (no card)">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 13.8 }}>
+            <MiniExample
+              chapter={5}
+              title="Finding the number of moles in 54 g of water"
+              lines={['1 mol of $$H_2O$$ has a mass of 18 g', 'moles = 54 ÷ 18 = 3 mol']}
+              note="Check: more grams than the molar mass, so more than 1 mol."
+            />
+            <Scope label="Extension — not examined">
+              <MiniExample chapter={5} title="The same count via the Avogadro constant" lines={['3 mol × 6×10²³ = 1.8×10²⁴ molecules']} />
+            </Scope>
+          </div>
+        </Specimen>
+        <Specimen name="Numbered Figure" subtitle="Figure — auto-numbered caption; reference it in prose with <Fig id>. npm run pdf warns when a figure is never named in the text">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 13.8 }}>
+            <p style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', lineHeight: 'var(--leading-body)' }}>
+              The spec sheet's own example: the frame below is referenced as <Fig id="spec-frame" />, so the check passes.
+            </p>
+            <Figure id="spec-frame" caption="An Image placeholder inside a numbered Figure.">
+              <Image chapter={11} ratio="16/5" alt="Any visual: a chart, a diagram, an image" fit="contain" />
+            </Figure>
+          </div>
         </Specimen>
         <Specimen name="Content Tree" subtitle="Tree — shapes mixed with bulleted lists: dark root, one chapter-colored box per branch, bullets for leaves; a sub-branch becomes a smaller box with its own bullets. The Topic Map drawn from a Pyramid-Principle tree (TopicMapPage tree={…})">
           <Tree
